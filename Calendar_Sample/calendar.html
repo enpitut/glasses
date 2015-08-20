@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>カレンダー</title>
+<link type="text/css" href="fullcalendar.css" rel="stylesheet" />
+<link type="text/css" href="fullcalendar.print.css" rel="stylesheet" media='print' />
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="jquery-ui-1.10.2.custom.css">
+    <script src="jquery-ui-1.10.2.custom/js/jquery-1.9.1.js"></script>
+    <script src="jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js"></script>
+  
+   <script type='text/javascript' src='jquery-ui-1.10.2.custom.min.js'></script>
+   <script type='text/javascript' src='fullcalendar.min.js'></script>
+   <script type='text/javascript' src='gcal.js'></script>
+   <script src="bootstrap/js/bootstrap.min.js"></script>
+   <script type='text/javascript'>
+   <!--
+  /*    var xmlfile = "plans.xml";
+      var parser = new DOMParser();
+      var xmldom;
+    
+      //members.xmlを読み込む
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", xmlfile, false);
+      xhttp.send(null);
+      var xmldoc = xhttp.responseText;
+      //この時点では単純なテキストデータ.DOMで使える形にパースします
+      xmldom = parser.parseFromString(xmldoc, "text/xml");
+ */
+$(function() {
+        var FCdata;
+	var FC;
+
+	$('#calendar').fullCalendar({
+	   header: {
+		left: 'prev,next today',
+		center: 'title',
+		right: 'month,agendaWeek,agendaDay'
+	   },
+	eventSources:[
+	    {
+	       events: [
+  		　  {
+	        　　  title:'5日目',
+	        　　  start: new Date(2015,3,13,10,00),
+		      end: new Date(2015,3,13,15,00),
+                      description:'This is a cool event',
+		      allDay:false
+	    　　　  }
+	       ],
+		color:'black',
+		textColor:'yellow'
+	    }
+	],
+           titleFormat: {
+              month: 'yyyy年 M月',
+              week: '[yyyy年 ]M月 d日{ -[yyyy年 ][ M月] d日}',
+              day: 'yyyy年 M月 d日 dddd'
+           },
+		
+        dayClick: function() {
+	FCdata=$(this).text();
+	FC=$(this);
+	
+	$('#dialog-form').dialog("open");
+		       $(this).css('background-color','skyblue');
+		       $('input[name="color"]').val(['not']);
+		$('#startH option:selected').val('0');
+		$('#startM option:selected').val('0');
+		$('#endH option:selected').val('0');
+		$('#endM option:selected').val('0');
+	},
+        columnFormat: {
+              month: 'ddd',
+              week: 'M/d（ddd）',
+              day: 'M/d（ddd）'
+        },
+        dayNames: ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'],
+        dayNamesShort: ['日','月','火','水','木','金','土'],
+
+           axisFormat: 'H:mm',
+           timeFormat: { '': 'H:mm' },
+           buttonText: {
+               today: '今日',
+               month: '月',
+               week: '週',
+               day: '日'
+           },		
+	});
+/*
+	//plan.xmlから情報を取得しイベントメソッドに入力しカレンダーに出力させる
+	plans = xmldom.getElementsByTagName("plan");
+	var events = new Array();
+	for(var i=0;i<plans.length;i++){
+
+	if(plans[i].getElementsByTagName("year")[0].textContent != null){
+		      var Year = plans[i].getElementsByTagName("year")[0].textContent;
+	           }
+		   if(plans[i].getElementsByTagName("month")[0].textContent != null){
+		      var Month = plans[i].getElementsByTagName("month")[0].textContent-1;
+	           }
+		   if(plans[i].getElementsByTagName("day")[0].textContent != null){
+		      var Day = plans[i].getElementsByTagName("day")[0].textContent;
+	           }
+		   if(plans[i].getElementsByTagName("title")[0].textContent != null){
+		      var Title = plans[i].getElementsByTagName("title")[0].textContent;
+	           }
+		   if(plans[i].getElementsByTagName("start")[0].textContent != null){
+		      var Start = plans[i].getElementsByTagName("start")[0].textContent;
+	           }
+		   if(plans[i].getElementsByTagName("end")[0].textContent != null){
+		      var End = plans[i].getElementsByTagName("end")[0].textContent;
+	           }
+		   if(plans[i].getElementsByTagName("start")[1].textContent != null){
+		      var Startm = plans[i].getElementsByTagName("start")[1].textContent;
+	           }
+		   if(plans[i].getElementsByTagName("end")[1].textContent != null){
+		      var Endm = plans[i].getElementsByTagName("end")[1].textContent;
+		   }
+		   if(plans[i].getElementsByTagName("url")[0].textContent != null){
+		      var Url = plans[i].getElementsByTagName("url")[0].textContent;
+	           }
+	event = new Object();
+	event.title = Title;
+	event.start = new Date(Year,Month,Day,Start,Startm);
+	event.end = new Date(Year,Month,Day,End,Endm);
+	event.url = Url;
+	event.allDay = false;
+	events.push(event);
+	}
+	$('#calendar').fullCalendar('addEventSource',events); 
+*/	
+	//ユーザから誕生日の情報をwebストレージで取り出しカレンダーに設定する
+	/* var birthday = localStorage.getItem("userbirth");
+		   if(birthday.substring(1,2)=="月"){
+			birthM = birthday.substring(0,1)-1;
+			   //if(birthday.substring(3,3)=="日"){
+			   if(birthday.length==4){
+				birthD = birthday.substring(2,3);
+			   } else {
+				birthD = birthday.substring(2,4);
+			   }
+		   } 
+		   if(birthday.substring(1,2)!="月") {
+		        birthM = birthday.substring(0,2)-1;
+			   //if(birthday.substring(4,4)=="日"){
+			   if(birthday.length==5){
+				birthD = birthday.substring(3,4);
+			   } else {
+				birthD = birthday.substring(3,5); 
+			   }
+		   }
+		 var births = new Array();
+		 birth = new Object;
+		 birth.title = "誕生日";
+		 birth.start = new Date(2013,birthM,birthD,9,30);
+		 birth.end = new Date(2013,birthM,birthD,10,30);
+		 birth.allDay = true;
+		 birth.color = "pink";
+		 birth.textColor = "red";
+		 births.push(birth);
+	$('#calendar').fullCalendar('addEventSource',births);
+*/
+	
+	//ユーザから入力された情報を元に新たにイベントを出力する
+	var Addevents = new Array();
+	var memoloop = localStorage.getItem("memocount");
+	for(var i=0;i<memoloop;i++){
+	   var mm = "メモ"+(i+1);
+	   var find = localStorage.getItem(mm);
+	   var addEvent = JSON.parse(find);
+	        //入力された日付を格納する
+		var Month = addEvent.day;
+		   	if(Month.substring(1,2)=="月"){
+			addM = Month.substring(0,1)-1;
+			   if(Month.length==4){
+				addD = Month.substring(2,3);
+			   } else {
+				addD = Month.substring(2,4);
+			   }
+		        } 
+		        if(Month.substring(1,2)!="月") {
+		        addM = Month.substring(0,2)-1;
+			   if(Month.length==5){
+				addD = Month.substring(3,4);
+			   } else {
+				addD = Month.substring(3,5); 
+			   }
+		         }
+		//入力された時刻を格納する
+		var start = addEvent.start;
+                if(start.substring(1,2)==":"){
+                    addstartH = start.substring(0,1);
+                    addstartM = start.substring(2,4);
+                }
+                if(start.substring(1,2)!=":"){
+                    addstartH = start.substring(0,2);
+                    addstartM = start.substring(3,5);
+                }
+	
+
+                var end = addEvent.end;
+                if(end.substring(1,2)==":"){
+                    addendH = end.substring(0,1);
+                    addendM = end.substring(2,4);
+                }
+                if(end.substring(1,2)!=":"){
+                    addendH = end.substring(0,2);
+                    addendM = end.substring(3,5);
+                }
+		Addevent = new Object();
+		Addevent.title = addEvent.title;
+		Addevent.start = new Date(2015,addM,addD,addstartH,addstartM);
+		Addevent.end = new Date(2015,addM,addD,addendH,addendM);
+	        Addevent.url = "";
+		Addevent.color =addEvent.color;
+	        Addevent.allDay = false;
+		Addevents.push(Addevent);
+	}		
+	$('#calendar').fullCalendar('addEventSource',Addevents);
+
+	//ダイアログメソッド
+	$('#dialog-form').dialog({
+               autoOpen:false,
+	       width:500,
+	       show:'explode',
+	       hide:'explode',
+	       modal:true,
+	       buttons:{
+	         "入力":function() {
+		       var addEvent = new Object;
+		      // alert($('#title').val());
+	               addEvent.title = $('#title').val();
+                    if(addEvent.title!=""){
+		       $('.fc-day').click(function() {
+		           $(this).text();
+		       });
+		       console.log("ここの値は"+FCdata );
+		    
+		       addEvent.day = $('h2').text().substring(6,8)+FCdata+"日";
+		       console.log($('h2').text().substring(6,8)+FCdata+"日");
+	               if(addEvent.day==null){
+	                     addEvent.day="";
+ 	               }
+		       var startH =$('#startH option:selected').text();
+		       var startM =$('#startM option:selected').text();
+	               addEvent.start =startH+":"+startM;
+			//console.log("時間は"+$('#startH option:selected').val());
+	               if(addEvent.start==null){
+	                      addEvent.start="";
+	               }
+		       var endH =$('#endH option:selected').text();
+		       var endM =$('#endM option:selected').text();
+	               addEvent.end = endH+":"+endM;
+	               if(addEvent.end==null){
+	                     addEvent.end="";
+	               }
+	               addEvent.color =$('input[name="color"]:checked').val();
+			console.log("色は"+$('input[name="color"]:checked').val());
+	               if(addEvent.color==null){
+	                     addEvent.color="";
+	               }
+	               addEvent.allDay = false;
+	               var str = JSON.stringify(addEvent);
+	               var mc =localStorage.getItem("memocount");
+	               if(!mc){
+	                   mc =1;
+	               } else {
+	                   mc++;
+	               }
+	               localStorage.setItem("memocount",mc);
+	               var Memo = "メモ"+mc;
+	               localStorage.setItem(Memo,str);
+	                    alert("入力しました");
+                    } else {
+                            alert("キャンセルしました");
+	            }
+		    $(this).dialog('close');
+
+		    Nevent = new Object();
+    		    Nevent.title= $('#title').val();
+		   // alert($('#title').val());
+		    if(FCdata.length==3){
+	               FCdata=FCdata.substring(0,2);
+	            }else{
+	               FCdata=FCdata.substring(0,1);
+	            }
+    		    Nevent.start= new Date(2015,$('h2').text().substring(6,7)-1,FCdata,startH,startM);
+			//alert($('h2').text().substring(6,7)+"月"+FCdata+"日"+startH+"時"+startM+"分");
+		    Nevent.end= new Date(2015,$('h2').text().substring(6,7)-1,FCdata,endH,endM);
+			//alert($('h2').text().substring(6,7)+"月"+FCdata+"日"+endH+"時"+endM+"分");
+		    Nevent.color= $('input[name="color"]:checked').val();
+			//alert("色は"+$('input[name="color"]:checked').val());
+		    Nevent.allDay=false;
+    		  
+		    $('#calendar').fullCalendar('renderEvent', Nevent,true);
+
+		    $('#title').val('');
+		　　//$('input[name="color"]:checked').val('');
+		    $('input[name="color"]').val(['not']);
+		    $('#startH option:selected').val('0');
+		    $('#startM option:selected').val('0');
+		    $('#endH option:selected').val('0');
+		    $('#endM option:selected').val('0');
+		    FC.css('background-color','white');
+		  },
+		  "キャンセル":function() {
+		        $(this).dialog('close');
+			FC.css('background-color','white');
+			$('#title').val('');
+			$('input[name="color"]').val(['not']);
+			$('#startH option:selected').val('0');
+			$('#startM option:selected').val('0');
+			$('#endH option:selected').val('0');
+			$('#endM option:selected').val('0');
+			console.log("色は"+$('input[name="color"]:checked').val());
+		  }
+	       },  
+	   });
+});
+  
+   function initialize(){
+	var ac = localStorage.getItem("accesscount");
+	if(!ac){
+	   ac =1;
+	} else {
+	   ac++;
+	}
+	localStorage.setItem("accesscount",ac);
+	
+	var username;
+	var date = new Date();
+	var y = date.getFullYear();
+	var m = date.getMonth()+1;
+	var d = date.getDate();
+		   
+	if(localStorage.getItem("username")==null){
+	   alert("初めてのアクセスですね！");
+	   username = prompt("名前を入力してください");
+           while(username==null || username==""){
+	     alert("名前が入力されてません!");
+	     username = prompt("名前を入力してください");
+	   };
+	   userbirth = prompt("誕生日を入力してください:○月△日のように(数字は半角で)","月日");
+           while(userbirth==null || userbirth==""){
+              alert("入力されてません");
+	      userbirth = prompt("誕生日を入力してください:○月△日のように(数字は半角で)","月日");
+	   };
+	   localStorage.setItem("username",username);
+	   localStorage.setItem("userbirth",userbirth);
+	}else {
+	   Uname = localStorage.getItem("username");
+	   alert("こんにちは、"+Uname+"さん今回で"+ac+"回目のアクセスですね");
+	  // alert("今日"+y+"年"+m+"月"+d+"日は"+(eventcounter+addeventcounter)+"件の予定があります");
+	}
+   }
+
+   function clearStorage(){
+        clear = prompt("データが全て消えますがよろしいですか? \n YesかNoを入力してください");
+	while(clear==null || clear==""){
+	     clear=prompt("YesかNoを入力してください!");
+	};
+	if(clear=="Yes"){
+	  // localStorage.clear();
+	   alert("データを消去しました");
+	} else {
+	   alert("キャンセルしました");
+	}
+	
+   }
+   function clearPrev(){
+        clearP = prompt("一つ前のデータが全て消えますがよろしいですか? \n YesかNoを入力してください");
+	while(clearP==null || clearP==""){
+	     clearP=prompt("YesかNoを入力してください!");
+	};
+	if(clearP=="Yes"){
+	  // localStorage.clear();
+	  var mc = localStorage.getItem("memocount");
+	  localStorage.removeItem("メモ"+mc);
+	  alert("一つ前のデータを消去しました");
+	  if(mc<=0){
+	     mc=0;
+	  }else{
+	     mc--;
+	  }
+	  localStorage.setItem("memocount",mc);
+	} else {
+	   alert("キャンセルしました");
+	}
+	
+   }
+   
+   function memoEvent(){
+      var memoloop = localStorage.getItem("memocount");
+	for(var i=memoloop;i>0;i--){
+	   var mm = "メモ"+i;
+	   var find = localStorage.getItem(mm);
+	   var addEvent = JSON.parse(find);
+	   title = addEvent.title;
+	   day = addEvent.day;
+	   start = addEvent.start;
+	   end = addEvent.end;
+	   color = addEvent.color;
+	   console.log("色は"+color);
+	  // document.write("<table id="+mm+">"+
+	  document.write("<thead>"+
+	 //  "<thead>"+
+           "<tr><th>"+i+":"+title+"</th></tr>"+
+           "</thead>"+
+           "<tbody>"+
+           "<tr><td>"+day+"</td><td>"+start+"</td><td>~</td><td>"+end+"</td></tr>"+
+          // "</tbody>"+
+	   "</tbody>");
+	  //"</table>");
+	  // $('table').css('color',color);
+	}
+	   
+      
+   }
+/*
+   function memoEvent(){
+      var memoloop = localStorage.getItem("memocount");
+	for(var i=memoloop;i>0;i--){
+	   var mm = "メモ"+i;
+	   var find = localStorage.getItem(mm);
+	   var addEvent = JSON.parse(find);
+	   title = addEvent.title;
+	   day = addEvent.day;
+	   start = addEvent.start;
+	   end = addEvent.end;
+	   color = addEvent.color;
+	   console.log("色は"+color);
+	   document.write("<table id="+mm+">"+
+	   "<thead>"+
+           "<tr><th>"+title+"</th></tr>"+
+           "</thead>"+
+           "<tbody>"+
+           "<tr><td>"+day+"</td><td>"+start+"</td><td>~</td><td>"+end+"</td></tr>"+
+           "</tbody>"+
+	   "</table>");
+	  // $('table').css('color',color);
+	 // var tag = document.getElementById("mm");
+	 // tag.style.color='red';
+	
+	  // document.write("<p>"+title+"</p> <br>");
+	}
+	   
+      
+   }*/
+
+   //新たにイベントを追加する
+   function setEvent(){
+	var addEvent = new Object;
+	addEvent.title = prompt("タイトルを入力してください.");
+     if(addEvent.title==""){
+	  while(addEvent.title==""){
+	     alert("タイトルが入力されてません!");
+	     addEvent.title = prompt("タイトルを入力してください");
+	   };
+     } 
+     if(addEvent.title!=null){
+	addEvent.day = prompt("次は日付を入力してください:○月△日のように(数字は半角で)","月日");
+	if(addEvent.day==null){
+	   addEvent.day="";
+	}
+	addEvent.start = prompt("次は開始時刻を入力してください:例)12:05など",":");
+	if(addEvent.start==null){
+	   addEvent.start="";
+	}
+	addEvent.end = prompt("次は終了時刻を入力してください:例)9:30など",":");
+	if(addEvent.end==null){
+	   addEvent.end="";
+	}
+	addEvent.color = prompt("色も指定出来ます:black,redなど");
+	if(addEvent.color==null){
+	   addEvent.color="";
+	}
+	addEvent.allDay = false;
+	var str = JSON.stringify(addEvent);
+	var mc =localStorage.getItem("memocount");
+	if(!mc){
+	   mc =1;
+	} else {
+	   mc++;
+	}
+	localStorage.setItem("memocount",mc);
+	var Memo = "メモ"+mc;
+	localStorage.setItem(Memo,str);
+	alert("入力しました");
+     } else {
+        alert("キャンセルしました");
+     }
+     
+   }
+   
+</script>
+
+</head>
+
+<body>
+<div class="btn-group">
+<button class="btn" value="入力" onClick="setEvent()">入力</button>
+<button class="btn" value="全クリア" onClick="clearStorage('accesscount')">全クリア</button>
+<button class="btn" value="一クリア" onClick="clearPrev()">一つクリア</button>
+<button class="btn btn-info" onClick="location.href='calen.html'">全画面</button>
+<button class="btn btn-success" onClick="location.href='calen2.html'">イベント一覧</button>
+</div>
+<div class="row">
+  <div class="span12">
+<div id='calendar' style='font-size:20px; margin-left:55px;width:900px;height:300px;'></div>
+  </div>
+  <div class="span4"style="font-size:14px">
+  <table class="table table-striped">
+  <script type="text/javascript">
+   <!--
+   memoEvent();
+   // -->
+  </script>
+  </table> 
+  </div>
+</div>
+<div id="dialog-form" title="イベント入力">
+   <p class="eventInput">イベントを入力してください!</p>
+ 
+   <form>
+   <fieldset>
+      <label for="title">タイトル:</label>
+      <input type="text" name="title" id="title" class="text ui-widget-content ui-corner-all" value="" /> <br>
+      <label for="start">開始時: &nbsp; </label>
+         <select name="startH" id="startH">
+                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+		<option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
+		<option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
+		<option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+		<option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option>	
+         </select>
+	 時
+	 <select name="startM" id ="startM">
+                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+		<option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
+		<option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
+		<option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+		<option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option>
+	 	<option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option>
+		<option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option>
+		<option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option>
+		<option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option>
+		<option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option>
+		<option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option>
+		<option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">00</option>
+         </select>
+	 分
+      <br>
+      <label for="end">終了時: &nbsp; </label>
+	<select name="endH" id="endH">
+                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+		<option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
+		<option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
+		<option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+		<option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option>	
+         </select>
+	 時
+	 <select name="endM" id ="endM">
+                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+		<option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
+		<option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
+		<option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+		<option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option>
+	 	<option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option>
+		<option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option>
+		<option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option>
+		<option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option>
+		<option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option>
+		<option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option>
+		<option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">00</option>
+         </select>
+	 分
+      <br>
+      <label for="color">色:</label>
+       <input type="radio" name="color" id="color" value="not">無
+       <input type="radio" name="color" id="color" value="red">赤
+       <input type="radio" name="color" id="color" value="blue">青
+       <input type="radio" name="color" id="color" value="yellow">黄
+       <input type="radio" name="color" id="color" value="green">緑
+       <input type="radio" name="color" id="color" value="pink">桃
+       <input type="radio" name="color" id="color" value="black">黒 
+       <input type="radio" name="color" id="color" value="gold">金
+       <input type="radio" name="color" id="color" value="silver">銀
+     <br>
+   </fieldset>
+   </form>
+</div>
+</body>
+
+</html>
