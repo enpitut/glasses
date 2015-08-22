@@ -14,23 +14,11 @@
    <script type='text/javascript' src='fullcalendar.min.js'></script>
    <script type='text/javascript' src='gcal.js'></script>
    <script src="bootstrap/js/bootstrap.min.js"></script>
-   <script type='text/javascript'>
-   <!--
-  /*    var xmlfile = "plans.xml";
-      var parser = new DOMParser();
-      var xmldom;
-    
-      //members.xmlを読み込む
-      var xhttp = new XMLHttpRequest();
-      xhttp.open("GET", xmlfile, false);
-      xhttp.send(null);
-      var xmldoc = xhttp.responseText;
-      //この時点では単純なテキストデータ.DOMで使える形にパースします
-      xmldom = parser.parseFromString(xmldoc, "text/xml");
- */
+   <script>
 $(function() {
         var FCdata;
 	var FC;
+	var prevDate;
 	var date = new Date();
 	var y = date.getFullYear();
 	var m = date.getMonth()+1;
@@ -40,9 +28,9 @@ $(function() {
 
 	$('#calendar').fullCalendar({
 	   header: {
-		left: 'prev,next today',
+		left: 'prev, today',
 		center: 'title',
-		right: 'month,agendaWeek,agendaDay'
+		right: 'next'
 	   },
 	   width:800,
 	   height:350,
@@ -70,19 +58,21 @@ $(function() {
         dayClick: function(date, allDay, jsEvent, view) {
 	FCdata=$(this).text();
 	FC=$(this);
+	if(prevDate != null){
+	    prevDate.css('background-color','white');
+	    $(this).css('background-color','skyblue');
+	}else{
+	    $(this).css('background-color','skyblue');
+	}
+	prevDate=$(this);
+	
+	var clickYear = $.fullCalendar.formatDate(date, "Y");
 	var clickMonth = $.fullCalendar.formatDate(date, "M");
 	var clickDay = $.fullCalendar.formatDate(date,"d");
 	
 	var days = clickMonth+"月"+clickDay+"日のスケジュール";
 	$("#TimeTitle").text(days);
 	
-	/*$('#dialog-form').dialog("open");
-		       $(this).css('background-color','skyblue');
-		       $('input[name="color"]').val(['not']);
-		$('#startH option:selected').val('0');
-		$('#startM option:selected').val('0');
-		$('#endH option:selected').val('0');
-		$('#endM option:selected').val('0');*/
 	},
         columnFormat: {
               month: 'ddd',
@@ -159,16 +149,40 @@ $(function() {
 	$('#calendar').fullCalendar('addEventSource',Addevents);
 	*/
 	
+	//スケジュール追加ボタンクリック時
+	$("#TaskButton").click(function(){
+	    $('#task-input-dialog-form').dialog("open");
+	});
+	
+	//タスク追加ボタンクリック時
+	$("#scheduleButton").click(function(){
+	    $('#schedule-input-dialog-form').dialog("open");
+	});
+	
+	//スケジュールクリック時
+	$(".schedule").click(function(){
+	    var schedule_id=$(this).children().attr("id");
+	    $("#schedule_detail_title").val($("#"+schedule_id).text());
+	    $('#schedule-detail-dialog-form').dialog("open");
+	});
+	
+	//タスククリック時
+	$(".task").click(function(){
+	    var task_id=$(this).children().attr("id");
+	    $("#task_detail_title").val($("#"+task_id).text());
+	    $('#task-detail-dialog-form').dialog("open");
+	});
+	
 	//ダイアログメソッド
-	$('#dialog-form').dialog({
+	$('#task-input-dialog-form').dialog({
                autoOpen:false,
 	       width:500,
-	       show:'explode',
-	       hide:'explode',
+	       show:'blind',
+	       hide:'blind',
 	       modal:true,
 	       buttons:{
 	         "入力":function() {
-		       var addEvent = new Object;
+		       /*var addEvent = new Object;
 		      // alert($('#title').val());
 	               addEvent.title = $('#title').val();
                     if(addEvent.title!=""){
@@ -242,11 +256,12 @@ $(function() {
 		    $('#startM option:selected').val('0');
 		    $('#endH option:selected').val('0');
 		    $('#endM option:selected').val('0');
-		    FC.css('background-color','white');
+		    FC.css('background-color','white');*/
+		    $(this).dialog('close');
 		  },
 		  "キャンセル":function() {
 		        $(this).dialog('close');
-			FC.css('background-color','white');
+			/*FC.css('background-color','white');
 			$('#title').val('');
 			$('input[name="color"]').val(['not']);
 			$('#startH option:selected').val('0');
@@ -254,86 +269,76 @@ $(function() {
 			$('#endH option:selected').val('0');
 			$('#endM option:selected').val('0');
 			console.log("色は"+$('input[name="color"]:checked').val());
-		  }
+		  */}
 	       },  
 	   });
+	$('#schedule-input-dialog-form').dialog({
+               autoOpen:false,
+	       width:500,
+	       show:'blind',
+	       hide:'blind',
+	       modal:true,
+	       buttons:{
+	         "入力":function() {
+		    $(this).dialog('close');
+		  },
+		  "キャンセル":function() {
+		        $(this).dialog('close');
+		  }
+	       },  
+	});
+	$('#schedule-detail-dialog-form').dialog({
+               autoOpen:false,
+	       width:500,
+	       show:'blind',
+	       hide:'blind',
+	       modal:true,
+	       buttons:{
+	         "更新":function() {
+		    // 更新時の挙動
+		    
+		    $("#schedule_detail_title").val($("#schedule_name").text());
+		    alert("更新されました");
+		    $(this).dialog('close');
+		  },
+		  "キャンセル":function() {
+		        $(this).dialog('close');
+		  }
+	       },  
+	});
+	$('#task-detail-dialog-form').dialog({
+               autoOpen:false,
+	       width:500,
+	       show:'blind',
+	       hide:'blind',
+	       modal:true,
+	       buttons:{
+	         "更新":function() {
+		    // 更新時の挙動
+		    //
+		    $("#task_detail_title").val($("#task_name").text());
+		    alert("更新されました");
+		    $(this).dialog('close');
+		  },
+		  "キャンセル":function() {
+		        $(this).dialog('close');
+		  }
+	       },  
+	});
 });
-  
-   function initialize(){
-	/*var ac = localStorage.getItem("accesscount");
-	if(!ac){
-	   ac =1;
-	} else {
-	   ac++;
-	}
-	localStorage.setItem("accesscount",ac);
-	
-	var username;
-	var date = new Date();
-	var y = date.getFullYear();
-	var m = date.getMonth()+1;
-	var d = date.getDate();
-		   
-	if(localStorage.getItem("username")==null){
-	   alert("初めてのアクセスですね！");
-	   username = prompt("名前を入力してください");
-           while(username==null || username==""){
-	     alert("名前が入力されてません!");
-	     username = prompt("名前を入力してください");
-	   };
-	   userbirth = prompt("誕生日を入力してください:○月△日のように(数字は半角で)","月日");
-           while(userbirth==null || userbirth==""){
-              alert("入力されてません");
-	      userbirth = prompt("誕生日を入力してください:○月△日のように(数字は半角で)","月日");
-	   };
-	   localStorage.setItem("username",username);
-	   localStorage.setItem("userbirth",userbirth);
-	}else {
-	   Uname = localStorage.getItem("username");
-	   alert("こんにちは、"+Uname+"さん今回で"+ac+"回目のアクセスですね");
-	  // alert("今日"+y+"年"+m+"月"+d+"日は"+(eventcounter+addeventcounter)+"件の予定があります");
-	}*/
-   }
-
-   
-   
-   function memoEvent(){
-      /*var memoloop = localStorage.getItem("memocount");
-	for(var i=memoloop;i>0;i--){
-	   var mm = "メモ"+i;
-	   var find = localStorage.getItem(mm);
-	   var addEvent = JSON.parse(find);
-	   title = addEvent.title;
-	   day = addEvent.day;
-	   start = addEvent.start;
-	   end = addEvent.end;
-	   color = addEvent.color;
-	   console.log("色は"+color);
-	  // document.write("<table id="+mm+">"+
-	  document.write("<thead>"+
-	 //  "<thead>"+
-           "<tr><th>"+i+":"+title+"</th></tr>"+
-           "</thead>"+
-           "<tbody>"+
-           "<tr><td>"+day+"</td><td>"+start+"</td><td>~</td><td>"+end+"</td></tr>"+
-          // "</tbody>"+
-	   "</tbody>");
-	  //"</table>");
-	  // $('table').css('color',color);
-	}*/
-	   
-      
-   }
-
+    //スケジュールテーブル作成
     function memoEvent2(){
 	for(var i=0;i<25;i++){
-	    document.write("<tr><th style=\"width:10px;text-align:right;background-color:white;\" \>"+i+":00</th><td> </td></tr>");
+	    document.write("<tr><th class=\"schedule_table\" \>"+i+":00</th><td> </td></tr>");
 	}
     }
     function memoEvent3(){
-	for(var i=0;i<25;i++){
-	    document.write("<tr><th style=\"width:150px;text-align:right;background-color:white;\" \></th><td> </td></tr>");
-	}
+	/*for(var i=0;i<10;i++){
+	    document.write("<tr><th class=\"task_table\" \></th><td> </td></tr>");
+	}*/
+	document.write("<tr><th class=\"task_table\" \>レポート</th><td style=\"text-align: center;\"> <input type=\"checkbox\" ></td></tr>");
+	document.write("<tr><th class=\"task_table\" \>市役所に行く</th><td style=\"text-align: center;\"> <input type=\"checkbox\" ></td></tr>");
+	document.write("<tr><th class=\"task_table\" \>学校に行く</th><td style=\"text-align: center;\"> <input type=\"checkbox\" ></td></tr>");
     }
     function memoEvent4(){
 	for(var i=0;i<25;i++){
@@ -345,11 +350,55 @@ $(function() {
 </head>
 <style>
 .fc-header-title {
-   
 }
 .fc-header {
     margin-bottom: -18px;
 }
+.schedule_table{
+    font-size: 15px;
+    width:9px;
+    height: 33px;
+    text-align:right;
+    background-color:white;
+}
+.task_table{
+    font-size: 25px;
+    width:200px;
+    height: 33px;
+    text-align:right;
+    background-color:white;
+}
+
+.box {
+            position: relative;
+            background:#0091ff;
+	    border: 2px solid #1707f5;
+	    border-radius:5px;
+            height: auto;
+            width: 300px;
+            margin-bottom: 20px;
+	    left:10px;
+	    font-size:20px;
+	    margin: 5px auto;
+	    padding: 5px;
+        }
+ 
+        .box:before,
+        .box:after {
+            content: '';
+            position: absolute;
+            display: block;
+        }           
+ 
+        .box.left:after {
+            top: 25px;
+            left: -25px;
+	    border-left-width:0;
+            border-top: 15px solid transparent;
+            border-right: 25px solid #0091ff;
+            border-bottom: 10px solid transparent;
+        }
+	
 </style>
 <body>
  <header>
@@ -365,11 +414,10 @@ $(function() {
 		    <table id="TutiLine" class="table table-striped">
 			<thead></thead>
 			<tbody>
-			    <script type="text/javascript">
-			    <!--
-			    memoEvent2();
-			    // -->
-			    </script>
+			    <div id="Notifi1"class="box left">クラスタ「研究室」より、3月9日のスケジュール「ゼミ」を自動生成しました。</div>
+			    <div id="Notifi2" class="box left">本日(8月22日)のスケジュールを自動調整しました。確認してください。</div>
+			    <div id="Notifi3" class="box left">吹き出しは、文字数で大きくなるように設定しているが、文字数が少ない場合、吹き出しのとんがりの位置が変になる</div>
+		
 			</tbody>
 		    </table>  
 		</div>  
@@ -377,29 +425,32 @@ $(function() {
 	</div>
 	<div class="col-md-8" id='calendar' style='font-size:18px; margin-left:55px;'></div> 
    </div>
-   <div class="span4"style="font-size:14px">
+   <div class="span4" style="font-size:14px">
        <div id="TimeTitle" style="text-align:center;font-size:large;height:30px"></div>
-       <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;">
+       <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;position:relative;">
           <table id="TaskLine" class="table" border="1" rules="cols">
 	     <thead></thead>
 	     <tbody>
-             <script type="text/javascript">
+		<script >
 	    <!--
 	    memoEvent2();
 	    // -->
 	    </script>
 	    </tbody>
 	  </table>
+	<div type="button" class="schedule btn btn-warning btn-lg " style="position:absolute; z-index:8;left:55px;top:135px; width:185px; border-color:black; color:white;">スケジュール：<div id="schedule1_name">講義</div> </div>
+	<div type="button" class="task btn btn-primary btn-lg" style="position:absolute; z-index:8;left:55px;top:285px; width:185px; border-color:black; color:white; ">タスク：<div id="task1_name">市役所に行く</div> </div>
+	<div type="button" class="task btn btn-primary btn-lg" style="position:absolute; z-index:8;left:55px;top:0px; width:185px; border-color:black; color:white; ">タスク：<div id="task2_name">学校に行く</div> </div>
        </div>
-       <div id="" style="text-align:center;font-size:large;">  
-          <button type="button" class="btn btn-primary btn-lg" style="margin-top:40px;height:70px;">スケジュール<br>追加ボタン</button>
+       <div id="" style="text-align:center;font-size:large;">
+          <button id="scheduleButton"　type="button" class="btn btn-warning btn-lg" style="margin-top:40px;height:70px;">スケジュール<br>追加ボタン</button>
        </div>
     </div>
   
   <div class="span4" style="font-size:14px">
     <div id="TaskTitle" style="text-align:center;font-size:large;height:30px">タスク一覧</div>
     <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;">
-	<table id="TimeLine" class="table table-striped">
+	<table id="TimeLine" class="table table-striped" border="1" rules="cols">
 	    <thead></thead>
 	    <tbody>
 	    <script type="text/javascript">
@@ -411,77 +462,131 @@ $(function() {
 	</table>  
     </div>
     <div id="" style="text-align:center;font-size:large;">
-       <button type="button" class="btn btn-primary btn-lg" style="margin-top:40px;height:70px;">タスク<br>追加ボタン</button>
+       <button id="TaskButton" type="button" class="btn btn-primary btn-lg" style="margin-top:40px;height:70px;">タスク<br>追加ボタン</button>
     </div>
   </div>
 
-<div id="dialog-form" title="イベント入力">
-   <p class="eventInput">イベントを入力してください!</p>
+<!-- 元のダイアログdivの改造：スケジュール入力ダイアログ -->
+<div id="schedule-input-dialog-form" title="スケジュール入力">
+   <p class="eventInput">スケジュールを入力してください!</p>
+	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
+ 
    <form>
    <fieldset>
-      <label for="title">タイトル:</label>
-      <input type="text" name="title" id="title" class="text ui-widget-content ui-corner-all" value="" /> <br>
-      <label for="start">開始時: &nbsp; </label>
-         <select name="startH" id="startH">
-                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
-		<option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
-		<option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
-		<option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
-		<option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option>	
-         </select>
-	 時
-	 <select name="startM" id ="startM">
-                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
-		<option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
-		<option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
-		<option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
-		<option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option>
-	 	<option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option>
-		<option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option>
-		<option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option>
-		<option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option>
-		<option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option>
-		<option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option>
-		<option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">00</option>
-         </select>
-	 分
+      <label for="schedule_title">スケジュール名:</label>
+      <input type="text" name="schedule_title" id="schedule_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
+
+      <label for="schedule_info">スケジュールの説明：</label>
+      <input type="text" name="schedule_info" id="schedule_info"><br>
+
+      <label for="schedule_start_time">開始日時: &nbsp; </label>	
+	<input type="datetime-local" name="schedule_start_time" id="schedule_start_time" />
+	<label for="schedule_end_time">終了日時: &nbsp; </label>	
+	<input type="datetime-local" name="schedule_end_time" id="schedule_end_time" /><br>
+
+      <label for="schedule_repeat">繰り返し設定</label>
+	<!-- 入力インターフェースの時点から悩み中 -->
       <br>
-      <label for="end">終了時: &nbsp; </label>
-	<select name="endH" id="endH">
-                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
-		<option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
-		<option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
-		<option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
-		<option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option>	
-         </select>
-	 時
-	 <select name="endM" id ="endM">
-                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
-		<option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
-		<option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
-		<option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
-		<option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option>
-	 	<option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option>
-		<option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option>
-		<option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option>
-		<option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option>
-		<option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option>
-		<option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option>
-		<option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">00</option>
-         </select>
-	 分
+
+      
+      <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
+	<!-- とりあえず後回し_(:3」∠)_ -->
+
+   </fieldset>
+   </form>
+</div>
+
+<!-- 元のダイアログdivの改造：タスク入力ダイアログ -->
+<div id="task-input-dialog-form" title="タスク入力">
+   <p class="eventInput">タスクを入力してください!</p>
+	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
+ 
+   <form>
+   <fieldset>
+      <label for="title">タスク名:</label>
+      <input type="text" name="task_title" id="task_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
+
+      <label for="task_info">タスクの説明：</label>
+      <input type="text" name="task_info" id="task_info"><br>
+
+      <label for="task_deadline">タスクの締切日時: &nbsp; </label>
+	
+	<input type="datetime-local" name="task_deadline" id="task_deadline" /><br>
+
+      <label for="priority">タスクの優先度</label>
+	<!-- とりあえず見栄え悪いけど，プルダウンで作りました． -->
+	<select name="priority" name="priority" />
+		<option value="5">★★★★★</option>
+		<option value="4">★★★★☆</option>
+		<option value="3">★★★☆☆</option>
+		<option value="2">★★☆☆☆</option>
+		<option value="1">★☆☆☆☆</option>
+	</select>
       <br>
-      <label for="color">色:</label>
-       <input type="radio" name="color" id="color" value="not">無
-       <input type="radio" name="color" id="color" value="red">赤
-       <input type="radio" name="color" id="color" value="blue">青
-       <input type="radio" name="color" id="color" value="yellow">黄
-       <input type="radio" name="color" id="color" value="green">緑
-       <input type="radio" name="color" id="color" value="pink">桃
-       <input type="radio" name="color" id="color" value="black">黒 
-       <input type="radio" name="color" id="color" value="gold">金
-       <input type="radio" name="color" id="color" value="silver">銀
-     <br>
+
+      <label for="cluster">タスクの帰属するクラスタ</label>
+	<!-- とりあえず後回し_(:3」∠)_ -->
+
+   </fieldset>
+   </form>
+</div>
+
+<!-- 元のダイアログdivの改造：スケジュール詳細ダイアログ -->
+<div id="schedule-detail-dialog-form" title="スケジュールの詳細">
+    <!-- <p class="eventInput">スケジュールを入力してください!</p> -->
+	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
+   <form>
+   <fieldset>
+      <label for="schedule_title">スケジュール名:</label>
+      <input type="text" name="schedule_title" id="schedule_detail_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
+
+      <label for="schedule_info">スケジュールの説明：</label>
+      <input type="text" name="scheDialog_info" id="schedule_detail_info"><br>
+
+      <label for="schedule_start_time">開始日時: &nbsp; </label>	
+	<input type="datetime-local" name="schedule_start_time" id="schedule_detail_start_time" />
+	<label for="schedule_end_time">終了日時: &nbsp; </label>	
+	<input type="datetime-local" name="schedule_end_time" id="schedule_detail_end_time" /><br>
+
+      <label for="schedule_repeat">繰り返し設定</label>
+	<!-- 入力インターフェースの時点から悩み中 -->
+      <br>
+      <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
+	<!-- とりあえず後回し_(:3」∠)_ -->
+   </fieldset>
+   </form>
+</div>
+
+<!-- 元のダイアログdivの改造：タスク詳細ダイアログ -->
+<div id="task-detail-dialog-form" title="タスク詳細">
+   <!-- <p class="eventInput">タスクを入力してください!</p>  -->
+	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
+   <form>
+   <fieldset>
+      <label for="title">タスク名:</label>
+      <input type="text" name="task_title" id="task_detail_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
+
+      <label for="task_info">タスクの説明：</label>
+      <input type="text" name="task_info" id="task_detail_info"><br>
+
+      <label for="task_deadline">タスクの締切日時: &nbsp; </label>
+	
+	<input type="datetime-local" name="task_deadline" id="task_detail_deadline" /><br>
+
+      <label for="priority">タスクの優先度</label>
+	<!-- とりあえず見栄え悪いけど，プルダウンで作りました． -->
+	<select name="priority" name="priority" />
+		<option value="5">★★★★★</option>
+		<option value="4">★★★★☆</option>
+		<option value="3">★★★☆☆</option>
+		<option value="2">★★☆☆☆</option>
+		<option value="1">★☆☆☆☆</option>
+	</select>
+      <br>
+
+      <label for="cluster">タスクの帰属するクラスタ</label>
+	<!-- とりあえず後回し_(:3」∠)_ -->
+
    </fieldset>
    </form>
 </div>
