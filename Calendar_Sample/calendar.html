@@ -31,6 +31,12 @@
 $(function() {
         var FCdata;
 	var FC;
+	var date = new Date();
+	var y = date.getFullYear();
+	var m = date.getMonth()+1;
+	var d = date.getDate();
+	var days = m+"月"+d+"日のスケジュール";
+	$("#TimeTitle").text(days);
 
 	$('#calendar').fullCalendar({
 	   header: {
@@ -38,13 +44,15 @@ $(function() {
 		center: 'title',
 		right: 'month,agendaWeek,agendaDay'
 	   },
+	   width:800,
+	   height:350,
 	eventSources:[
 	    {
 	       events: [
   		　  {
 	        　　  title:'5日目',
-	        　　  start: new Date(2015,3,13,10,00),
-		      end: new Date(2015,3,13,15,00),
+	        　　  start: new Date(2015,8,13,10,0),
+		      end: new Date(2015,8,13,15,0),
                       description:'This is a cool event',
 		      allDay:false
 	    　　　  }
@@ -59,17 +67,22 @@ $(function() {
               day: 'yyyy年 M月 d日 dddd'
            },
 		
-        dayClick: function() {
+        dayClick: function(date, allDay, jsEvent, view) {
 	FCdata=$(this).text();
 	FC=$(this);
+	var clickMonth = $.fullCalendar.formatDate(date, "M");
+	var clickDay = $.fullCalendar.formatDate(date,"d");
 	
-	$('#dialog-form').dialog("open");
+	var days = clickMonth+"月"+clickDay+"日のスケジュール";
+	$("#TimeTitle").text(days);
+	
+	/*$('#dialog-form').dialog("open");
 		       $(this).css('background-color','skyblue');
 		       $('input[name="color"]').val(['not']);
 		$('#startH option:selected').val('0');
 		$('#startM option:selected').val('0');
 		$('#endH option:selected').val('0');
-		$('#endM option:selected').val('0');
+		$('#endM option:selected').val('0');*/
 	},
         columnFormat: {
               month: 'ddd',
@@ -88,83 +101,9 @@ $(function() {
                day: '日'
            },		
 	});
-/*
-	//plan.xmlから情報を取得しイベントメソッドに入力しカレンダーに出力させる
-	plans = xmldom.getElementsByTagName("plan");
-	var events = new Array();
-	for(var i=0;i<plans.length;i++){
-
-	if(plans[i].getElementsByTagName("year")[0].textContent != null){
-		      var Year = plans[i].getElementsByTagName("year")[0].textContent;
-	           }
-		   if(plans[i].getElementsByTagName("month")[0].textContent != null){
-		      var Month = plans[i].getElementsByTagName("month")[0].textContent-1;
-	           }
-		   if(plans[i].getElementsByTagName("day")[0].textContent != null){
-		      var Day = plans[i].getElementsByTagName("day")[0].textContent;
-	           }
-		   if(plans[i].getElementsByTagName("title")[0].textContent != null){
-		      var Title = plans[i].getElementsByTagName("title")[0].textContent;
-	           }
-		   if(plans[i].getElementsByTagName("start")[0].textContent != null){
-		      var Start = plans[i].getElementsByTagName("start")[0].textContent;
-	           }
-		   if(plans[i].getElementsByTagName("end")[0].textContent != null){
-		      var End = plans[i].getElementsByTagName("end")[0].textContent;
-	           }
-		   if(plans[i].getElementsByTagName("start")[1].textContent != null){
-		      var Startm = plans[i].getElementsByTagName("start")[1].textContent;
-	           }
-		   if(plans[i].getElementsByTagName("end")[1].textContent != null){
-		      var Endm = plans[i].getElementsByTagName("end")[1].textContent;
-		   }
-		   if(plans[i].getElementsByTagName("url")[0].textContent != null){
-		      var Url = plans[i].getElementsByTagName("url")[0].textContent;
-	           }
-	event = new Object();
-	event.title = Title;
-	event.start = new Date(Year,Month,Day,Start,Startm);
-	event.end = new Date(Year,Month,Day,End,Endm);
-	event.url = Url;
-	event.allDay = false;
-	events.push(event);
-	}
-	$('#calendar').fullCalendar('addEventSource',events); 
-*/	
-	//ユーザから誕生日の情報をwebストレージで取り出しカレンダーに設定する
-	/* var birthday = localStorage.getItem("userbirth");
-		   if(birthday.substring(1,2)=="月"){
-			birthM = birthday.substring(0,1)-1;
-			   //if(birthday.substring(3,3)=="日"){
-			   if(birthday.length==4){
-				birthD = birthday.substring(2,3);
-			   } else {
-				birthD = birthday.substring(2,4);
-			   }
-		   } 
-		   if(birthday.substring(1,2)!="月") {
-		        birthM = birthday.substring(0,2)-1;
-			   //if(birthday.substring(4,4)=="日"){
-			   if(birthday.length==5){
-				birthD = birthday.substring(3,4);
-			   } else {
-				birthD = birthday.substring(3,5); 
-			   }
-		   }
-		 var births = new Array();
-		 birth = new Object;
-		 birth.title = "誕生日";
-		 birth.start = new Date(2013,birthM,birthD,9,30);
-		 birth.end = new Date(2013,birthM,birthD,10,30);
-		 birth.allDay = true;
-		 birth.color = "pink";
-		 birth.textColor = "red";
-		 births.push(birth);
-	$('#calendar').fullCalendar('addEventSource',births);
-*/
 	
 	//ユーザから入力された情報を元に新たにイベントを出力する
-	var Addevents = new Array();
+	/*var Addevents = new Array();
 	var memoloop = localStorage.getItem("memocount");
 	for(var i=0;i<memoloop;i++){
 	   var mm = "メモ"+(i+1);
@@ -198,8 +137,7 @@ $(function() {
                     addstartH = start.substring(0,2);
                     addstartM = start.substring(3,5);
                 }
-	
-
+    
                 var end = addEvent.end;
                 if(end.substring(1,2)==":"){
                     addendH = end.substring(0,1);
@@ -219,7 +157,8 @@ $(function() {
 		Addevents.push(Addevent);
 	}		
 	$('#calendar').fullCalendar('addEventSource',Addevents);
-
+	*/
+	
 	//ダイアログメソッド
 	$('#dialog-form').dialog({
                autoOpen:false,
@@ -321,7 +260,7 @@ $(function() {
 });
   
    function initialize(){
-	var ac = localStorage.getItem("accesscount");
+	/*var ac = localStorage.getItem("accesscount");
 	if(!ac){
 	   ac =1;
 	} else {
@@ -353,46 +292,13 @@ $(function() {
 	   Uname = localStorage.getItem("username");
 	   alert("こんにちは、"+Uname+"さん今回で"+ac+"回目のアクセスですね");
 	  // alert("今日"+y+"年"+m+"月"+d+"日は"+(eventcounter+addeventcounter)+"件の予定があります");
-	}
+	}*/
    }
 
-   function clearStorage(){
-        clear = prompt("データが全て消えますがよろしいですか? \n YesかNoを入力してください");
-	while(clear==null || clear==""){
-	     clear=prompt("YesかNoを入力してください!");
-	};
-	if(clear=="Yes"){
-	  // localStorage.clear();
-	   alert("データを消去しました");
-	} else {
-	   alert("キャンセルしました");
-	}
-	
-   }
-   function clearPrev(){
-        clearP = prompt("一つ前のデータが全て消えますがよろしいですか? \n YesかNoを入力してください");
-	while(clearP==null || clearP==""){
-	     clearP=prompt("YesかNoを入力してください!");
-	};
-	if(clearP=="Yes"){
-	  // localStorage.clear();
-	  var mc = localStorage.getItem("memocount");
-	  localStorage.removeItem("メモ"+mc);
-	  alert("一つ前のデータを消去しました");
-	  if(mc<=0){
-	     mc=0;
-	  }else{
-	     mc--;
-	  }
-	  localStorage.setItem("memocount",mc);
-	} else {
-	   alert("キャンセルしました");
-	}
-	
-   }
+   
    
    function memoEvent(){
-      var memoloop = localStorage.getItem("memocount");
+      /*var memoloop = localStorage.getItem("memocount");
 	for(var i=memoloop;i>0;i--){
 	   var mm = "メモ"+i;
 	   var find = localStorage.getItem(mm);
@@ -414,115 +320,103 @@ $(function() {
 	   "</tbody>");
 	  //"</table>");
 	  // $('table').css('color',color);
-	}
+	}*/
 	   
       
    }
-/*
-   function memoEvent(){
-      var memoloop = localStorage.getItem("memocount");
-	for(var i=memoloop;i>0;i--){
-	   var mm = "メモ"+i;
-	   var find = localStorage.getItem(mm);
-	   var addEvent = JSON.parse(find);
-	   title = addEvent.title;
-	   day = addEvent.day;
-	   start = addEvent.start;
-	   end = addEvent.end;
-	   color = addEvent.color;
-	   console.log("色は"+color);
-	   document.write("<table id="+mm+">"+
-	   "<thead>"+
-           "<tr><th>"+title+"</th></tr>"+
-           "</thead>"+
-           "<tbody>"+
-           "<tr><td>"+day+"</td><td>"+start+"</td><td>~</td><td>"+end+"</td></tr>"+
-           "</tbody>"+
-	   "</table>");
-	  // $('table').css('color',color);
-	 // var tag = document.getElementById("mm");
-	 // tag.style.color='red';
-	
-	  // document.write("<p>"+title+"</p> <br>");
-	}
-	   
-      
-   }*/
 
-   //新たにイベントを追加する
-   function setEvent(){
-	var addEvent = new Object;
-	addEvent.title = prompt("タイトルを入力してください.");
-     if(addEvent.title==""){
-	  while(addEvent.title==""){
-	     alert("タイトルが入力されてません!");
-	     addEvent.title = prompt("タイトルを入力してください");
-	   };
-     } 
-     if(addEvent.title!=null){
-	addEvent.day = prompt("次は日付を入力してください:○月△日のように(数字は半角で)","月日");
-	if(addEvent.day==null){
-	   addEvent.day="";
+    function memoEvent2(){
+	for(var i=0;i<25;i++){
+	    document.write("<tr><th style=\"width:10px;text-align:right;background-color:white;\" \>"+i+":00</th><td> </td></tr>");
 	}
-	addEvent.start = prompt("次は開始時刻を入力してください:例)12:05など",":");
-	if(addEvent.start==null){
-	   addEvent.start="";
+    }
+    function memoEvent3(){
+	for(var i=0;i<25;i++){
+	    document.write("<tr><th style=\"width:150px;text-align:right;background-color:white;\" \></th><td> </td></tr>");
 	}
-	addEvent.end = prompt("次は終了時刻を入力してください:例)9:30など",":");
-	if(addEvent.end==null){
-	   addEvent.end="";
+    }
+    function memoEvent4(){
+	for(var i=0;i<25;i++){
+	    document.write("<tr><th style=\"width:10px;text-align:right;background-color:white;\" \>"+i+":00</th><td> </td></tr>");
 	}
-	addEvent.color = prompt("色も指定出来ます:black,redなど");
-	if(addEvent.color==null){
-	   addEvent.color="";
-	}
-	addEvent.allDay = false;
-	var str = JSON.stringify(addEvent);
-	var mc =localStorage.getItem("memocount");
-	if(!mc){
-	   mc =1;
-	} else {
-	   mc++;
-	}
-	localStorage.setItem("memocount",mc);
-	var Memo = "メモ"+mc;
-	localStorage.setItem(Memo,str);
-	alert("入力しました");
-     } else {
-        alert("キャンセルしました");
-     }
-     
-   }
-   
+    }
+
 </script>
-
 </head>
-
+<style>
+.fc-header-title {
+   
+}
+.fc-header {
+    margin-bottom: -18px;
+}
+</style>
 <body>
-<div class="btn-group">
-<button class="btn" value="入力" onClick="setEvent()">入力</button>
-<button class="btn" value="全クリア" onClick="clearStorage('accesscount')">全クリア</button>
-<button class="btn" value="一クリア" onClick="clearPrev()">一つクリア</button>
-<button class="btn btn-info" onClick="location.href='calen.html'">全画面</button>
-<button class="btn btn-success" onClick="location.href='calen2.html'">イベント一覧</button>
-</div>
+ <header>
+    <a href="Calendar.html" onclick=""><img src="taskru_rogo_kakkokari.png" style="margin-left:50px;height:60px"></a>
+ </header>
 <div class="row">
-  <div class="span12">
-<div id='calendar' style='font-size:20px; margin-left:55px;width:900px;height:300px;'></div>
+    <div class="span9">
+        <div class="col-md-4" >
+	    <div class="row">
+		<img src="tundere.jpg" class="span10" style="margin-left:50px;width:240px;">
+		<div id="Notification" style="text-align:center;font-size:large;height:30px">通知一覧</div>
+		<div id="scroll2" style="font-size:12px;height:220px;overflow-x:scroll;">
+		    <table id="TutiLine" class="table table-striped">
+			<thead></thead>
+			<tbody>
+			    <script type="text/javascript">
+			    <!--
+			    memoEvent2();
+			    // -->
+			    </script>
+			</tbody>
+		    </table>  
+		</div>  
+	    </div>   
+	</div>
+	<div class="col-md-8" id='calendar' style='font-size:18px; margin-left:55px;'></div> 
+   </div>
+   <div class="span4"style="font-size:14px">
+       <div id="TimeTitle" style="text-align:center;font-size:large;height:30px"></div>
+       <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;">
+          <table id="TaskLine" class="table" border="1" rules="cols">
+	     <thead></thead>
+	     <tbody>
+             <script type="text/javascript">
+	    <!--
+	    memoEvent2();
+	    // -->
+	    </script>
+	    </tbody>
+	  </table>
+       </div>
+       <div id="" style="text-align:center;font-size:large;">  
+          <button type="button" class="btn btn-primary btn-lg" style="margin-top:40px;height:70px;">スケジュール<br>追加ボタン</button>
+       </div>
+    </div>
+  
+  <div class="span4" style="font-size:14px">
+    <div id="TaskTitle" style="text-align:center;font-size:large;height:30px">タスク一覧</div>
+    <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;">
+	<table id="TimeLine" class="table table-striped">
+	    <thead></thead>
+	    <tbody>
+	    <script type="text/javascript">
+	    <!--
+	    memoEvent3();
+	    // -->
+	    </script>
+	    </tbody>
+	</table>  
+    </div>
+    <div id="" style="text-align:center;font-size:large;">
+       <button type="button" class="btn btn-primary btn-lg" style="margin-top:40px;height:70px;">タスク<br>追加ボタン</button>
+    </div>
   </div>
-  <div class="span4"style="font-size:14px">
-  <table class="table table-striped">
-  <script type="text/javascript">
-   <!--
-   memoEvent();
-   // -->
-  </script>
-  </table> 
-  </div>
-</div>
+
 <div id="dialog-form" title="イベント入力">
    <p class="eventInput">イベントを入力してください!</p>
- 
    <form>
    <fieldset>
       <label for="title">タイトル:</label>
@@ -591,6 +485,6 @@ $(function() {
    </fieldset>
    </form>
 </div>
-</body>
 
+</body>
 </html>
