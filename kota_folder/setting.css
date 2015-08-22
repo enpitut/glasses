@@ -16,11 +16,17 @@ section h3 {
     margin: 0px;
 }
 
+.cluster {
+    padding: 0px;
+}
+
 .cluster li {
-    margin-top: 0px;
-    margin-left: -30px;
-    padding: 10px;
     list-style: none;
+}
+
+.cluster li .cluster_bar {
+    margin-top: 0px;
+    padding: 10px;
     border-bottom: 1px #999999 solid;
     background: #eeeeee;
     background: -moz-linear-gradient(top,  #eeeeee 0%, #cccccc 100%);
@@ -104,4 +110,19 @@ button.minus_button {
     text-shadow:
             1px -1px 0px rgba(000,000,000,0.4),
             0px 1px 0px rgba(255,255,255,0.3);
+}
+
+.cluster_details {
+    padding: 0px 10px;
+    border: 1px #999999 solid;
+    border-top: none;
+    display: none;
+}
+
+.cluster_details h4{
+    margin: 0px;
+}
+
+.cluster_details li {
+    list-style: disc;
 }

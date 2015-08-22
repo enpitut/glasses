@@ -13,109 +13,12 @@ and open the template in the editor.
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
         <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-        <script type="text/javascript">
-            $(function() {
-                // タブを設定
-                $('#tab').tabs();
-                
-                // ダイアログの共通設定
-                var dialog_option = {
-                    autoOpen: false,
-                    modal: true,
-                    show: 'blind',
-                    hide: 'blind'
-                };
-                
-                var button_account = {
-                    buttons: [
-                        {
-                            text: '登録',
-                            class: 'btn_positive',
-                            click: function() {
-                            }
-                        },
-                        {
-                            text: 'キャンセル',
-                            class: 'btn_delete',
-                            click: function() {
-                                $(this).dialog('close');
-                            }
-                        }
-                    ]
-                };
-                
-                var button_cluster = {
-                    buttons: [
-                        {
-                            text: 'はい',
-                            class: 'btn_positive',
-                            click: function() {
-                            }
-                        },
-                        {
-                            text: 'キャンセル',
-                            class: 'btn_delete',
-                            click: function() {
-                                $(this).dialog('close');
-                            }
-                        }
-                    ]
-                };
-                
-                // アカウント情報変更用ダイアログを定義
-                $.extend(dialog_option, button_account);
-                $('#dialog_account').dialog(dialog_option);
-                $('#dialog_account').dialog('option', {title: 'アカウント名変更'});
-                
-                $('#dialog_pass').dialog(dialog_option);
-                $('#dialog_pass').dialog('option', {title: 'パスワード変更'});
-                
-                $('#dialog_mail').dialog(dialog_option);
-                $('#dialog_mail').dialog('option', {title: 'メールアドレス変更'});
-                
-                // クラスタ情報変更用ダイアログを定義
-                $.extend(dialog_option, button_cluster);
-                $('#dialog_cluster_invite').dialog(dialog_option);
-                $('#dialog_cluster_leave').dialog(dialog_option);
-                $('#dialog_cluster_join').dialog(dialog_option);
-                $('#dialog_cluster_refuse').dialog(dialog_option);
-                
-                // ダイアログ表示ボタンが押された際の処理
-                $('button[name="account"]').click(function() {
-                    $('#dialog_account').dialog('open');
-                });
-                $('button[name="pass"]').click(function() {
-                    $('#dialog_pass').dialog('open');
-                });
-                $('button[name="mail"]').click(function() {
-                    $('#dialog_mail').dialog('open');
-                });
-                
-                // クラスタ関連ボタンが押された際の処理
-                $('#cluster_joined').find('.plus_button').click(function() {
-                    $('#dialog_cluster_invite').dialog('open');
-                });
-                $('#cluster_joined').find('.minus_button').click(function() {
-                    $('#dialog_cluster_leave').dialog('open');
-                });
-                $('#cluster_invited').find('.plus_button').click(function() {
-                    $('#dialog_cluster_join').dialog('open');
-                });
-                $('#cluster_invited').find('.minus_button').click(function() {
-                    $('#dialog_cluster_refuse').dialog('open');
-                });
-                
-                // ユーザ情報変更フォームがサブミットされた際の処理
-                $('#form_account').submit(function() {
-                });
-                
-                // クラスタ情報変更フォームがサブミットされた際の処理
-                $('#form_cluster').submit(function() {
-                });
-            });
-        </script>
+        <script src="setting.js"></script>
     </head>
     <body>
+        <header>
+            <a href=""><img ></a>
+        </header>
         <article>
             <h1>設定画面</h1>
             <div id="tab">
@@ -182,17 +85,29 @@ and open the template in the editor.
                         <h3>所属クラスタ</h3>
                         <ul class="cluster">
                             <li>
-                                <span class="cluster_name">クラスタA</span>
-                                <div class="cluster_buttons">
-                                    <button class="plus_button">+</button>
-                                    <button class="minus_button">-</button>
+                                <div class="cluster_bar">
+                                    <span class="cluster_name">クラスタA</span>
+                                    <div class="cluster_buttons">
+                                        <button class="plus_button">+</button>
+                                        <button class="minus_button">-</button>
+                                    </div>
+                                </div>
+                                <div class="cluster_details">
+                                    <span>なんやかんやするクラスタです</span>
+                                    <h4>メンバー</h4>
+                                    <ul class="cluster_member">
+                                        <li>メンバー1</li>
+                                        <li>メンバー2</li>
+                                    </ul>
                                 </div>
                             </li>
                             <li>
-                                <span class="cluster_name">クラスタB</span>
-                                <div class="cluster_buttons">
-                                    <button class="plus_button">+</button>
-                                    <button class="minus_button">-</button>
+                                <div class="cluster_bar">
+                                    <span class="cluster_name">クラスタB</span>
+                                    <div class="cluster_buttons">
+                                        <button class="plus_button">+</button>
+                                        <button class="minus_button">-</button>
+                                    </div>
                                 </div>
                             </li>
                         </ul>
@@ -201,10 +116,12 @@ and open the template in the editor.
                         <h3>招待されているクラスタ</h3>
                         <ul class="cluster">
                             <li>
-                                <span class="cluster_name">クラスタC</span>
-                                <div class="cluster_buttons">
-                                    <button class="plus_button">+</button>
-                                    <button class="minus_button">-</button>
+                                <div class="cluster_bar">
+                                    <span class="cluster_name">クラスタC</span>
+                                    <div class="cluster_buttons">
+                                        <button class="plus_button">+</button>
+                                        <button class="minus_button">-</button>
+                                    </div>
                                 </div>
                             </li>
                         </ul>
