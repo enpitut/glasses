@@ -22,18 +22,48 @@ and open the template in the editor.
                 var dialog_option = {
                     autoOpen: false,
                     modal: true,
-                    show: 'drop',
-                    hide: 'drop',
-                    buttons: {
-                        "登録": function() {
+                    show: 'blind',
+                    hide: 'blind'
+                };
+                
+                var button_account = {
+                    buttons: [
+                        {
+                            text: '登録',
+                            class: 'btn_positive',
+                            click: function() {
+                            }
                         },
-                        "キャンセル": function() {
-                            $(this).dialog('close');
+                        {
+                            text: 'キャンセル',
+                            class: 'btn_delete',
+                            click: function() {
+                                $(this).dialog('close');
+                            }
                         }
-                    }
+                    ]
+                };
+                
+                var button_cluster = {
+                    buttons: [
+                        {
+                            text: 'はい',
+                            class: 'btn_positive',
+                            click: function() {
+                            }
+                        },
+                        {
+                            text: 'キャンセル',
+                            class: 'btn_delete',
+                            click: function() {
+                                $(this).dialog('close');
+                            }
+                        }
+                    ]
                 };
                 
                 // アカウント情報変更用ダイアログを定義
+                $.extend(dialog_option, button_account);
                 $('#dialog_account').dialog(dialog_option);
                 $('#dialog_account').dialog('option', {title: 'アカウント名変更'});
                 
@@ -44,7 +74,11 @@ and open the template in the editor.
                 $('#dialog_mail').dialog('option', {title: 'メールアドレス変更'});
                 
                 // クラスタ情報変更用ダイアログを定義
-                $('#dialog_cluster').dialog(dialog_option);
+                $.extend(dialog_option, button_cluster);
+                $('#dialog_cluster_invite').dialog(dialog_option);
+                $('#dialog_cluster_leave').dialog(dialog_option);
+                $('#dialog_cluster_join').dialog(dialog_option);
+                $('#dialog_cluster_refuse').dialog(dialog_option);
                 
                 // ダイアログ表示ボタンが押された際の処理
                 $('button[name="account"]').click(function() {
@@ -57,11 +91,18 @@ and open the template in the editor.
                     $('#dialog_mail').dialog('open');
                 });
                 
-                $('.plus_button').click(function() {
-                    $('#dialog_cluster').dialog('open');
-                })
-                $('.minus_button').click(function() {
-                    $('#dialog_cluster').dialog('open');
+                // クラスタ関連ボタンが押された際の処理
+                $('#cluster_joined').find('.plus_button').click(function() {
+                    $('#dialog_cluster_invite').dialog('open');
+                });
+                $('#cluster_joined').find('.minus_button').click(function() {
+                    $('#dialog_cluster_leave').dialog('open');
+                });
+                $('#cluster_invited').find('.plus_button').click(function() {
+                    $('#dialog_cluster_join').dialog('open');
+                });
+                $('#cluster_invited').find('.minus_button').click(function() {
+                    $('#dialog_cluster_refuse').dialog('open');
                 });
                 
                 // ユーザ情報変更フォームがサブミットされた際の処理
@@ -92,12 +133,12 @@ and open the template in the editor.
                         </li>
                         <li>
                             <p>パスワード</p>
-                            <p>*************</p>
+                            <span>*************</span>
                             <button type="button" name="pass" class="dialog_button">変更</button>
                         </li>
                         <li>
                             <p>メールアドレス</p>
-                            <p>hoge@gmail.com</p>
+                            <span>hoge@gmail.com</span>
                             <button type="button" name="mail" class="dialog_button">変更</button>
                         </li>
                     </ul>
@@ -137,36 +178,61 @@ and open the template in the editor.
                 
                 <article id="setting_cluster">
                     <h2>クラスタ設定</h2>
-                    <section id="cluster_list">
+                    <section id="cluster_joined">
                         <h3>所属クラスタ</h3>
                         <ul class="cluster">
                             <li>
                                 <span class="cluster_name">クラスタA</span>
-                                <button class="plus_button">+</button>
-                                <button class="minus_button">-</button>
+                                <div class="cluster_buttons">
+                                    <button class="plus_button">+</button>
+                                    <button class="minus_button">-</button>
+                                </div>
                             </li>
                             <li>
                                 <span class="cluster_name">クラスタB</span>
-                                <button class="plus_button">+</button>
-                                <button class="minus_button">-</button>
+                                <div class="cluster_buttons">
+                                    <button class="plus_button">+</button>
+                                    <button class="minus_button">-</button>
+                                </div>
                             </li>
                         </ul>
-                        <div id="dialog_cluster">
-                            <form id="form_cluster">
-                                クラスタ設定したで
-                            </form>
-                        </div>
                     </section>
                     <section id="cluster_invited">
                         <h3>招待されているクラスタ</h3>
                         <ul class="cluster">
                             <li>
                                 <span class="cluster_name">クラスタC</span>
-                                <button class="plus_button">+</button>
-                                <button class="minus_button">-</button>
+                                <div class="cluster_buttons">
+                                    <button class="plus_button">+</button>
+                                    <button class="minus_button">-</button>
+                                </div>
                             </li>
                         </ul>
                     </section>
+                    <div id="dialog_cluster_invite">
+                        <form id="form_cluster_invite">
+                            このクラスタに招待するユーザを選択してください
+                            <input type="text" name="invite_name">
+                        </form>
+                    </div>
+                    <div id="dialog_cluster_leave">
+                        <form id="form_cluster_leave">
+                            このクラスタから脱退します<br>
+                            よろしいですか？
+                        </form>
+                    </div>
+                    <div id="dialog_cluster_join">
+                        <form id="form_cluster_join">
+                            このクラスタに参加します<br>
+                            よろしいですか？
+                        </form>
+                    </div>
+                    <div id="dialog_cluster_refuse">
+                        <form id="form_cluster_refuse">
+                            このクラスタに参加しません<br>
+                            よろしいですか？
+                        </form>
+                    </div>
                 </article>
             </div>
         </article>
