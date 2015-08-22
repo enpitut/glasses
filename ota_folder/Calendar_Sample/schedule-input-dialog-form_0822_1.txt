@@ -1,0 +1,29 @@
+<!-- 元のダイアログdivの改造：スケジュール入力ダイアログ -->
+<div id="schedule-input-dialog-form" title="スケジュール入力">
+   <p class="eventInput">スケジュールを入力してください!</p>
+	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
+ 
+   <form>
+   <fieldset>
+      <label for="schedule_title">スケジュール名:</label>
+      <input type="text" name="schedule_title" id="schedule_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
+
+      <label for="schedule_info">スケジュールの説明：</label>
+      <input type="text" name="schedule_info" id="schedule_info"><br>
+
+      <label for="schedule_start_time">開始日時: &nbsp; </label>	
+	<input type="datetime-local" name="schedule_start_time" id="schedule_start_time" />
+	<label for="schedule_end_time">終了日時: &nbsp; </label>	
+	<input type="datetime-local" name="schedule_end_time" id="schedule_end_time" /><br>
+
+      <label for="schedule_repeat">繰り返し設定</label>
+	<!-- 入力インターフェースの時点から悩み中 -->
+      <br>
+
+      
+      <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
+	<!-- とりあえず後回し_(:3」∠)_ -->
+
+   </fieldset>
+   </form>
+</div>
