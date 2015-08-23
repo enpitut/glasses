@@ -1,0 +1,37 @@
+//タスク入力・編集ダイアログ用の優先度を表す星5個の入った配列．タスクを読み込むたびに書き換えてください．
+var prriority_array = ["★", "☆", "☆", "☆", "☆"];
+
+//タスクの優先度をいれる変数．1～5．タスクを読み込むたびに書き換えてください．
+var prriority_degree = 1;
+
+//クリックされた☆の番号（左からいくつ）を引数にとる．☆がクリックされたときに呼び出される．
+function changeStarNum(num){
+	changePrriorityArray(num);
+	drawPrriorityStars();
+}
+
+//prriority_arrayの中身を書き換えるのみの関数．引数は優先度．
+function changePrriorityArray(num){
+	for(var i=0; i<5; i++){
+		if(i <= num){
+			prriority_array[i] = "★";
+		}else{
+			prriority_array[i] = "☆";
+		}
+	}
+}
+
+//prriority_array（優先度の星5個）を書きだす関数．
+function drawPrriorityStars(){
+	var text;
+	for(var i=0; i<5; i++){
+		var tmp = "<font size='+2' color='#FFD700'><a href='javascript:void(0)' onclick='changeStarNum(" + i + "); return false;'>" + prriority_array[i] + "</a></font>";
+	
+		if(i==0){
+			text = tmp;
+		}else{
+			text = text + tmp;
+		}
+	}
+	document.getElementById("prriority_stars").innerHTML=text;
+}
