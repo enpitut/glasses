@@ -1,0 +1,18 @@
+//ユーザが所属しているクラスタ一覧がJSの配列に入って渡されることを想定して作った配列です．
+var cluster_array = ["研究室", "CS専攻", "サークル"];
+
+
+//cluster_arrayの中身を読み込んで<select>タグを作る関数．
+//クラスタ一覧が配列culuster_arrayに入っていると仮定して作った．
+function getClusters(){
+	var num = cluster_array.length; 
+	if(num == 0){
+		document.write("所属しているクラスタがありません。");
+	}else{
+		document.write("<select id='cluster' name='cluster' />");
+		for(var i=0; i<num; i++){
+			document.write("<option>" + cluster_array[i] + "</option>");
+		}
+		document.write("</select>");
+	}	
+}
