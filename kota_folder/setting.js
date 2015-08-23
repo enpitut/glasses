@@ -8,26 +8,39 @@ $(function() {
     // タブを設定
     $('#tab').tabs();
 
-    // クラスタのHTML取得
-    var cluster_text;
-    $.get('cluster.txt', function(data) {
-       cluster_text = data; 
-    });
-
+    // クラスタ部分のHTML
+    var cluster_bar = '\
+        <li>\
+            <div class="cluster_bar" name="クラスタID">\
+                <span class="cluster_name">クラスタ名</span>\
+                <div class="cluster_buttons">\
+                    <button class="plus_button">+</button>\
+                    <button class="minus_button">-</button>\
+                </div>\
+            </div>\
+            <div class="cluster_details">\
+                <span>説明</span>\
+                <h4>メンバー</h4>\
+                <ul class="cluster_member">\
+                </ul>\
+            </div>\
+        </li>\
+    ';
+    
     // クラスタ読み込み
     $(document).ready(function() {
         $.getJSON("cluster.json", function(data) {
-            $(data.joined).each(function() {
-                $(cluster_text.replace('クラスタ名', this.name).replace('説明', this.text)).appendTo('#cluster_joined .cluster');
+            $.each(data.joined, function(key, value) {
+                $(cluster_bar.replace('クラスタ名', value.name).replace('説明', value.text).replace('クラスタID', key)).appendTo('#cluster_joined .cluster');
                 var details = $('#cluster_joined .cluster li:last .cluster_details .cluster_member');
-                $(this.member).each(function() {
+                $(value.member).each(function() {
                     $('<li>'+this+'</li>').appendTo(details);
                 });
             });
-            $(data.invited).each(function() {
-                $(cluster_text.replace('クラスタ名', this.name).replace('説明', this.text)).appendTo('#cluster_invited .cluster');
+            $.each(data.invited, function(key, value) {
+                $(cluster_bar.replace('クラスタ名', value.name).replace('説明', value.text).replace('クラスタID', key)).appendTo('#cluster_invited .cluster');
                 var details = $('#cluster_invited .cluster li:last .cluster_details .cluster_member');
-                $(this.member).each(function() {
+                $(value.member).each(function() {
                     $('<li>'+this+'</li>').appendTo(details);
                 });
             });
@@ -35,8 +48,11 @@ $(function() {
     });
     
     // クラスタのバーがクリックされた際の処理
-    $(document).on('click', '.cluster_bar', function(){
-        $(this).next('.cluster_details').slideToggle();
+    $(document).on('click', '.cluster_bar:not(button)', function(e){
+        var target = e.target;
+        if(target.tagName !== 'BUTTON') {
+            $(this).next('.cluster_details').slideToggle();
+        }
     });
 
     // ダイアログの共通設定
@@ -95,11 +111,21 @@ $(function() {
     $('#dialog_mail').dialog('option', {title: 'メールアドレス変更'});
 
     // クラスタ情報変更用ダイアログを定義
+    $('#dialog_create_cluster').dialog(dialog_option);
+    $('#dialog_create_cluster').dialog('option', {title: '新規クラスタ作成'});
+    
     $.extend(dialog_option, button_cluster);
     $('#dialog_cluster_invite').dialog(dialog_option);
+    $('#dialog_cluster_invite').dialog('option', {title: 'ユーザ招待'});
+    
     $('#dialog_cluster_leave').dialog(dialog_option);
+    $('#dialog_cluster_leave').dialog('option', {title: 'クラスタ脱退'});
+    
     $('#dialog_cluster_join').dialog(dialog_option);
+    $('#dialog_cluster_join').dialog('option', {title: 'クラスタ招待'});
+    
     $('#dialog_cluster_refuse').dialog(dialog_option);
+    $('#dialog_cluster_refuse').dialog('option', {title: 'クラスタ招待'});
 
     // ダイアログ表示ボタンが押された際の処理
     $('button[name="account"]').click(function() {
@@ -113,6 +139,9 @@ $(function() {
     });
 
     // クラスタ関連ボタンが押された際の処理
+    $(document).on('click', '#new_cluster', function() {
+        $('#dialog_create_cluster').dialog('open');
+    });
     $(document).on('click', '#cluster_joined .plus_button', function() {
         $('#dialog_cluster_invite').dialog('open');
     });
