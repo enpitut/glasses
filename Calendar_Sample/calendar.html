@@ -92,6 +92,59 @@ $(function() {
            },		
 	});
 	
+	var tasks = [
+	    {
+		"task_name":"発表",
+		"task_description":"15分",
+		"task_deadline":[
+			{"year":"2015",
+			 "month":"8",
+			 "day":"24",
+			 "hour":"13",
+			 "minute":"30"
+			}
+		],
+		"task_prriority":"3",
+		"task_cluster":"研究室"
+	    },
+	    {
+		"task_name":"交流会",
+		"task_description":"各大学紹介",
+		"task_deadline":[
+			{"year":"2015",
+			 "month":"8",
+			 "day":"24",
+			 "hour":"15",
+			 "minute":"30"
+			}
+		],
+		"task_prriority":"3",
+		"task_cluster":"研究室"
+	    },
+	];
+	var schedules = [
+	    {
+		"schedule_name":"講義",
+		"schedule_description":"15分",
+		"schedule_start":[
+			{"year":"2015",
+			 "month":"8",
+			 "day":"24",
+			 "hour":"11",
+			 "minute":"30"
+			}
+		],
+		"schedule_end":[
+			{"year":"2015",
+			 "month":"8",
+			 "day":"24",
+			 "hour":"13",
+			 "minute":"30"
+			}
+		],
+		"schedule_cluster":"研究室"
+	    },
+	];
 	//ユーザから入力された情報を元に新たにイベントを出力する
 	/*var Addevents = new Array();
 	var memoloop = localStorage.getItem("memocount");
@@ -160,14 +213,16 @@ $(function() {
 	});
 	
 	//スケジュールクリック時
-	$(".schedule").click(function(){
+	//$(".schedule").click(function(){
+	$(document).on('click', '.schedule',function(){
 	    var schedule_id=$(this).children().attr("id");
 	    $("#schedule_detail_title").val($("#"+schedule_id).text());
 	    $('#schedule-detail-dialog-form').dialog("open");
 	});
 	
 	//タスククリック時
-	$(".task").click(function(){
+	//$(".task").click(function(){
+	$(document).on('click', '.task',function(){
 	    var task_id=$(this).children().attr("id");
 	    $("#task_detail_title").val($("#"+task_id).text());
 	    $('#task-detail-dialog-form').dialog("open");
@@ -182,6 +237,21 @@ $(function() {
 	       modal:true,
 	       buttons:{
 	         "入力":function() {
+		    var TaskName=$("#task_title").val();
+    		    //0時　0
+		    //1時　50
+		    //2時　100
+		    //3時　
+		    
+		    //1時間 40px
+		    //2時間 90px
+		    //3時間 140px
+		    var Top =225;
+		    var Height=90;
+		    var AddTask="<div type=\"button\" class=\"task btn btn-primary btn-lg\" style=\"position:absolute; z-index:8;left:55px;top:"+Top+"px; width:185px; height:"+Height+"px; border-color:black; color:white; \">タスク：<div id=\"task1_name\">"+TaskName+"</div> </div>";
+	//<div type="button" class="task btn btn-primary btn-lg" style="position:absolute; z-index:8;left:55px;top:0px; width:185px; border-color:black; color:white; ">タスク：<div id="task2_name">学校に行く</div> </div>
+		       $("#TaskLine").append(AddTask);
+		       
 		       /*var addEvent = new Object;
 		      // alert($('#title').val());
 	               addEvent.title = $('#title').val();
@@ -280,6 +350,26 @@ $(function() {
 	       modal:true,
 	       buttons:{
 	         "入力":function() {
+		    var scheduleName=$("#schedule_title").val();
+		    var scheduleStart=$("#schedule_start_time").val();
+		    console.log(scheduleStart);
+		    console.log(scheduleStart.substring(11,16));
+		    console.log(scheduleStart.substring(11,13));
+		    console.log(scheduleStart.substring(14,16));
+		    //285
+		    //0時　0
+		    //1時　50
+		    //2時　100
+		    //3時　
+		    
+		    //1時間 40px
+		    //2時間 90px
+		    //3時間 140px
+		    var Top =225;
+		    var Height=90;
+		    var AddSchedule="<div type=\"button\" class=\"schedule btn btn-warning btn-lg\" style=\"position:absolute; z-index:8;left:55px;top:"+Top+"px; width:185px; height:"+Height+"px; border-color:black; color:white; \">タスク：<div id=\"task1_name\">"+scheduleName+"</div> </div>";
+	//<div type="button" class="task btn btn-primary btn-lg" style="position:absolute; z-index:8;left:55px;top:0px; width:185px; border-color:black; color:white; ">タスク：<div id="task2_name">学校に行く</div> </div>
+		       $("#TaskLine").append(AddSchedule);
 		    $(this).dialog('close');
 		  },
 		  "キャンセル":function() {
@@ -345,7 +435,64 @@ $(function() {
 	    document.write("<tr><th style=\"width:10px;text-align:right;background-color:white;\" \>"+i+":00</th><td> </td></tr>");
 	}
     }
+    
+    //タスク入力・編集ダイアログ用の優先度を表す星5個の入った配列．タスクを読み込むたびに書き換えてください．
+    var prriority_array = ["★", "☆", "☆", "☆", "☆"];
 
+    //タスクの優先度をいれる変数．1～5．タスクを読み込むたびに書き換えてください．
+    var prriority_degree = 1;
+
+    //クリックされた☆の番号（左からいくつ）を引数にとる．☆がクリックされたときに呼び出される．
+    function changeStarNum(num){
+	    changePrriorityArray(num);
+	    drawPrriorityStars();
+    }
+
+    //prriority_arrayの中身を書き換えるのみの関数．引数は優先度．
+    function changePrriorityArray(num){
+	    for(var i=0; i<5; i++){
+		    if(i <= num){
+			    prriority_array[i] = "★";
+		    }else{
+			    prriority_array[i] = "☆";
+		    }
+	    }
+    }
+
+    //prriority_array（優先度の星5個）を書きだす関数．
+    function drawPrriorityStars(){
+	    var text;
+	    for(var i=0; i<5; i++){
+		    var tmp = "<a href='javascript:void(0)' onclick='changeStarNum(" + i + "); return false;'><font size='+3' color='#FFD700'>" + prriority_array[i] + "</font></a>";
+	
+		    if(i==0){
+			    text = tmp;
+		    }else{
+			    text = text + tmp;
+		    }
+	    }
+	    document.getElementById("prriority_stars").innerHTML=text;
+    }
+
+    //ユーザが所属しているクラスタ一覧がJSの配列に入って渡されることを想定して作った配列です．
+    var cluster_array = ["研究室", "CS専攻", "サークル"];
+
+
+    //cluster_arrayの中身を読み込んで<select>タグを作る関数．
+    //クラスタ一覧が配列culuster_arrayに入っていると仮定して作った．
+    function getClusters(){
+	    var num = cluster_array.length; 
+	    if(num == 0){
+		    document.write("所属しているクラスタがありません。");
+	    }else{
+		    document.write("<select id='cluster' name='cluster' />");
+		    for(var i=0; i<num; i++){
+			    document.write("<option>" + cluster_array[i] + "</option>");
+		    }
+		    document.write("</select>");
+	    }	
+    }
+    
 </script>
 </head>
 <style>
@@ -368,7 +515,10 @@ $(function() {
     text-align:right;
     background-color:white;
 }
-
+.star{
+    color: yellow;
+     background-color:white;
+}
 .box {
             position: relative;
             background:#0091ff;
@@ -379,6 +529,7 @@ $(function() {
             margin-bottom: 20px;
 	    left:10px;
 	    font-size:20px;
+	    color:white;
 	    margin: 5px auto;
 	    padding: 5px;
         }
@@ -402,19 +553,23 @@ $(function() {
 </style>
 <body>
  <header>
-    <a href="Calendar.html" onclick=""><img src="taskru_rogo_kakkokari.png" style="margin-left:50px;height:60px"></a>
+    <a href="Calendar.html" onclick="">
+	<!-- <img src="taskru_rogo_kakkokari.png" style="margin-left:50px;height:60px"> -->
+	<img src="../shima_folder/images/taskru_logo.png" style="margin-left:50px;height:60px">  
+    </a>
  </header>
 <div class="row">
     <div class="span9">
         <div class="col-md-4" >
 	    <div class="row">
-		<img src="tundere.jpg" class="span10" style="margin-left:50px;width:240px;">
+		<!-- <img src="tundere.jpg" class="span10" style="margin-left:50px;width:240px;"> -->
+		<img src="../shima_folder/images/taskru_nologo.png" class="span10" style="margin-left:50px;width:240px;">
 		<div id="Notification" style="text-align:center;font-size:large;height:30px">通知一覧</div>
 		<div id="scroll2" style="font-size:12px;height:220px;overflow-x:scroll;">
 		    <table id="TutiLine" class="table table-striped">
 			<thead></thead>
 			<tbody>
-			    <div id="Notifi1"class="box left">クラスタ「研究室」より、3月9日のスケジュール「ゼミ」を自動生成しました。</div>
+			    <div id="Notifi1" class="box left">クラスタ「研究室」より、3月9日のスケジュール「ゼミ」を自動生成しました。</div>
 			    <div id="Notifi2" class="box left">本日(8月22日)のスケジュールを自動調整しました。確認してください。</div>
 			    <div id="Notifi3" class="box left">吹き出しは、文字数で大きくなるように設定しているが、文字数が少ない場合、吹き出しのとんがりの位置が変になる</div>
 		
@@ -438,9 +593,9 @@ $(function() {
 	    </script>
 	    </tbody>
 	  </table>
-	<div type="button" class="schedule btn btn-warning btn-lg " style="position:absolute; z-index:8;left:55px;top:135px; width:185px; border-color:black; color:white;">スケジュール：<div id="schedule1_name">講義</div> </div>
-	<div type="button" class="task btn btn-primary btn-lg" style="position:absolute; z-index:8;left:55px;top:285px; width:185px; border-color:black; color:white; ">タスク：<div id="task1_name">市役所に行く</div> </div>
-	<div type="button" class="task btn btn-primary btn-lg" style="position:absolute; z-index:8;left:55px;top:0px; width:185px; border-color:black; color:white; ">タスク：<div id="task2_name">学校に行く</div> </div>
+	<div type="button" class="schedule btn btn-warning btn-lg " style="position:absolute; z-index:8;left:55px;top:550px; width:185px; border-color:black; color:white;">スケジュール：<div id="schedule1_name">講義</div> </div>
+
+	<div type="button" class="task btn btn-primary btn-lg" style="position:absolute; z-index:8;left:55px;top:450px; width:185px; border-color:black; color:white; ">タスク：<div id="task2_name">学校に行く</div> </div>
        </div>
        <div id="" style="text-align:center;font-size:large;">
           <button id="scheduleButton"　type="button" class="btn btn-warning btn-lg" style="margin-top:40px;height:70px;">スケジュール<br>追加ボタン</button>
@@ -514,19 +669,20 @@ $(function() {
 	<input type="datetime-local" name="task_deadline" id="task_deadline" /><br>
 
       <label for="priority">タスクの優先度</label>
-	<!-- とりあえず見栄え悪いけど，プルダウンで作りました． -->
-	<select name="priority" name="priority" />
-		<option value="5">★★★★★</option>
-		<option value="4">★★★★☆</option>
-		<option value="3">★★★☆☆</option>
-		<option value="2">★★☆☆☆</option>
-		<option value="1">★☆☆☆☆</option>
-	</select>
+	<div id='prriority_stars'>
+	<script type="text/JavaScript">
+		//DBとのやりとりができるようになったら，drawPrriorityStars()[星を書きだす関数]の前にchangePrriorityArray(hoge)[配列prriority_arrayの中身を書き換える関数]を実行してください。
+		//引数hogeには，DBから読み取ったそのタスクの優先度を格納してください．入力ダイアログであれば初期値を．
+		drawPrriorityStars();
+	</script>
+	</div>
       <br>
 
       <label for="cluster">タスクの帰属するクラスタ</label>
-	<!-- とりあえず後回し_(:3」∠)_ -->
-
+		<script type="text/JavaScript">
+			getClusters();
+		</script>
+	<br>	
    </fieldset>
    </form>
 </div>
