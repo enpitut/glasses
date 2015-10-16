@@ -436,19 +436,19 @@ $(function() {
 	}
     }
     
-    //タスク入力・編集ダイアログ用の優先度を表す星5個の入った配列．タスクを読み込むたびに書き換えてください．
+    //【太田・優先度関連】タスク入力・編集ダイアログ用の優先度を表す星5個の入った配列．タスクを読み込むたびに書き換えてください．
     var prriority_array = ["★", "☆", "☆", "☆", "☆"];
 
-    //タスクの優先度をいれる変数．1～5．タスクを読み込むたびに書き換えてください．
+    //【太田・優先度関連】タスクの優先度をいれる変数．1～5．タスクを読み込むたびに書き換えてください．
     var prriority_degree = 1;
 
-    //クリックされた☆の番号（左からいくつ）を引数にとる．☆がクリックされたときに呼び出される．
-    function changeStarNum(num){
+    //【太田・優先度関連】クリックされた☆の番号（左からいくつ）を引数にとる．☆がクリックされたときに呼び出される．
+    function changeStarNum(num, div_name){
 	    changePrriorityArray(num);
-	    drawPrriorityStars();
+	    drawPrriorityStars(div_name);
     }
 
-    //prriority_arrayの中身を書き換えるのみの関数．引数は優先度．
+    //【太田・優先度関連】prriority_arrayの中身を書き換えるのみの関数．引数は優先度．
     function changePrriorityArray(num){
 	    for(var i=0; i<5; i++){
 		    if(i <= num){
@@ -459,11 +459,11 @@ $(function() {
 	    }
     }
 
-    //prriority_array（優先度の星5個）を書きだす関数．
-    function drawPrriorityStars(){
+    //【太田・優先度関連】prriority_array（優先度の星5個）を書きだす関数．
+    function drawPrriorityStars(div_name){
 	    var text;
 	    for(var i=0; i<5; i++){
-		    var tmp = "<a href='javascript:void(0)' onclick='changeStarNum(" + i + "); return false;'><font size='+3' color='#FFD700'>" + prriority_array[i] + "</font></a>";
+		    var tmp = "<a href='javascript:void(0)' onclick='changeStarNum(" + i + ",\"" + String(div_name) + "\"); return false;'><font size='+3' color='#FFD700'>" + prriority_array[i] + "</font></a>";
 	
 		    if(i==0){
 			    text = tmp;
@@ -471,14 +471,14 @@ $(function() {
 			    text = text + tmp;
 		    }
 	    }
-	    document.getElementById("prriority_stars").innerHTML=text;
+	    document.getElementById(div_name).innerHTML=text;
     }
 
-    //ユーザが所属しているクラスタ一覧がJSの配列に入って渡されることを想定して作った配列です．
+    //【太田・クラスタ関連】ユーザが所属しているクラスタ一覧がJSの配列に入って渡されることを想定して作った配列です．
     var cluster_array = ["研究室", "CS専攻", "サークル"];
 
 
-    //cluster_arrayの中身を読み込んで<select>タグを作る関数．
+    //【太田・クラスタ関連】cluster_arrayの中身を読み込んで<select>タグを作る関数．
     //クラスタ一覧が配列culuster_arrayに入っていると仮定して作った．
     function getClusters(){
 	    var num = cluster_array.length; 
@@ -620,7 +620,7 @@ $(function() {
     </div>
   </div>
 
-<!-- 元のダイアログdivの改造：スケジュール入力ダイアログ -->
+<!-- 【太田・スケジュール追加ダイアログ】-->
 <div id="schedule-input-dialog-form" title="スケジュール入力">
    <p class="eventInput">スケジュールを入力してください!</p>
 	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
@@ -644,13 +644,15 @@ $(function() {
 
       
       <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
-	<!-- とりあえず後回し_(:3」∠)_ -->
+      <script type="text/JavaScript">
+			getClusters();
+	</script>
 
    </fieldset>
    </form>
 </div>
 
-<!-- 元のダイアログdivの改造：タスク入力ダイアログ -->
+<!-- 【太田・タスク追加ダイアログ -->
 <div id="task-input-dialog-form" title="タスク入力">
    <p class="eventInput">タスクを入力してください!</p>
 	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
@@ -672,7 +674,7 @@ $(function() {
 	<script type="text/JavaScript">
 		//DBとのやりとりができるようになったら，drawPrriorityStars()[星を書きだす関数]の前にchangePrriorityArray(hoge)[配列prriority_arrayの中身を書き換える関数]を実行してください。
 		//引数hogeには，DBから読み取ったそのタスクの優先度を格納してください．入力ダイアログであれば初期値を．
-		drawPrriorityStars();
+		drawPrriorityStars("prriority_stars");
 	</script>
 	</div>
       <br>
@@ -686,7 +688,7 @@ $(function() {
    </form>
 </div>
 
-<!-- 元のダイアログdivの改造：スケジュール詳細ダイアログ -->
+<!-- 【太田・スケジュール詳細，編集ダイアログ】 -->
 <div id="schedule-detail-dialog-form" title="スケジュールの詳細">
     <!-- <p class="eventInput">スケジュールを入力してください!</p> -->
 	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
@@ -707,12 +709,14 @@ $(function() {
 	<!-- 入力インターフェースの時点から悩み中 -->
       <br>
       <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
-	<!-- とりあえず後回し_(:3」∠)_ -->
+	<script type="text/JavaScript">
+			getClusters();
+		</script>
    </fieldset>
    </form>
 </div>
 
-<!-- 元のダイアログdivの改造：タスク詳細ダイアログ -->
+<!-- 太田・タスク詳細，編集ダイアログ】 -->
 <div id="task-detail-dialog-form" title="タスク詳細">
    <!-- <p class="eventInput">タスクを入力してください!</p>  -->
 	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
@@ -729,18 +733,19 @@ $(function() {
 	<input type="datetime-local" name="task_deadline" id="task_detail_deadline" /><br>
 
       <label for="priority">タスクの優先度</label>
-	<!-- とりあえず見栄え悪いけど，プルダウンで作りました． -->
-	<select name="priority" name="priority" />
-		<option value="5">★★★★★</option>
-		<option value="4">★★★★☆</option>
-		<option value="3">★★★☆☆</option>
-		<option value="2">★★☆☆☆</option>
-		<option value="1">★☆☆☆☆</option>
-	</select>
+      <div id='prriority_stars2'>
+		<script type="text/JavaScript">
+		//DBとのやりとりができるようになったら，drawPrriorityStars()[星を書きだす関数]の前にchangePrriorityArray(hoge)[配列prriority_arrayの中身を書き換える関数]を実行してください。
+		//引数hogeには，DBから読み取ったそのタスクの優先度を格納してください．入力ダイアログであれば初期値を．
+		drawPrriorityStars("prriority_stars2");
+	</script>
+	</div>
       <br>
 
       <label for="cluster">タスクの帰属するクラスタ</label>
-	<!-- とりあえず後回し_(:3」∠)_ -->
+      <script type="text/JavaScript">
+			getClusters();
+		</script>
 
    </fieldset>
    </form>
