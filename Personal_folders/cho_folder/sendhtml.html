@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>HTMLからPHP経由でmysqlからJSON形式でデータを取得するサンプル</title>
+    
+    <script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+    <script>
+      
+      $(document).ready(function() 
+      {
+      $.ajax({
+      type: "POST",
+      url: "sendphp.php",
+      dataType: "json",
+      
+      data: {query:"insert into scheduleTable(userID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, repeatInfo, ClusterID) values(1, 'Test', 'insertTest', '2015-10-19 15:15:00',  '2015-10-19 18:00:00', 1, 1)"},
+      
+      success: function(data,dataType) {},		    
+      error: function(XMLHttpRequest, textStatus, errorThrown) {
+      alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+      }
+      });
+      });
+    </script>
+  </head>
+  <body>
+    <hz1>HTMLからPHP経由でmysqlからJSON形式でデータを取得するサンプル</h1>
+    <ul id="content"></ul>
+  </body>
+</html>

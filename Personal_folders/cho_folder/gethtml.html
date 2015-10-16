@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>HTMLからPHP経由でmysqlからJSON形式でデータを取得するサンプル</title>
+    
+    <script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+    <script>
+      
+      $(document).ready(function() 
+      {
+      $.ajax({
+      type: "POST",
+      url: "getphp.php",
+      dataType: "json",
+      
+      data: {query:"select * from test_db"},
+      
+      success: function(data,dataType) 
+      {
+      
+      if(data == null) alert('データが0件でした');
+      
+      //返ってきたデータの表示
+      var $content = $('#content');
+      for (var i =0; i<data.length; i++)
+				    {
+				    $content.append("<li>" + data[i].name + "</li>");
+				    }
+				    },
+				    
+				    error: function(XMLHttpRequest, textStatus, errorThrown) 
+				    {
+				    alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+				    }
+				    });
+				    });
+				    </script>
+  </head>
+  <body>
+    <hz1>HTMLからPHP経由でmysqlからJSON形式でデータを取得するサンプル</h1>
+    <ul id="content"></ul>
+  </body>
+</html>
