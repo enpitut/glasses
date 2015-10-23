@@ -75,11 +75,11 @@ $(function () {
     // クラスタ読み込み
     $(document).ready(function () {
         // アカウント名取得
-        rewriteText($('#account_name'), 'account.txt');
-        rewriteText($('#password'), 'pass.txt');
-        rewriteText($('#mail_addr'), 'mail.txt');
+        rewriteText($('#account_name'), 'res/account.txt');
+        rewriteText($('#password'), 'res/pass.txt');
+        rewriteText($('#mail_addr'), 'res/mail.txt');
 
-        $.getJSON("cluster.json", function (data) {
+        $.getJSON("res/cluster.json", function (data) {
             $.each(data.joined, function (key, value) {
                 $(cluster_bar.replace('クラスタ名', value.name).replace('説明', value.text).replace('クラスタID', key)).appendTo('#cluster_joined .cluster');
                 var details = $('#cluster_joined .cluster li:last .cluster_details .cluster_member');

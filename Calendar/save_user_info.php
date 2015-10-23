@@ -1,4 +1,6 @@
 <?php
+//設定画面で設定したユーザ情報を保存する
+//現時点ではそれぞれ用意したtxtファイルに保存
     $target_element = "";
     $target_file = "";
     $text = "";
@@ -6,15 +8,15 @@
     $flag = true;
     if(filter_input(INPUT_POST, "new_account_name") !== NULL) {
         $target_element = "#account_name";
-        $target_file = "account.txt";
+        $target_file = "res/account.txt";
         $text = filter_input(INPUT_POST, "new_account_name");
     } else if(filter_input(INPUT_POST, "new_mail_addr") !== NULL) {
         $target_element = "#mail_addr";
-        $target_file = "mail.txt";
+        $target_file = "res/mail.txt";
         $text = filter_input(INPUT_POST, "new_mail_addr");
     } else if(filter_input(INPUT_POST, "new_pass") !== NULL) {
         $target_element = "#password";
-        $target_file = "pass.txt";
+        $target_file = "res/pass.txt";
         $text = filter_input(INPUT_POST, "new_pass");
         $old_pass = filter_input(INPUT_POST, "pass");
         $confirm_pass = filter_input(INPUT_POST, "confirm");
