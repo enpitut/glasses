@@ -5,18 +5,18 @@
     "version": "1.0",
     "browser_action": {
         "degault_icon": {
-            "19": "images/icon/icon_disable.png",
-            "38": "images/icon/icon_disable.png"
+            "default_icon": "images/taskru_logo.png"
         },
-        "default_title": "Taskru Notification",
-        "default_popup": "popup.html"
+        "default_title": "Taskru Notification"
     },
     "background": {
-        "scripts": ["js/jquery-2.1.4.min.js", "js/background.js"],
+        "scripts": ["jquery-2.1.4.min.js","background.js"],
         "persistent": false
     },
     "permissions": [
-        "tabs",
+        "gcm",
+        "background",
+        "notifications",
         "storage"
     ]
 }
