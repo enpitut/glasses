@@ -77,7 +77,6 @@ $(function() {
         },
         dayNames: ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'],
         dayNamesShort: ['日','月','火','水','木','金','土'],
-
            axisFormat: 'H:mm',
            timeFormat: { '': 'H:mm' },
            buttonText: {
@@ -296,7 +295,6 @@ $(function() {
     
     //タスク入力・編集ダイアログ用の優先度を表す星5個の入った配列．タスクを読み込むたびに書き換えてください．
     var prriority_array = ["★", "☆", "☆", "☆", "☆"];
-
     //タスクの優先度をいれる変数．1～5．タスクを読み込むたびに書き換えてください．
     var prriority_degree = 1;
 
@@ -343,11 +341,10 @@ $(function() {
 	    }
 	    document.getElementById("prriority_stars2").innerHTML=text;
     }
-
+    
     //ユーザが所属しているクラスタ一覧がJSの配列に入って渡されることを想定して作った配列です．
     var cluster_array = ["研究室", "CS専攻", "サークル"];
-
-
+    
     //cluster_arrayの中身を読み込んで<select>タグを作る関数．
     //クラスタ一覧が配列culuster_arrayに入っていると仮定して作った．
     function getClusters(){
