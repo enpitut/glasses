@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>タスクル ログイン画面</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="css/login.css">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script>
+            $(function () {
+                $('#login_form').submit(function (evt) {
+                    evt.preventDefault();
+                    var $form = $(this);
+                    var $button = $form.find('submit[type=submit]');
+
+                    $.ajax({
+                        url: $form.attr('action'),
+                        type: $form.attr('method'),
+                        data: $form.serialize(),
+                        beforSend: function (xhr, settings) {
+                            $button.attr('disabled', true);
+                        },
+                        complete: function (xhr, textStatus) {
+                            $button.attr('disabled', false);
+                        },
+                        success: function (result) {
+                            if (result === 'success') {
+                                window.location.href='Taskru.html';
+                            } else {
+                                alert('認証失敗');
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert('通信失敗');
+                        }
+                    });
+                    return false;
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <header>
+            <a href=""><img src="img/logo.png"></a>
+        </header>
+        <article>
+            <div id="login">
+                <h1>ログインフォーム</h1>
+                <form id="login_form" action="login.php" method="post">
+                    <input type="text" name="account" placeholder="アカウント名" />
+                    <input type="password" name="password" placeholder="パスワード" />
+                    <input type="submit" value="ログイン">
+                    <a href="register.html">新規アカウント登録</a>
+                </form>
+            </div>
+        </article>
+    </body>
+</html>
