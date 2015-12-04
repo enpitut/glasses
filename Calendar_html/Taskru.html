@@ -8,11 +8,16 @@
 <link href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" rel="stylesheet" />
 <link href="fullcalendar.css" rel="stylesheet" />
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="Intro/introjs.min.css" rel="stylesheet">
+<link href="validationEngine/validationEngine.jquery.css" rel="stylesheet"/>
 
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 <script src='fullcalendar.min.js'></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="Intro/intro.min.js"></script>
+<script src="validationEngine/jquery.validationEngine.js"></script>
+<script src="validationEngine/jquery.validationEngine-ja.js"></script>
 <script>
 $(function() {
         var FCdata;
@@ -24,7 +29,18 @@ $(function() {
 	var d = date.getDate();
 	var days = m+"月"+d+"日のスケジュール";
 	var today = m+"月"+d+"日";
+	var NotifiCountert=2;
+	
 	$("#TimeTitle").text(days);
+	Notificate("本日("+today+")のスケジュールを自動調整しました。確認してください");
+	
+	introJs()
+	.setOption('nextLabel','次へ')
+	.setOption('prevLabel','戻る')
+	.setOption('doneLabel','終了')
+	.setOption('skipLabel','スキップ')
+	.setOption('tooltipPosition','right')
+	.start();
 
 	$('#calendar').fullCalendar({
 	   header: {
@@ -77,6 +93,7 @@ $(function() {
         },
         dayNames: ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'],
         dayNamesShort: ['日','月','火','水','木','金','土'],
+
            axisFormat: 'H:mm',
            timeFormat: { '': 'H:mm' },
            buttonText: {
@@ -95,32 +112,36 @@ $(function() {
 	
 	//スケジュール追加ボタンクリック時
 	$("#scheduleButton").click(function(){
-   $("#schedule_start_time").val("yyyy-mm-dd hh:mm:ss");
-	    $("#schedule_end_time").val("yyyy-mm-dd hh:mm:ss");
-	    $('#schedule-input-dialog-form').dialog("open");
+		$("#schedule_title").val("");
+		$("#schedule_info").val("");
+		$("#schedule_start_time").val("yyyy-mm-dd hh:mm:ss");
+		$("#schedule_end_time").val("yyyy-mm-dd hh:mm:ss");
+		$('#schedule-input-dialog-form').dialog("open");
+		$("#schedule_form").validationEngine();
+		$("#schedule_title").validationEngine('attach',{
+			promptPosition:"bottomLeft"	
+		});
 	});
 	
 	//スケジュールクリック時
 	//$(".schedule").click(function(){
 	$(document).on('click', '.schedule',function(){
 	    var schedule_id=$(this).children().attr("id");
-	   $.ajax({
-      type: "POST",
-      url: "getSchedule.php",   
-        data: {query:"select * from ScheduleTable where ScheduleID ="+schedule_id},
-      success: function(data,dataType) {
-
-	    $("#schedule_detail_id").val(data[0].ScheduleID);
-	    $("#schedule_detail_title").val(data[0].ScheduleName);
-	    $("#schedule_detail_info").val(data[0].ScheduleInfo);
- 	    $("#schedule_detail_start_time").val(data[0].ScheduleStart);
-	    $("#schedule_detail_end_time").val(data[0].ScheduleEnd);
- 
-	}, 
-	error: function(XMLHttpRequest, textStatus, errorThrown) {
-	    alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
-	}
-	});
+	    $.ajax({
+		type: "POST",
+		url: "getSchedule.php",   
+		data: {query:"select * from ScheduleTable where ScheduleID ="+schedule_id},
+		success: function(data,dataType) {
+			$("#schedule_detail_id").val(data[0].ScheduleID);
+			$("#schedule_detail_title").val(data[0].ScheduleName);
+			$("#schedule_detail_info").val(data[0].ScheduleInfo);
+			$("#schedule_detail_start_time").val(data[0].ScheduleStart);
+			$("#schedule_detail_end_time").val(data[0].ScheduleEnd);
+		}, 
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+		}
+	    });
 	    $('#schedule-detail-dialog-form').dialog("open");
 	});
 	
@@ -128,7 +149,20 @@ $(function() {
 	//$(".task").click(function(){
 	$(document).on('click', '.task',function(){
 	    var task_id=$(this).children().attr("id");
-	    $("#task_detail_title").val($("#"+task_id).text());
+	    $.ajax({
+		type: "POST",
+		url: "getTask.php",   
+		data: {query:"select * from TaskTable where TaskID ="+task_id},
+		success: function(data,dataType) {
+			$("#task_detail_id").val(data[0].TaskID);
+			$("#task_detail_title").val(data[0].TaskName);
+			$("#task_detail_info").val(data[0].TaskInfo);
+			$("#task_detail_deadline").val(data[0].TaskEnd);
+		}, 
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+		}
+	    });
 	    $('#task-detail-dialog-form').dialog("open");
 	});
 	
@@ -140,7 +174,7 @@ $(function() {
 	       hide:'blind',
 	       modal:true,
 	       buttons:{
-	         "入力":function() {
+		"入力":function() {
 	  	UserID=2;
 		TaskName=$("#task_title").val();
     		TaskInfo=$("#task_info").val();
@@ -149,20 +183,21 @@ $(function() {
 		ClusterID=2;
 		TaskVal = {query:"insert into TaskTable(UserID, TaskName, TaskInfo, TaskEnd, TaskPriority, ClusterID) values("+UserID+",'"+TaskName+"', '"+ TaskInfo+"', '"+TaskEnd+"', "+TaskPriority+", "+ClusterID+")"};
 		
-		  $.ajax({		
-            	type: "POST",
-           	 url: "sendphp.php",
-           	 data: TaskVal,      
-           	 success: function(data,dataType) {},		    
-           	 error: function(XMLHttpRequest, textStatus, errorThrown) {
-               alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
-             }
-            });
-		    $(this).dialog('close');
-		  },
-		  "キャンセル":function() {
+		$.ajax({
+			type: "POST",
+			url: "sendphp.php",
+			data: TaskVal,
+			success: function(data,dataType) {},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+			}
+		});
+		taskTableUpdate(TaskEnd);       
+		$(this).dialog('close');
+	        },
+		"キャンセル":function() {
 		        $(this).dialog('close');
-		    }
+		}
 	       },  
 	   });
 	$('#schedule-input-dialog-form').dialog({
@@ -181,17 +216,17 @@ $(function() {
 		 ClusterID=2;
 		 scheduleVal = {query:"insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values("+UserID+",'"+ScheduleName+"','"+ ScheduleInfo+"','"+ScheduleStart+"','"+ScheduleEnd+"', "+ClusterID+")"};
 		$.ajax({  
-          	type: "POST",
-		url: "sendphp.php",
-		data: scheduleVal,      
-		success: function(data,dataType) {},		    
-		error: function(XMLHttpRequest, textStatus, errorThrown) {
-		alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
-             }
-            }); 		
+			type: "POST",
+			url: "sendphp.php",
+			data: scheduleVal,      
+			success: function(data,dataType) {},		    
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+			}
+		}); 		
  		  
-	scheduleTableUpdate(ScheduleStart);
-		    $(this).dialog('close');
+		scheduleTableUpdate(ScheduleStart);
+		$(this).dialog('close');
 		  },
 		  "キャンセル":function() {
 		        $(this).dialog('close');
@@ -206,7 +241,7 @@ $(function() {
 	       modal:true,
 	       buttons:{
 	         "更新":function() {
-		ScheduleID=$("#schedule_detail_id").val();
+		 ScheduleID=$("#schedule_detail_id").val();
 		 ScheduleName=$("#schedule_detail_title").val();
 		 ScheduleInfo=$("#schedule_detail_info").val();
 		 ScheduleStart=$("#schedule_detail_start_time").val();
@@ -214,18 +249,17 @@ $(function() {
 
 		 scheduleVal = {query:"update ScheduleTable set ScheduleName='"+ ScheduleName+"', ScheduleInfo='"+ ScheduleInfo+"', ScheduleStart='"+ ScheduleStart+"', ScheduleEnd='"+ ScheduleEnd+"' where ScheduleID="+ ScheduleID};
 		$.ajax({  
-          	type: "POST",
-		url: "sendphp.php",
-		data: scheduleVal,      
-		success: function(data,dataType) {},		    
-		error: function(XMLHttpRequest, textStatus, errorThrown) {
-		alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
-             }
-            }); 		
+			type: "POST",
+			url: "sendphp.php",
+			data: scheduleVal,      
+			success: function(data,dataType) {},		    
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+			}
+		}); 		
  		  
-	scheduleTableUpdate(ScheduleStart);
-
-		    $(this).dialog('close');
+		scheduleTableUpdate(ScheduleStart);
+		$(this).dialog('close');
 		  },
 		  "キャンセル":function() {
 		        $(this).dialog('close');
@@ -241,9 +275,25 @@ $(function() {
 	       buttons:{
 	         "更新":function() {
 		    // 更新時の挙動
-		    
-		    $("#task_detail_title").val($("#task_name").text());
-		    alert("更新されました");
+		    TaskID = $("#task_detail_id").val();
+		    TaskName=$("#task_detail_title").val();
+		    TaskInfo=$("#task_detail_info").val();
+		    TaskEnd=$("#task_deadline").val();
+		    TaskPriority=5;
+		    ClusterID=2;
+		    TaskVal = {query:"update TaskTable set TaskName='"+ TaskName+"', TaskInfo='"+ TaskInfo+"', TaskEnd='"+ TaskEnd+"' where TaskID="+ TaskID};
+		
+			$.ajax({  
+			type: "POST",
+			url: "sendphp.php",
+			data: TaskVal,      
+			success: function(data,dataType) {},		    
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+			}
+		}); 		
+ 		  
+		taskTableUpdate(TaskEnd);
 		    $(this).dialog('close');
 		  },
 		  "キャンセル":function() {
@@ -259,42 +309,68 @@ $(function() {
 	}
     }
    function scheduleTableUpdate(date){
-		 $("#TimeLine").find("div").remove();
- 	    $.ajax({
-      type: "POST",
-      url: "getSchedule.php",   
-        data: {query:"select * from ScheduleTable where  (DATE_FORMAT(ScheduleStart, '%Y-%m-%d') = '"+date.substring(0,10)+"')"},
-      success: function(data,dataType) {      
-           for (var i =0; i<=data.length; i++){
-	   	  var Hour = parseInt(data[i].ScheduleStart.substring(11,13),10);
-		  var Minutes = parseInt(data[i].ScheduleStart.substring(14,16),10);
-		  var eHour = parseInt(data[i].ScheduleEnd.substring(11,13),10);
-		  var eMinutes = parseInt(data[i].ScheduleEnd.substring(14,16),10);
-		  var Top = Hour*50 + ((Minutes/60) * 50);
-		  var Height0 = (((eHour*60 + eMinutes) - (Hour *60 + Minutes)) / 60);
-		  var Height = 50 * (Height0-1) +40 ;
-		 AddSchedule = "<div type=\"button\" class=\"schedule btn btn-warning btn-lg\" style=\"position:absolute; z-index:8;left:55px;top:"+Top+"px; width:185px; height:"+Height+"px; border-color:black; color:white; \">スケジュール：<div id="+data[i].ScheduleID+">"+data[i].ScheduleName+"</div> </div>";
-		$("#TimeLine").append(AddSchedule); 
-            }
-      }, 
-	error: function(XMLHttpRequest, textStatus, errorThrown) {
-	    alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
-	}
+	$("#TimeLine").find("div").remove();
+ 	$.ajax({
+		type: "POST",
+		url: "getSchedule.php",
+		data: {query:"select * from ScheduleTable where  (DATE_FORMAT(ScheduleStart, '%Y-%m-%d') = '"+date.substring(0,10)+"')"},
+		success: function(data,dataType) {
+			for (var i =0; i<=data.length; i++){
+				var Hour = parseInt(data[i].ScheduleStart.substring(11,13),10);
+				var Minutes = parseInt(data[i].ScheduleStart.substring(14,16),10);
+				var eHour = parseInt(data[i].ScheduleEnd.substring(11,13),10);
+				var eMinutes = parseInt(data[i].ScheduleEnd.substring(14,16),10);
+				var Top = Hour*50 + ((Minutes/60) * 50);
+				var Height0 = (((eHour*60 + eMinutes) - (Hour *60 + Minutes)) / 60);
+				var Height = 50 * (Height0-1) +40 ;
+				AddSchedule = "<div type=\"button\" class=\"schedule btn btn-warning btn-lg\" style=\"position:absolute; z-index:8;left:55px;top:"+Top+"px; width:185px; height:"+Height+"px; border-color:black; color:white; \">スケジュール：<div id="+data[i].ScheduleID+">"+data[i].ScheduleName+"</div> </div>";
+				$("#TimeLine").append(AddSchedule);
+				Notificate("スケジュール:"+data[i].ScheduleName+"を追加しました");
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+		}
+	});
+}
+function taskTableUpdate(date){
+	$("#TaskLine").find("div").remove();
+	$.ajax({
+		type: "POST",
+		url: "getTask.php",
+		data: {query:"select * from TaskTable where  (DATE_FORMAT(TaskEnd, '%Y-%m-%d') = '"+date.substring(0,10)+"')"},
+		success: function(data,dataType) {
+			for (var i =0; i<=data.length; i++){
+				AddTask="<tr><th class=\"task_table\" \>"+data[i].TaskName+"</th><td style=\"text-align: center;\"> <input type=\"checkbox\" ></td></tr>";
+				$("#TaskLine").append(AddTask);
+				Notificate("タスク:"+data[i].TaskName+"を追加しました");
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+		}
 	});
 }
     function memoEvent3(){
-	document.write("<tr><th class=\"task_table\" \>レポート</th><td style=\"text-align: center;\"> <input type=\"checkbox\" ></td></tr>");
-	document.write("<tr><th class=\"task_table\" \>市役所に行く</th><td style=\"text-align: center;\"> <input type=\"checkbox\" ></td></tr>");
-	document.write("<tr><th class=\"task_table\" \>学校に行く</th><td style=\"text-align: center;\"> <input type=\"checkbox\" ></td></tr>");
+	document.write("<tr><th class=\"task_table\" >レポート</th><td style=\"text-align: center;\"> <input type=\"checkbox\" ></td></tr>");
+	document.write("<tr><th class=\"task_table\" >市役所に行く</th><td style=\"text-align: center;\"> <input type=\"checkbox\" ></td></tr>");
+	document.write("<tr><th class=\"task_table\" >学校に行く</th><td style=\"text-align: center;\"> <input type=\"checkbox\" ></td></tr>");
     }
     function memoEvent4(){
 	for(var i=0;i<25;i++){
 	    document.write("<tr><th style=\"width:10px;text-align:right;background-color:white;\" \>"+i+":00</th><td> </td></tr>");
 	}
     }
+    //通知メッセージ作成
+    function Notificate(text){
+	var Notifi='<div id="Notifi'+NotifiCountert+'" class="box left">'+text+'</div>';
+	$("#TutiLine").append(Notifi);
+	NotifiCountert++;
+    }
     
     //タスク入力・編集ダイアログ用の優先度を表す星5個の入った配列．タスクを読み込むたびに書き換えてください．
     var prriority_array = ["★", "☆", "☆", "☆", "☆"];
+
     //タスクの優先度をいれる変数．1～5．タスクを読み込むたびに書き換えてください．
     var prriority_degree = 1;
 
@@ -341,10 +417,11 @@ $(function() {
 	    }
 	    document.getElementById("prriority_stars2").innerHTML=text;
     }
-    
+
     //ユーザが所属しているクラスタ一覧がJSの配列に入って渡されることを想定して作った配列です．
     var cluster_array = ["研究室", "CS専攻", "サークル"];
-    
+
+
     //cluster_arrayの中身を読み込んで<select>タグを作る関数．
     //クラスタ一覧が配列culuster_arrayに入っていると仮定して作った．
     function getClusters(){
@@ -417,6 +494,25 @@ $(function() {
             border-bottom: 10px solid transparent;
         }
 	
+	/* 操作説明：選択領域 */
+            .introjs-helperLayer{
+                border: 2px solid red;
+                border-radius: 10px;
+                background-color: rgba(255, 208, 208, 0.8);
+                box-shadow: 3px 3px 6px rgba(255, 255, 255, 0.3);
+            }
+            /* 操作説明：コメント欄全体 */
+            .introjs-tooltip{
+                border: 2px solid red;
+                border-radius: 10px;
+                background-color: rgba(255, 208, 208, 0.8);
+                box-shadow: 3px 3px 6px rgba(255, 255, 255, 0.3);
+            }
+            /* 操作説明：コメント */
+            .introjs-tooltiptext{
+                color:#000000;
+                text-shadow: 2px 2px 4px rgba(192, 192, 192, 0.5);
+            }
 </style>
 <body>
  <header>
@@ -430,14 +526,11 @@ $(function() {
 	    <div class="row">
 		<img src="./img/taskru_nologo.png" class="span10" style="margin-left:50px;width:240px;">
 		<div id="Notification" style="text-align:center;font-size:large;height:30px">通知一覧</div>
-		<div id="scroll2" style="font-size:12px;height:220px;overflow-x:scroll;">
+		<div id="scroll2" style="font-size:12px;height:220px;overflow-x:scroll;" data-step="5" data-intro="ここに通知が表示されます">
 		    <table id="TutiLine" class="table table-striped">
 			<thead></thead>
 			<tbody>
-			    <div id="Notifi1" class="box left">クラスタ「研究室」より、3月9日のスケジュール「ゼミ」を自動生成しました。</div>
-			    <div id="Notifi2" class="box left">本日( <>)のスケジュールを自動調整しました。確認してください。</div>
-			    <div id="Notifi3" class="box left">吹き出しは、文字数で大きくなるように設定しているが、文字数が少ない場合、吹き出しのとんがりの位置が変になる</div>
-		
+			    <div id="Notifi1" class="box left">クラスタ「研究室」より、3月9日のスケジュール「ゼミ」を自動生成しました。</div>	
 			</tbody>
 		    </table>  
 		</div>  
@@ -449,40 +542,37 @@ $(function() {
 	  
     <div class="span4" style="font-size:14px">
        <div id="TimeTitle" style="text-align:center;font-size:large;height:30px"></div>
-       <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;position:relative;">
+       <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;position:relative;" data-step="2" data-intro="作成するとここにスケジュールが追加されます">
           <table id="TimeLine" class="table" border="1" rules="cols">
 	     <thead></thead>
 	     <tbody>
 		<script>
-	    memoEvent2();    
-	    </script>
+		memoEvent2();    
+		</script>
 	    </tbody>
 	  </table>
-	
        </div>
 
        <div id="" style="text-align:center;font-size:large;">
-          <button id="scheduleButton"　type="button" class="btn btn-warning btn-lg" style="margin-top:40px;height:70px;">スケジュール<br>追加ボタン</button>
+          <button id="scheduleButton"　type="button" class="btn btn-warning btn-lg" style="margin-top:40px;height:70px;" data-step="1" data-intro="このボタンをクリックしてスケジュールを作成してください">スケジュール<br>追加ボタン</button>
        </div>
     </div>
 
   
   <div class="span4" style="font-size:14px">
     <div id="TaskTitle" style="text-align:center;font-size:large;height:30px">タスク一覧</div>
-    <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;">
+    <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;" data-step="4" data-intro="作成するとここにタスクが追加されます">
 	<table id="TaskLine" class="table table-striped" border="1" rules="cols">
 	    <thead></thead>
 	    <tbody>
-	    <script type="text/javascript">
-	   
+	    <script>
 	    memoEvent3();
-	   
 	    </script>
 	    </tbody>
 	</table>  
     </div>
     <div id="" style="text-align:center;font-size:large;">
-       <button id="TaskButton" type="button" class="btn btn-primary btn-lg" style="margin-top:40px;height:70px;">タスク<br>追加ボタン</button>
+       <button id="TaskButton" type="button" class="btn btn-primary btn-lg" style="margin-top:40px;height:70px;" data-step="3" data-intro="このボタンをクリックしてタスクを作成してください">タスク<br>追加ボタン</button>
     </div>
   </div>
 
@@ -490,7 +580,7 @@ $(function() {
 <div id="task-input-dialog-form" title="タスク入力">
    <p class="eventInput">タスクを入力してください!</p>
 	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
-   <form>
+   <form id="task_form">
    <fieldset>
       <label for="task_title">タスク名:</label>
       <input type="text" name="task_title" id="task_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
@@ -525,7 +615,7 @@ $(function() {
 <div id="schedule-input-dialog-form" title="スケジュール入力">
    <p class="eventInput">スケジュールを入力してください!</p>
 	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
-   <form>
+   <form id="schedule_form">
    <fieldset>
       <label for="schedule_title">スケジュール名:</label>
       <input type="text" name="schedule_title" id="schedule_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
@@ -583,6 +673,7 @@ $(function() {
 	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
    <form>
    <fieldset>
+      <input type="hidden" name="task_id" id="task_detail_id" />
       <label for="title">タスク名:</label>
       <input type="text" name="task_title" id="task_detail_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
 
