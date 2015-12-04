@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>HTMLからPHP経由でmysqlからJSON形式でデータを取得するサンプル</title>
+    
+    <script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+    <script>
+      UserID=5;
+      ClusterID=3;
+      ScheduleName='MT';
+      ScheduleInfo='nothing';
+      ScheduleStart='2015-10-19 15:15:00';
+      ScheduleEnd='2015-10-19 18:00:00';
+
+      scheduleVal = {query:"insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values("+UserID+",'"+ScheduleName+"','"+ ScheduleInfo+"','"+ScheduleStart+"','"+ScheduleEnd+"', "+ClusterID+")"};
+
+      TaskName='kadaiA';
+      TaskInfo='math';
+      TaskEnd='2015-11-22 18:00:00';
+      TaskPriority=4;
+
+   TaskVal = {query:"insert into TaskTable(UserID, TaskName, TaskInfo, TaskEnd, TaskPriority, ClusterID) values("+UserID+",'"+TaskName+"', '"+ TaskInfo+"', '"+TaskEnd+"', "+TaskPriority+", "+ClusterID+")"};
+     
+      UserName='enpitkun';
+      UserPass='hogehoge';
+      NotificationPass='abcde';
+  UserVal = {query:"insert into UserTable(UserName, UserPass, NotificationPass) values('"+UserName+"', '"+ UserPass+"' ,'"+NotificationPass+"')"};
+
+  ClusterVal = {query:"insert into ClusterTable(ClusterID, UserID) values("+ClusterID+", "+UserID+")"};
+ClusterName='temp';
+ClusterInfoVal = {query:"insert into ClusterInfoTable(ClusterName) values('"+ClusterName+"')"};
+
+      $(document).ready(function(){ 
+         $('#scheduleSend').click(function(){
+            $.ajax({  
+            type: "POST",
+            url: "sendphp.php",
+            dataType: "json",
+            data: scheduleVal,      
+            success: function(data,dataType) {},		    
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+               alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+             }
+            });
+         });
+         $('#TaskSend').click(function(){
+            $.ajax({
+            type: "POST",
+            url: "sendphp.php",
+            dataType: "json",
+            data: TaskVal,      
+            success: function(data,dataType) {},		    
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+               alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+             }
+            });
+         });
+    $('#UserSend').click(function(){
+            $.ajax({
+            type: "POST",
+            url: "sendphp.php",
+            dataType: "json",
+            data: UserVal,      
+            success: function(data,dataType) {},		    
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+               alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+             }
+            });
+         });
+  $('#ClusterSend').click(function(){
+            $.ajax({
+            type: "POST",
+            url: "sendphp.php",
+            dataType: "json",
+            data: ClusterVal,      
+            success: function(data,dataType) {},		    
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+               alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+             }
+            });
+         });
+  $('#ClusterInfoSend').click(function(){
+            $.ajax({
+            type: "POST",
+            url: "sendphp.php",
+            dataType: "json",
+            data: ClusterInfoVal ,     
+            success: function(data,dataType) {},		    
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+               alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+             }
+            });
+         });
+
+          $('#scheduleGet').click(function(){
+         $.ajax({
+      type: "POST",
+      url: "getSchedule.php",
+      dataType: "json",      
+      data: {query:"select * from ScheduleTable"},
+      success: function(data,dataType) {
+           if(data == null) alert('データが0件でした');      
+           var $content = $('#content');
+           for (var i =0; i<data.length; i++){
+	      $content.append("<li>ScheduleID:"+data[i].ScheduleID  +", ScheduleName:" + data[i].ScheduleName + ", ScheduleStart:"+data[i].ScheduleStart  +"</li>");
+            }
+      }, 
+	error: function(XMLHttpRequest, textStatus, errorThrown) {
+	    alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+	}
+	});
+         });
+
+  $('#TaskGet').click(function(){
+         $.ajax({
+      type: "POST",
+      url: "getTask.php",
+      dataType: "json",      
+      data: {query:"select * from TaskTable"},
+      success: function(data,dataType) {
+           if(data == null) alert('データが0件でした');      
+           var $content = $('#content');
+           for (var i =0; i<data.length; i++){
+	      $content.append("<li>TaskID:"+data[i].TaskID  +", TaskName:" + data[i].TaskName + "</li>");
+            }
+      }, 
+	error: function(XMLHttpRequest, textStatus, errorThrown) {
+	    alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+	}
+	});
+         });
+
+$('#UserGet').click(function(){
+         $.ajax({
+      type: "POST",
+      url: "getUser.php",
+      dataType: "json",      
+      data: {query:"select * from UserTable"},
+      success: function(data,dataType) {
+           if(data == null) alert('データが0件でした');      
+           var $content = $('#content');
+           for (var i =0; i<data.length; i++){
+	      $content.append("<li>UserID:"+data[i].UserID  +", UserName:" + data[i].UserName + "</li>");
+            }
+      }, 
+	error: function(XMLHttpRequest, textStatus, errorThrown) {
+	    alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+	}
+	});
+         });
+
+$('#ClusterGet').click(function(){
+         $.ajax({
+      type: "POST",
+      url: "getCluster.php",
+      dataType: "json",      
+      data: {query:"select * from ClusterTable"},
+      success: function(data,dataType) {
+           if(data == null) alert('データが0件でした');      
+           var $content = $('#content');
+           for (var i =0; i<data.length; i++){
+	      $content.append("<li>ClusterID:"+data[i].ClusterID  +", UserID:" + data[i].UserID + "</li>");
+            }
+      }, 
+	error: function(XMLHttpRequest, textStatus, errorThrown) {
+	    alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+	}
+	});
+         });
+$('#ClusterInfoGet').click(function(){
+         $.ajax({
+      type: "POST",
+      url: "getClusterInfo.php",
+      dataType: "json",      
+      data: {query:"select * from ClusterInfoTable"},
+      success: function(data,dataType) {
+           if(data == null) alert('データが0件でした');      
+           var $content = $('#content');
+           for (var i =0; i<data.length; i++){
+	      $content.append("<li>ClusterID:"+data[i].ClusterID  +", ClusterName:" + data[i].ClusterName + "</li>");
+            }
+      }, 
+	error: function(XMLHttpRequest, textStatus, errorThrown) {
+	    alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+	}
+	});
+         });
+
+
+      });
+    </script>
+  </head>
+  <body>
+    <hz1>HTMLからPHP経由でmysqlからJSON形式でデータを取得するサンプル</h1>
+<p><input id="scheduleSend" value="スケジュール送信" type="submit" /></p>
+<p><input id="scheduleGet" value="スケジュール取得" type="submit" /></p>
+<p><input id="TaskSend" value="タスク送信" type="submit" /></p>
+<p><input id="TaskGet" value="タスク取得" type="submit" /></p>
+<p><input id="UserSend" value="ユーザ情報送信" type="submit" /></p>
+<p><input id="UserGet" value="ユーザ情報取得" type="submit" /></p>
+<p><input id="ClusterSend" value="クラスタid,userid情報送信" type="submit" /></p>
+<p><input id="ClusterGet" value="クラスタid,userid情報取得" type="submit" /></p>
+<p><input id="ClusterInfoSend" value="クラスタid,clustername送信" type="submit" /></p>
+<p><input id="ClusterInfoGet" value="クラスタid,clusterName取得" type="submit" /></p>
+<ul id="content"></ul>
+</body>
+</html>

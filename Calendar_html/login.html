@@ -30,7 +30,8 @@ and open the template in the editor.
                             $button.attr('disabled', false);
                         },
                         success: function (result) {
-                            if (result === 'success') {
+                            if (result) {
+				 alert('UserID:'+result);
                                 window.location.href='Taskru.html';
                             } else {
                                 alert('認証失敗');
