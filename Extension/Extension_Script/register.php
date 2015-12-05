@@ -10,6 +10,7 @@
 
     $fp = fopen("register.txt", "w");
     fwrite($fp, filter_input(INPUT_POST, "regId") . PHP_EOL);
+    fwrite($fp, filter_input(INPUT_POST, "userId") . PHP_EOL);
     fclose($fp);
    
     echo "{\"result\":\"success\"}";

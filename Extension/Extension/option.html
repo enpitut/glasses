@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Taskru Notification Option</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="css/option.css">
+        <script src="js/jquery-2.1.4.min.js"></script>
+        <script src="js/option.js"></script>
+    </head>
+    <body>
+        <article>
+            <h1>Taskru Notification Options</h1>
+            <div id="user_data">
+                <ul>
+                    <li>
+                        <p>アカウント名</p>
+                        <span id="account_name"></span>
+                    </li>
+                    <li>
+                        <p>メールアドレス</p>
+                        <span id="mail_addr"></span>
+                    </li>
+                </ul>
+                <button id="logout_button">ログアウト</button>
+            </div>
+            <div id="login">
+                <h1>ログインフォーム</h1>
+                <form id="login_form" action="http://meganeshibu.sakura.ne.jp/Extension_Script/login.php" method="post">
+                    <input type="text" name="account" placeholder="アカウント名" />
+                    <input type="password" name="password" placeholder="パスワード" />
+                    <input type="submit" value="ログイン">
+                </form>
+            </div>
+        </article>
+    </body>
+</html>

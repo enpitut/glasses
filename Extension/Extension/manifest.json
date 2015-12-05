@@ -4,15 +4,14 @@
     "description": "get notification from Taskru",
     "version": "1.0",
     "browser_action": {
-        "degault_icon": {
-            "default_icon": "images/taskru_logo.png"
-        },
+        "default_icon": "images/taskru_logo.png",
         "default_title": "Taskru Notification"
     },
     "background": {
-        "scripts": ["jquery-2.1.4.min.js","background.js"],
+        "scripts": ["js/jquery-2.1.4.min.js","js/background.js"],
         "persistent": false
     },
+    "options_page": "option.html",
     "permissions": [
         "gcm",
         "background",

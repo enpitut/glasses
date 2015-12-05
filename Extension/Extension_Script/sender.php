@@ -8,7 +8,9 @@
 require_once "HTTP/Request.php";
 
 if (filter_input(INPUT_POST, "message") != NULL) {
-    $regid = file_get_contents('register.txt');
+    $data = file_get_contents('register.txt');
+    $data = explode(PHP_EOL, $data);
+    $regid = $data[0];
     $apikey = "AIzaSyDh3_C0r5OxdGGHN516XleJ1G_-aAMxEC4";
     $message = filter_input(INPUT_POST, "message");
 
