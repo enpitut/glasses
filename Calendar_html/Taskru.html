@@ -301,6 +301,13 @@ $(function() {
 		  }
 	       },  
 	});
+	
+	//通知メッセージ作成
+    function Notificate(text){
+	var Notifi='<div id="Notifi'+NotifiCountert+'" class="box left">'+text+'</div>';
+	$("#TutiLine").append(Notifi);
+	NotifiCountert++;
+    }
 });
     //スケジュールテーブル作成
     function memoEvent2(){
@@ -360,12 +367,6 @@ function taskTableUpdate(date){
 	for(var i=0;i<25;i++){
 	    document.write("<tr><th style=\"width:10px;text-align:right;background-color:white;\" \>"+i+":00</th><td> </td></tr>");
 	}
-    }
-    //通知メッセージ作成
-    function Notificate(text){
-	var Notifi='<div id="Notifi'+NotifiCountert+'" class="box left">'+text+'</div>';
-	$("#TutiLine").append(Notifi);
-	NotifiCountert++;
     }
     
     //タスク入力・編集ダイアログ用の優先度を表す星5個の入った配列．タスクを読み込むたびに書き換えてください．
