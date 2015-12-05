@@ -29,9 +29,9 @@ while ($row = $stmt->fetchObject())
 		 $flag=false;
 	}
     }
-
+ 
 if($account!=NULL && $pass!=NULL && $flag){
-$sql = 'insert into UserTable(UserName, UserPass, NotificationPass) values("'.$account.'","'.$pass.'","'.$pass.'")';
+$sql = 'insert into UserTable(UserName, Mail,UserPass, NotificationPass) values("'.$account.'","'.$email.'","'.$pass.'","'.$pass.'")';
 $stmt = $dbh->query($sql);
 $success = true;
 }
@@ -42,4 +42,3 @@ if ($success==true) {
     echo false;
 }
 ?>
-

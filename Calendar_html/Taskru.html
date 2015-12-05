@@ -114,11 +114,9 @@ $(function() {
 	$("#scheduleButton").click(function(){
 		$("#schedule_title").val("");
 		$("#schedule_info").val("");
-		$("#schedule_start_time").val("yyyy-mm-dd hh:mm:ss");
-		$("#schedule_end_time").val("yyyy-mm-dd hh:mm:ss");
 		$('#schedule-input-dialog-form').dialog("open");
 		$("#schedule_form").validationEngine();
-		$("#schedule_title").validationEngine('attach',{
+		$("#schedule_title").validationEngine('attach',{ 
 			promptPosition:"bottomLeft"	
 		});
 	});
@@ -179,6 +177,7 @@ $(function() {
 		TaskName=$("#task_title").val();
     		TaskInfo=$("#task_info").val();
     		TaskEnd=$("#task_deadline").val();
+               TaskEnd=changeDBdate(TaskEnd);
     		TaskPriority=5;
 		ClusterID=2;
 		TaskVal = {query:"insert into TaskTable(UserID, TaskName, TaskInfo, TaskEnd, TaskPriority, ClusterID) values("+UserID+",'"+TaskName+"', '"+ TaskInfo+"', '"+TaskEnd+"', "+TaskPriority+", "+ClusterID+")"};
@@ -211,35 +210,31 @@ $(function() {
 		 		UserID=2;
 		 		ScheduleName=$("#schedule_title").val();
 		 		ScheduleInfo=$("#schedule_info").val();
-		 		ScheduleStart=$("#schedule_start_time").val() + "+09:00";
-		 		ScheduleEnd=$("#schedule_end_time").val() + "+09:00";
+		 		ScheduleStart=$("#schedule_start_time").val();
+		 		ScheduleEnd=$("#schedule_end_time").val();
 		 		ClusterID=2;
-		 		
 		 		RepeatNum=parseInt($("#schedule_repeat_num").val());
 		 		CycleNum=parseInt($("#schedule_cycle_num").val());
 		 		
-		 		//scheduleVal = {query:"insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values("+UserID+",'"+ScheduleName+"','"+ ScheduleInfo+"','"+ScheduleStart+"','"+ScheduleEnd+"', "+ClusterID+")"};
+oriStart=$("#schedule_start_time").val();
+oriEnd=$("#schedule_end_time").val();
+		 		scheduleVal = {query:"insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values("+UserID+",'"+ScheduleName+"','"+ ScheduleInfo+"','"+ScheduleStart+"','"+ScheduleEnd+"', "+ClusterID+")"};
 				
 				//RepeatNum回数ぶんajax関数を繰り返す
 				for(i=0; i<RepeatNum; i++){
 					if(i==0){
-						tmp_start = new Date(ScheduleStart);
-						tmp_end = new Date(ScheduleEnd);
-						
-						ScheduleStart = tmp_start;
-						ScheduleEnd = tmp_end;
-						
+						ScheduleStart=changeDBdate(ScheduleStart);
+						ScheduleEnd =changeDBdate(ScheduleEnd);
+
 						scheduleVal = {query:"insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values("+UserID+",'"+ScheduleName+"','"+ ScheduleInfo+"','"+ScheduleStart+"','"+ScheduleEnd+"', "+ClusterID+")"};
 					}else{
-						tmp_start = new Date(ScheduleStart);
-						tmp_end = new Date(ScheduleEnd);
-						
-						tmp_start.setDate(tmp_start.getDate() + CycleNum);
-						tmp_end.setDate(tmp_end.getDate() + CycleNum);
-						
-						ScheduleStart = tmp_start;
-						ScheduleEnd = tmp_end;
-						
+						tmp_start = new Date(oriStart);
+						tmp_end = new Date(oriEnd);
+						tmp_start.setDate(tmp_start.getDate() + CycleNum*i);
+						tmp_end.setDate(tmp_end.getDate() + CycleNum*i);
+						ScheduleStart=changeDBdate(tmp_start);
+						ScheduleEnd =changeDBdate(tmp_end);
+                                              
 						//再度クエリ書き出し
 						scheduleVal = {query:"insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values("+UserID+",'"+ScheduleName+"','"+ ScheduleInfo+"','"+ScheduleStart+"','"+ScheduleEnd+"', "+ClusterID+")"};
 					}
@@ -248,7 +243,7 @@ $(function() {
 						type: "POST",
 						url: "sendphp.php",
 						data: scheduleVal,      
-						success: function(data,dataType) {},		    
+						success: function(data,dataType) {},		     
 						error: function(XMLHttpRequest, textStatus, errorThrown) {
 							alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
 						}
@@ -275,6 +270,10 @@ $(function() {
 		 ScheduleInfo=$("#schedule_detail_info").val();
 		 ScheduleStart=$("#schedule_detail_start_time").val();
 		 ScheduleEnd=$("#schedule_detail_end_time").val();
+　　　　　　　　
+　　　　　　　　ScheduleStart=changeDBdate(ScheduleStart);
+		ScheduleEnd =changeDBdate(ScheduleEnd);
+
 
 		 scheduleVal = {query:"update ScheduleTable set ScheduleName='"+ ScheduleName+"', ScheduleInfo='"+ ScheduleInfo+"', ScheduleStart='"+ ScheduleStart+"', ScheduleEnd='"+ ScheduleEnd+"' where ScheduleID="+ ScheduleID};
 		$.ajax({  
@@ -308,6 +307,7 @@ $(function() {
 		    TaskName=$("#task_detail_title").val();
 		    TaskInfo=$("#task_detail_info").val();
 		    TaskEnd=$("#task_deadline").val();
+                    TaskEnd=changeDBdate(TaskEnd);
 		    TaskPriority=5;
 		    ClusterID=2;
 		    TaskVal = {query:"update TaskTable set TaskName='"+ TaskName+"', TaskInfo='"+ TaskInfo+"', TaskEnd='"+ TaskEnd+"' where TaskID="+ TaskID};
@@ -344,6 +344,23 @@ $(function() {
 	    document.write("<tr><th class=\"schedule_table\" \>"+i+":00</th><td> </td></tr>");
 	}
     }
+
+function changeDBdate(date){
+tmpDate = new Date(date);
+tmpYear = tmpDate.getUTCFullYear();
+tmpMonth = tmpDate.getUTCMonth() + 1;
+if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+tmpDay = tmpDate.getUTCDate();
+if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+tmpHour = tmpDate.getUTCHours();
+if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+tmpMinute = tmpDate.getMinutes();
+if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+tmpSecond = "00";
+out = tmpYear+"-"+tmpMonth+"-"+tmpDay+" "+tmpHour+"-"+tmpMinute+"-"+tmpSecond; 
+
+return out;
+}
    function scheduleTableUpdate(date){
 	$("#TimeLine").find("div").remove();
  	$.ajax({
@@ -715,10 +732,7 @@ function taskTableUpdate(date){
 	<input type="datetime-local" name="schedule_start_time" id="schedule_detail_start_time" />
 	<label for="schedule_end_time">終了日時: &nbsp; </label>	
 	<input type="datetime-local" name="schedule_end_time" id="schedule_detail_end_time" /><br>
-
-      //<label for="schedule_repeat">繰り返し設定</label>
-	<!-- よく考えたらこれ要らんわ -->
-      <br>
+ 
       <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
 		<select id='task_cluster' name='task_cluster' >
 		<script type="text/JavaScript">
@@ -761,7 +775,7 @@ function taskTableUpdate(date){
 		<script type="text/JavaScript">
 			getClusters();
 		</script>
-		</select >
+		</select > 
    </fieldset>
    </form>
 </div>

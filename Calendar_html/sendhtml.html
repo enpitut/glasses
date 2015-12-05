@@ -23,12 +23,14 @@
 
    TaskVal = {query:"insert into TaskTable(UserID, TaskName, TaskInfo, TaskEnd, TaskPriority, ClusterID) values("+UserID+",'"+TaskName+"', '"+ TaskInfo+"', '"+TaskEnd+"', "+TaskPriority+", "+ClusterID+")"};
      
-      UserName='enpitkun';
+      UserName='tmpkun';
       UserPass='hogehoge';
-      NotificationPass='abcde';
-  UserVal = {query:"insert into UserTable(UserName, UserPass, NotificationPass) values('"+UserName+"', '"+ UserPass+"' ,'"+NotificationPass+"')"};
+      Mail='kl@gmail.com';
 
-  ClusterVal = {query:"insert into ClusterTable(ClusterID, UserID) values("+ClusterID+", "+UserID+")"};
+      NotificationPass='abcde';
+  UserVal = {query:"insert into UserTable(UserName, Mail, UserPass, NotificationPass) values('"+UserName+"', '"+ Mail+"' ,'"+ UserPass+"' ,'"+NotificationPass+"')"};
+
+  ClusterVal = {query:"insert into ClusterTable(ClusterID, UserID) values("+ClusterID+", "+UserID+")"}; 
 ClusterName='temp';
 ClusterInfoVal = {query:"insert into ClusterInfoTable(ClusterName) values('"+ClusterName+"')"};
 
