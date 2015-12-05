@@ -74,6 +74,34 @@ $(function () {
 
     // クラスタ読み込み
     $(document).ready(function () {
+        //アカウント情報取得
+        /*
+        $.ajax({
+            type: "POST",
+            url: "getUser.php",
+            dataType: "json",
+            data: {query: "select * from UserID where"},
+            success: function (data, dataType) {
+                if (data == null)
+                    alert('ユーザデータが見つかりませんでした');
+                $content.append("<li>UserID:" + data[i].UserID + ", UserName:" + data[i].UserName + "</li>");
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
+            }
+        });
+        */
+        
+        var id;
+        $(document).getUserId().done(function(result) {
+            if(result) {
+                id = result;
+                console.log(id);
+            }
+        }).fail(function(result) {
+            alert('error');
+        });
+        
         // アカウント名取得
         rewriteText($('#account_name'), 'res/account.txt');
         rewriteText($('#password'), 'res/pass.txt');

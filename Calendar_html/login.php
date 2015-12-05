@@ -6,26 +6,25 @@
  * and open the template in the editor.
  */
 try {
-$dbh = new PDO('mysql:host=mysql488.db.sakura.ne.jp;dbname=meganeshibu_db;charset=utf8','meganeshibu','DBmaster777',
-array(PDO::ATTR_EMULATE_PREPARES => false));
+    $dbh = new PDO('mysql:host=mysql488.db.sakura.ne.jp;dbname=meganeshibu_db;charset=utf8', 'meganeshibu', 'DBmaster777', array(PDO::ATTR_EMULATE_PREPARES => false));
 } catch (PDOException $e) {
- exit('¥Ç¡¼¥¿¥Ù¡¼¥¹ÀÜÂ³¼ºÇÔ¡£'.$e->getMessage());
+    exit('ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹æŽ¥ç¶šå¤±æ•—ã€‚' . $e->getMessage());
 }
 
 $account = filter_input(INPUT_POST, "account");
 $pass = filter_input(INPUT_POST, "password");
 $success = false;
 
-$sql = 'select UserID, UserPass from UserTable where UserName="'.$account.'"';
+$sql = 'select UserID, UserPass from UserTable where UserName="' . $account . '"';
 $stmt = $dbh->query($sql);
 
-while ($row = $stmt->fetchObject())
-    { 
-	if($row->UserPass == $pass){
-		 echo $row->UserID;
-	}
+while ($row = $stmt->fetchObject()) {
+    if ($row->UserPass == $pass) {
+        session_start();
+        $_SESSION["user_id"] = $row->UserID;
+        echo $row->UserID;
     }
+}
 
-    echo false;
-
+echo false;
 ?>
