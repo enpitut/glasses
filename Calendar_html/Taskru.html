@@ -208,30 +208,59 @@ $(function() {
 	       modal:true,
 	       buttons:{
 	         "入力":function() {
-		 UserID=2;
-		 ScheduleName=$("#schedule_title").val();
-		 ScheduleInfo=$("#schedule_info").val();
-		 ScheduleStart=$("#schedule_start_time").val();
-		 ScheduleEnd=$("#schedule_end_time").val();
-		 ClusterID=2;
-		 scheduleVal = {query:"insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values("+UserID+",'"+ScheduleName+"','"+ ScheduleInfo+"','"+ScheduleStart+"','"+ScheduleEnd+"', "+ClusterID+")"};
-		$.ajax({  
-			type: "POST",
-			url: "sendphp.php",
-			data: scheduleVal,      
-			success: function(data,dataType) {},		    
-			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
-			}
-		}); 		
- 		  
-		scheduleTableUpdate(ScheduleStart);
-		$(this).dialog('close');
-		  },
-		  "キャンセル":function() {
+		 		UserID=2;
+		 		ScheduleName=$("#schedule_title").val();
+		 		ScheduleInfo=$("#schedule_info").val();
+		 		ScheduleStart=$("#schedule_start_time").val() + "+09:00";
+		 		ScheduleEnd=$("#schedule_end_time").val() + "+09:00";
+		 		ClusterID=2;
+		 		
+		 		RepeatNum=parseInt($("#schedule_repeat_num").val());
+		 		CycleNum=parseInt($("#schedule_cycle_num").val());
+		 		
+		 		//scheduleVal = {query:"insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values("+UserID+",'"+ScheduleName+"','"+ ScheduleInfo+"','"+ScheduleStart+"','"+ScheduleEnd+"', "+ClusterID+")"};
+				
+				//RepeatNum回数ぶんajax関数を繰り返す
+				for(i=0; i<RepeatNum; i++){
+					if(i==0){
+						tmp_start = new Date(ScheduleStart);
+						tmp_end = new Date(ScheduleEnd);
+						
+						ScheduleStart = tmp_start;
+						ScheduleEnd = tmp_end;
+						
+						scheduleVal = {query:"insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values("+UserID+",'"+ScheduleName+"','"+ ScheduleInfo+"','"+ScheduleStart+"','"+ScheduleEnd+"', "+ClusterID+")"};
+					}else{
+						tmp_start = new Date(ScheduleStart);
+						tmp_end = new Date(ScheduleEnd);
+						
+						tmp_start.setDate(tmp_start.getDate() + CycleNum);
+						tmp_end.setDate(tmp_end.getDate() + CycleNum);
+						
+						ScheduleStart = tmp_start;
+						ScheduleEnd = tmp_end;
+						
+						//再度クエリ書き出し
+						scheduleVal = {query:"insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values("+UserID+",'"+ScheduleName+"','"+ ScheduleInfo+"','"+ScheduleStart+"','"+ScheduleEnd+"', "+ClusterID+")"};
+					}
+					//alert("クエリ = "+ scheduleVal['query']);
+					$.ajax({  
+						type: "POST",
+						url: "sendphp.php",
+						data: scheduleVal,      
+						success: function(data,dataType) {},		    
+						error: function(XMLHttpRequest, textStatus, errorThrown) {
+							alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+						}
+					}); 		
+ 		  		}
+				scheduleTableUpdate(ScheduleStart);
+				$(this).dialog('close');
+		  	},
+		  	"キャンセル":function() {
 		        $(this).dialog('close');
-		  }
-	       },  
+		  	}
+	      },  
 	});
 	$('#schedule-detail-dialog-form').dialog({
                autoOpen:false,
@@ -430,11 +459,10 @@ function taskTableUpdate(date){
 	    if(num == 0){
 		    document.write("所属しているクラスタがありません。");
 	    }else{
-		    document.write("<select id='cluster' name='cluster' />");
 		    for(var i=0; i<num; i++){
-			    document.write("<option>" + cluster_array[i] + "</option>");
+			    document.write("<option value=" +  cluster_array[i] +">" + cluster_array[i] + "</option>");
+			    //今はとりあえず送信するvalueもクラスター名にしています．実際にはDBのキーIDを入れるといいと思う
 		    }
-		    document.write("</select>");
 	    }	
     }
     
@@ -604,9 +632,11 @@ function taskTableUpdate(date){
       <br>
 
       <label for="cluster">タスクの帰属するクラスタ</label>
+      <select id='task_cluster' name='task_cluster' >
 		<script type="text/JavaScript">
 			getClusters();
 		</script>
+		</select >
 	<br>	
    </fieldset>
    </form>
@@ -630,13 +660,40 @@ function taskTableUpdate(date){
 	<input type="datetime-local" name="schedule_end_time" id="schedule_end_time" /><br>
 
       <label for="schedule_repeat">繰り返し設定</label>
-	<!-- 入力インターフェースの時点から悩み中 -->
+      繰り返し回数：
+      	<select name="schedule_repeat_num" id="schedule_repeat_num">
+      		<option selected="selected">1</option>
+      		<option>2</option>
+      		<option>3</option>
+      		<option>4</option>
+      		<option>5</option>
+      		<option>6</option>
+      		<option>7</option>
+      		<option>8</option>
+      		<option>9</option>
+      		<option>10</option>
+      	</select>回
+      <br>
+      繰り返し周期：
+      	<select name="schedule_cycle_num" id="schedule_cycle_num">
+      		<option selected="selected">1</option>
+      		<option>2</option>
+      		<option>3</option>
+      		<option>4</option>
+      		<option>5</option>
+      		<option>6</option>
+      		<option>7</option>
+      	</select>日
+      <br>
       <br>
 
       
       <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
-	<!-- とりあえず後回し_(:3」∠)_ -->
-
+		<select id='schedule_cluster' name='schedule_cluster' >
+			<script type="text/JavaScript">
+				getClusters();
+			</script>
+   	  	</select>
    </fieldset>
    </form>
 </div>
@@ -659,12 +716,16 @@ function taskTableUpdate(date){
 	<label for="schedule_end_time">終了日時: &nbsp; </label>	
 	<input type="datetime-local" name="schedule_end_time" id="schedule_detail_end_time" /><br>
 
-      <label for="schedule_repeat">繰り返し設定</label>
-	<!-- 入力インターフェースの時点から悩み中 -->
+      //<label for="schedule_repeat">繰り返し設定</label>
+	<!-- よく考えたらこれ要らんわ -->
       <br>
       <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
-	<!-- とりあえず後回し_(:3」∠)_ -->
-   </fieldset>
+		<select id='task_cluster' name='task_cluster' >
+		<script type="text/JavaScript">
+			getClusters();
+		</script>
+		</select >
+	</fieldset>
    </form>
 </div>
 
@@ -696,7 +757,11 @@ function taskTableUpdate(date){
       <br>
 
       <label for="cluster">タスクの帰属するクラスタ</label>
-	<script>getClusters();</script>
+		<select id='task_cluster' name='task_cluster' >
+		<script type="text/JavaScript">
+			getClusters();
+		</script>
+		</select >
    </fieldset>
    </form>
 </div>
