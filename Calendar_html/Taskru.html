@@ -222,7 +222,6 @@ $(document).ready(function(){
                                 });
 */
 UserID=1;
-alert(UserID);
 		 		ScheduleName=$("#schedule_title").val();
 		 		ScheduleInfo=$("#schedule_info").val();
 		 		ScheduleStart=$("#schedule_start_time").val();
@@ -358,6 +357,21 @@ ScheduleStart=$("#schedule_detail_start_time").val();
 		taskTableUpdate();
 		    $(this).dialog('close');
 		  },
+"削除":function() {
+   TaskID = $("#task_detail_id").val();
+ TaskVal = {query:"DELETE FROM TaskTable WHERE TaskID ="+ TaskID};
+		$.ajax({  
+			type: "POST",
+			url: "sendphp.php",
+			data: TaskVal,
+			success: function(data,dataType) {},		    
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+			}
+		}); 	
+		taskTableUpdate();
+		        $(this).dialog('close');
+		  },
 		  "キャンセル":function() {
 		        $(this).dialog('close');
 		  }
@@ -394,6 +408,25 @@ out = tmpYear+"-"+tmpMonth+"-"+tmpDay+" "+tmpHour+"-"+tmpMinute+"-"+tmpSecond;
 
 return out;
 }
+
+function taskDetail(task_id){
+	    $.ajax({
+		type: "POST",
+		url: "getTask.php",   
+		data: {query:"select * from TaskTable where TaskID ="+task_id},
+		success: function(data,dataType) {
+			$("#task_detail_id").val(data[0].TaskID);
+			$("#task_detail_title").val(data[0].TaskName);
+			$("#task_detail_info").val(data[0].TaskInfo);
+			$("#task_detail_deadline").val(data[0].TaskEnd);
+		}, 
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+		}
+	    });
+	    $('#task-detail-dialog-form').dialog("open");
+}
+
    function scheduleTableUpdate(date){
 	$("#TimeLine").find("div").remove();
  	$.ajax({
@@ -422,7 +455,7 @@ if(data!=null){len=data.length}
 	});
 } 
 function taskTableUpdate(){
-	$("#TaskLine").find("div").remove();
+	$("#TaskLine").find("tr").remove();
 	$.ajax({ 
 		type: "POST",
 		url: "getTask.php",
@@ -431,7 +464,7 @@ function taskTableUpdate(){
 len=0;
 if(data!=null){len=data.length}
 			for (var i = 0; i<len; i++){
-				AddTask="<tr><th class=\"task_table\" \>"+data[i].TaskName+"</th><td style=\"text-align: center;\"> <input type=\"checkbox\" ></td></tr>";
+				AddTask="<tr><th class=\"task_table\" \>"+data[i].TaskName+"</th><td style=\"text-align: center;\"> <input type=\"button\", value=\"修正\" , onclick=\"taskDetail("+data[i].TaskID+")\"></td></tr>";
 				$("#TaskLine").append(AddTask);
 			}
 		},
@@ -817,4 +850,4 @@ if(data!=null){len=data.length}
 </div>
 
 </body>
-</html> 
+</html>
