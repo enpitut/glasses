@@ -110,7 +110,8 @@ $(document).ready(function(){
 
 	//タスク追加ボタンクリック時
 	$("#TaskButton").click(function(){
-	 
+	   date=getstartInitDate();
+		$("#task_deadline").val(date);
 	    $('#task-input-dialog-form').dialog("open");
 	});
 	
@@ -118,6 +119,10 @@ $(document).ready(function(){
 	$("#scheduleButton").click(function(){
 		$("#schedule_title").val("");
 		$("#schedule_info").val("");
+                date=getstartInitDate();
+		$("#schedule_start_time").val(date);
+		 date=getendInitDate();
+		$("#schedule_end_time").val(date);
 		$('#schedule-input-dialog-form').dialog("open");
 		$("#schedule_form").validationEngine();
 		$("#schedule_title").validationEngine('attach',{ 
@@ -137,8 +142,9 @@ $(document).ready(function(){
 			$("#schedule_detail_id").val(data[0].ScheduleID);
 			$("#schedule_detail_title").val(data[0].ScheduleName);
 			$("#schedule_detail_info").val(data[0].ScheduleInfo);
-			$("#schedule_detail_start_time").val(data[0].ScheduleStart);
-			$("#schedule_detail_end_time").val(data[0].ScheduleEnd);
+			$("#schedule_detail_start_time").val(data[0].ScheduleStart.replace(" ", "T"));
+			$("#schedule_detail_end_time").val(data[0].ScheduleEnd.replace(" ", "T"));
+
 		}, 
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
@@ -153,13 +159,13 @@ $(document).ready(function(){
 	    var task_id=$(this).children().attr("id");
 	    $.ajax({
 		type: "POST",
-		url: "getTask.php",   
+		url: "getTask.php",
 		data: {query:"select * from TaskTable where TaskID ="+task_id},
 		success: function(data,dataType) {
 			$("#task_detail_id").val(data[0].TaskID);
 			$("#task_detail_title").val(data[0].TaskName);
 			$("#task_detail_info").val(data[0].TaskInfo);
-			$("#task_detail_deadline").val(data[0].TaskEnd);
+			$("#task_detail_deadline").val(data[0].TaskEnd.replace(" ", "T"));
 		}, 
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
@@ -244,7 +250,7 @@ oriEnd=$("#schedule_end_time").val();
 					}else{
 						tmp_start = new Date(oriStart);
 						tmp_end = new Date(oriEnd);
-						tmp_start.setDate(tmp_start.getDate() + CycleNum*i);
+						F
 						tmp_end.setDate(tmp_end.getDate() + CycleNum*i);
 						ScheduleStart=changeDBdate(tmp_start);
 						ScheduleEnd =changeDBdate(tmp_end);
@@ -408,7 +414,7 @@ function taskDetail(task_id){
 			$("#task_detail_id").val(data[0].TaskID);
 			$("#task_detail_title").val(data[0].TaskName);
 			$("#task_detail_info").val(data[0].TaskInfo);
-			$("#task_detail_deadline").val(data[0].TaskEnd);
+			$("#task_detail_deadline").val(data[0].TaskEnd.replace(" ", "T"));
 		}, 
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
@@ -487,6 +493,37 @@ if(data!=null){len=data.length}
 	    document.write("<tr><th style=\"width:10px;text-align:right;background-color:white;\" \>"+i+":00</th><td> </td></tr>");
 	}
     }
+   function getstartInitDate(){
+	tmpDate = new Date();
+tmpYear = tmpDate.getFullYear();
+tmpMonth = tmpDate.getMonth() + 1;
+if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+tmpDay = tmpDate.getDate();
+if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+tmpHour = tmpDate.getHours();
+if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+tmpMinute = tmpDate.getMinutes();
+if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+tmpSecond = "00";
+out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+return out;
+}
+ function getendInitDate(){
+	tmpDate = new Date();
+tmpDate.setHours(tmpDate.getHours()+1);
+tmpYear = tmpDate.getFullYear();
+tmpMonth = tmpDate.getMonth() + 1;
+if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+tmpDay = tmpDate.getDate();
+if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+tmpHour = tmpDate.getHours();
+if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+tmpMinute = tmpDate.getMinutes();
+if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+tmpSecond = "00";
+out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+return out;
+}
     
     //タスク入力・編集ダイアログ用の優先度を表す星5個の入った配列．タスクを読み込むたびに書き換えてください．
     var prriority_array = ["★", "☆", "☆", "☆", "☆"];
@@ -744,7 +781,7 @@ if(data!=null){len=data.length}
       <label for="schedule_info">スケジュールの説明：</label>
       <input type="text" name="schedule_info" id="schedule_info"><br>
 
-      <label for="schedule_start_time">開始日時: &nbsp; </label>	
+      <label for="schedule_start_time">開始日時: &nbsp; </label>
 	<input type="datetime-local" name="schedule_start_time" id="schedule_start_time" />
 	<label for="schedule_end_time">終了日時: &nbsp; </label>	
 	<input type="datetime-local" name="schedule_end_time" id="schedule_end_time" /><br>
