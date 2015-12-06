@@ -29,8 +29,8 @@
 
       NotificationPass='abcde';
   UserVal = {query:"insert into UserTable(UserName, Mail, UserPass, NotificationPass) values('"+UserName+"', '"+ Mail+"' ,'"+ UserPass+"' ,'"+NotificationPass+"')"};
-
-  ClusterVal = {query:"insert into ClusterTable(ClusterID, UserID) values("+ClusterID+", "+UserID+")"}; 
+  State=true;
+  ClusterVal = {query:"insert into ClusterTable(ClusterID, UserID, State) values("+ClusterID+", "+UserID+", "+State+")"}; 
 ClusterName='temp';
 ClusterInfoVal = {query:"insert into ClusterInfoTable(ClusterName) values('"+ClusterName+"')"};
 
@@ -202,7 +202,7 @@ $('#ClusterInfoGet').click(function(){
 <p><input id="TaskGet" value="タスク取得" type="submit" /></p>
 <p><input id="UserSend" value="ユーザ情報送信" type="submit" /></p>
 <p><input id="UserGet" value="ユーザ情報取得" type="submit" /></p>
-<p><input id="ClusterSend" value="クラスタid,userid情報送信" type="submit" /></p>
+<p><input id="ClusterSend" value="クラスタid,userid情報送信" type="submit" /></p> 
 <p><input id="ClusterGet" value="クラスタid,userid情報取得" type="submit" /></p>
 <p><input id="ClusterInfoSend" value="クラスタid,clustername送信" type="submit" /></p>
 <p><input id="ClusterInfoGet" value="クラスタid,clusterName取得" type="submit" /></p>

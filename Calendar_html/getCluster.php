@@ -17,7 +17,8 @@ while ($row = $stmt->fetchObject())
     {
         $result[] = array(
 	    'ClusterID' => $row->ClusterID,
-            'UserID'=> $row->UserID            
+            'UserID'=> $row->UserID,
+            'State'=> $row->State
 );
     }
 $dbh = null;
