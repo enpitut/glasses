@@ -358,18 +358,8 @@ ScheduleStart=$("#schedule_detail_start_time").val();
 		    $(this).dialog('close');
 		  },
 "削除":function() {
-   TaskID = $("#task_detail_id").val();
- TaskVal = {query:"DELETE FROM TaskTable WHERE TaskID ="+ TaskID};
-		$.ajax({  
-			type: "POST",
-			url: "sendphp.php",
-			data: TaskVal,
-			success: function(data,dataType) {},		    
-			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
-			}
-		}); 	
-		taskTableUpdate();
+                       TaskID = $("#task_detail_id").val();
+                       taskFinish(TaskID);
 		        $(this).dialog('close');
 		  },
 		  "キャンセル":function() {
@@ -427,6 +417,20 @@ function taskDetail(task_id){
 	    $('#task-detail-dialog-form').dialog("open");
 }
 
+function taskFinish(TaskID){
+ TaskVal = {query:"DELETE FROM TaskTable WHERE TaskID ="+ TaskID};
+		$.ajax({  
+			type: "POST",
+			url: "sendphp.php",
+			data: TaskVal,
+			success: function(data,dataType) {},		    
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+			}
+		}); 	
+		taskTableUpdate();
+}
+
    function scheduleTableUpdate(date){
 	$("#TimeLine").find("div").remove();
  	$.ajax({
@@ -464,7 +468,7 @@ function taskTableUpdate(){
 len=0;
 if(data!=null){len=data.length}
 			for (var i = 0; i<len; i++){
-				AddTask="<tr><th class=\"task_table\" \>"+data[i].TaskName+"</th><td style=\"text-align: center;\"> <input type=\"button\", value=\"修正\" , onclick=\"taskDetail("+data[i].TaskID+")\"></td></tr>";
+	AddTask="<tr><th class=\"task_table\" \>"+data[i].TaskName+"</th><td style=\"text-align: center;\"> <input type=\"button\", value=\"修正\" , onclick=\"taskDetail("+data[i].TaskID+")\"></td><td style=\"text-align: center;\"> <input type=\"button\", value=\"完了\" , onclick=\"taskFinish("+data[i].TaskID+")\"></td></tr>";
 				$("#TaskLine").append(AddTask);
 			}
 		},
@@ -676,7 +680,7 @@ if(data!=null){len=data.length}
   
   <div class="span4" style="font-size:14px">
     <div id="TaskTitle" style="text-align:center;font-size:large;height:30px">タスク一覧</div>
-    <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;" data-step="4" data-intro="作成するとここにタスクが追加されます">
+    <div id="scroll" style="font-size:12px;width:350px;height:390px;overflow-x:scroll;" data-step="4" data-intro="作成するとここにタスクが追加されます">
 	<table id="TaskLine" class="table table-striped" border="1" rules="cols">
 	    <thead></thead>
 	    <tbody>
