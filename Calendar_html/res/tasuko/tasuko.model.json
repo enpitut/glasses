@@ -1,6 +1,6 @@
 {
 	"type": "Live2D Model Setting",
-	"name": "model",
+	"name": "tasuko",
 	"model": "tasuko.moc",
 	"textures": [
 		"tasuko.2048/texture_00.png"

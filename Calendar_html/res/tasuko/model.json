@@ -1,0 +1,42 @@
+{
+	"type": "Live2D Model Setting",
+	"name": "tasuko",
+	"model": "tasuko.moc",
+	"textures": [
+		"tasuko.2048/texture_00.png"
+	],
+	"expressions":[
+		{"name":"f01_Idol","file":"expressions/f01_Idol.json"},
+		{"name":"f02_smile1","file":"expressions/f02_smile1.json"},
+		{"name":"f02_smile2","file":"expressions/f02_smile2.json"},
+		{"name":"f02_wink","file":"expressions/f02_wink.json"},
+		{"name":"f03_sad","file":"expressions/f03_sad.json"},
+		{"name":"f04_angly","file":"expressions/f04_angly.json"},
+		{"name":"f05_shy","file":"expressions/f05_shy.json"},
+		{"name":"f06_trouble","file":"expressions/f06_trouble.json"},
+		{"name":"f07_surprise","file":"expressions/f07_surprise.json"},
+		{"name":"f08_sigh","file":"expressions/f08_sigh.json"}
+	],
+	"motions":{
+		"idle":[
+			{"file":"motions/Epsilon_free_idle_01.mtn"}
+		],
+		"other":[
+			{"file":"motions/Epsilon_free_m_01.mtn"},
+			{"file":"motions/Epsilon_free_m_02.mtn"},
+			{"file":"motions/Epsilon_free_m_03.mtn"},
+			{"file":"motions/Epsilon_free_m_04.mtn"},
+			{"file":"motions/Epsilon_free_m_05.mtn"},
+			{"file":"motions/Epsilon_free_m_06.mtn"},
+			{"file":"motions/Epsilon_free_m_07.mtn"},
+			{"file":"motions/Epsilon_free_m_08.mtn"},
+			{"file":"motions/Epsilon_free_m_09.mtn"},
+			{"file":"motions/Epsilon_free_m_sp_01.mtn"},
+			{"file":"motions/Epsilon_free_m_sp_02.mtn"},
+			{"file":"motions/Epsilon_free_m_sp_03.mtn"},
+			{"file":"motions/Epsilon_free_m_sp_04.mtn"},
+			{"file":"motions/Epsilon_free_m_sp_05.mtn"},
+			{"file":"motions/Epsilon_free_shake_01.mtn"}
+		]
+	}
+}

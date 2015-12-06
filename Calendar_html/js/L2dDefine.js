@@ -4,7 +4,7 @@
     DEBUG_MOUSE_LOG : false, // マウス関連の冗長なログ
 
     // モデル定義
-    MODEL : "res/tasuko/tasuko.model.json",
+    MODEL : "res/tasuko/model.json",
     
     // 画面
     VIEW_MAX_SCALE : 2,
