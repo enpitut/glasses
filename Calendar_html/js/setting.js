@@ -5,47 +5,50 @@
  */
 
 $(function () {
-    // ダイアログ操作後の表示更新
-    function rewriteText(element, file) {
-        $.get(file, function (data) {
-            if ($(element).attr('id') === 'password') {
-                var word_count = "";
-                for (i = 0; i < data.length; i++) {
-                    word_count += '*';
-                }
-                $(element).text(word_count);
-            } else {
-                $(element).text(data);
+    // ユーザデータ表示更新
+    function rewriteData(element, text) {
+        if ($(element).attr('id') === 'password') {
+            var word_count = "";
+            for (i = 0; i < text.length; i++) {
+                word_count += '*';
             }
-        });
+            $(element).text(word_count);
+        } else {
+            $(element).text(text);
+        }
     }
+    ;
 
-    // ファイル書き換え
-    function writeFile(dialog) {
+    // ユーザ情報更新
+    function updateUserData(dialog) {
         var $form = $(dialog).find('form');
         var $button = $(dialog).next('.ui-dialog-buttonpane').find('button');
 
-        $.ajax({
-            url: $form.attr('action'),
-            type: $form.attr('method'),
-            data: $form.serialize(),
-            dataType: 'json',
-            beforSend: function (xhr, settings) {
-                $button.attr('disabled', true);
-            },
-            complete: function (xhr, textStatus) {
-                $button.attr('disabled', false);
-            },
-            success: function (result) {
-                if (result["error"] !== null) {
-                    alert(result["error"]);
-                } else {
-                    rewriteText(result["target"], result["file"]);
+        $(document).getUserId().done(function (id) {
+            $.ajax({
+                url: $form.attr('action'),
+                type: $form.attr('method'),
+                data: $form.serialize() + '&id=' + id,
+                dataType: 'json',
+                beforSend: function (xhr, settings) {
+                    $button.attr('disabled', true);
+                },
+                complete: function (xhr, textStatus) {
+                    $button.attr('disabled', false);
+                },
+                success: function (result) {
+                    if (result["error"] !== null) {
+                        alert(result["error"]);
+                    } else {
+                        rewriteData(result["target"], result["text"]);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('読み込み失敗');
                 }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('読み込み失敗');
-            }
+            });
+        }).fail(function (id) {
+            alert('error');
         });
     }
     ;
@@ -75,37 +78,29 @@ $(function () {
     // クラスタ読み込み
     $(document).ready(function () {
         //アカウント情報取得
-        /*
-        $.ajax({
-            type: "POST",
-            url: "getUser.php",
-            dataType: "json",
-            data: {query: "select * from UserID where"},
-            success: function (data, dataType) {
-                if (data == null)
-                    alert('ユーザデータが見つかりませんでした');
-                $content.append("<li>UserID:" + data[i].UserID + ", UserName:" + data[i].UserName + "</li>");
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
+        $(document).getUserId().done(function (result) {
+            if (result) {
+                $.ajax({
+                    type: "POST",
+                    url: "getUserData.php",
+                    dataType: "json",
+                    data: {query: "select * from UserTable where UserID = '" + result + "'"},
+                    success: function (data, dataType) {
+                        if (data === null)
+                            alert('ユーザデータが見つかりませんでした');
+                        // アカウント名取得
+                        rewriteData($('#account_name'), data[0].UserName);
+                        rewriteData($('#password'), data[0].UserPass);
+                        rewriteData($('#mail_addr'), data[0].UserMail);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
+                    }
+                });
             }
-        });
-        */
-        
-        var id;
-        $(document).getUserId().done(function(result) {
-            if(result) {
-                id = result;
-                console.log(id);
-            }
-        }).fail(function(result) {
+        }).fail(function (result) {
             alert('error');
         });
-        
-        // アカウント名取得
-        rewriteText($('#account_name'), 'res/account.txt');
-        rewriteText($('#password'), 'res/pass.txt');
-        rewriteText($('#mail_addr'), 'res/mail.txt');
 
         $.getJSON("res/cluster.json", function (data) {
             $.each(data.joined, function (key, value) {
@@ -133,6 +128,10 @@ $(function () {
         }
     });
 
+    // ダイアログのバリデーション
+    $('form').validationEngine();
+
+
     // ダイアログの共通設定
     var dialog_option = {
         autoOpen: false,
@@ -149,7 +148,7 @@ $(function () {
                 class: 'btn_positive',
                 click: function () {
                     if ($('#new_account_name').val() !== "") {
-                        writeFile($(this));
+                        updateUserData($(this));
                         $(this).dialog('close');
                     } else {
                         alert('アカウント名を入力してください！');
@@ -175,7 +174,7 @@ $(function () {
                     if (($('#pass_text').val() === "") || ($('#new_pass_text').val() === "") || ($('#confirm_pass_text').val() === "")) {
                         alert('全項目を入力してください！');
                     } else {
-                        writeFile($(this));
+                        updateUserData($(this));
                         $(this).dialog('close');
                     }
                 }
@@ -197,7 +196,7 @@ $(function () {
                 class: 'btn_positive',
                 click: function () {
                     if ($('#new_mail_addr').val() !== "") {
-                        writeFile($(this));
+                        updateUserData($(this));
                         $(this).dialog('close');
                     } else {
                         alert('メールアドレスを入力してください');
