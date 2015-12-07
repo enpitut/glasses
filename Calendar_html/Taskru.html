@@ -260,7 +260,7 @@ oriEnd=$("#schedule_end_time").val();
 					}else{
 						tmp_start = new Date(oriStart);
 						tmp_end = new Date(oriEnd);
-
+						tmp_start.setDate(tmp_start.getDate() + CycleNum*i);
 						tmp_end.setDate(tmp_end.getDate() + CycleNum*i);
 						ScheduleStart=changeDBdate(tmp_start);
 						ScheduleEnd =changeDBdate(tmp_end);
