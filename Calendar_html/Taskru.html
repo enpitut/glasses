@@ -112,11 +112,10 @@ $(document).ready(function(){
 	$("#TaskButton").click(function(){
 	   date=getstartInitDate();
 		$("#task_deadline").val(date);
-<<<<<<< HEAD
+
 		//追加 →　タスク追加ボタンクリック時優先度を初期値(0)にする (小林)
 		changeStarNum(0);
-=======
->>>>>>> origin/master
+
 	    $('#task-input-dialog-form').dialog("open");
 	    
 	});
@@ -172,12 +171,10 @@ $(document).ready(function(){
 			$("#task_detail_title").val(data[0].TaskName);
 			$("#task_detail_info").val(data[0].TaskInfo);
 			$("#task_detail_deadline").val(data[0].TaskEnd.replace(" ", "T"));
-<<<<<<< HEAD
+
 			//追加　→　タスククリック時DBに格納されている優先度をセット (小林)
 			changePrriorityArray(data[0].TaskPriority);
 			
-=======
->>>>>>> origin/master
 		}, 
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
@@ -263,11 +260,7 @@ oriEnd=$("#schedule_end_time").val();
 					}else{
 						tmp_start = new Date(oriStart);
 						tmp_end = new Date(oriEnd);
-<<<<<<< HEAD
-						
-=======
-						F
->>>>>>> origin/master
+
 						tmp_end.setDate(tmp_end.getDate() + CycleNum*i);
 						ScheduleStart=changeDBdate(tmp_start);
 						ScheduleEnd =changeDBdate(tmp_end);
@@ -434,10 +427,8 @@ function taskDetail(task_id){
 			$("#task_detail_title").val(data[0].TaskName);
 			$("#task_detail_info").val(data[0].TaskInfo);
 			$("#task_detail_deadline").val(data[0].TaskEnd.replace(" ", "T"));
-<<<<<<< HEAD
 			changeStarNum(data[0].TaskPriority);
-=======
->>>>>>> origin/master
+
 		}, 
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
