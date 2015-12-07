@@ -39,6 +39,11 @@ function initL2dCanvas(cvsId){
         this.cvs.addEventListener("mouseup", mouseEvent, false);
         this.cvs.addEventListener("mouseout", mouseEvent, false);
         this.cvs.addEventListener("contextmenu", mouseEvent, false);
+        
+        this.cvs.addEventListener("touchstart", touchEvent, false);
+        this.cvs.addEventListener("touchend", touchEvent, false);
+        this.cvs.addEventListener("touchmove", touchEvent, false);
+        
     }
 }
 
@@ -158,6 +163,21 @@ function mouseEvent(e){
     }else if(e.type == "mouseout"){    
         lookFront();        
     }else if(e.type == "contextmenu"){
+    }
+}
+
+function touchEvent(e){
+    e.preventDefault();
+    var touch = e.touches[0];
+    
+    if (e.type == "touchstart") {
+        if (e.touches.length == 1) {
+            modelTurnHead(touch);
+        }
+    } else if (e.type == "touchmove") {
+        followPointer(touch);
+    } else if (e.type == "touchend") {
+        lookFront();
     }
 }
 
