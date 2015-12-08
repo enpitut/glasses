@@ -149,7 +149,6 @@ $(document).ready(function(){
 			$("#schedule_detail_info").val(data[0].ScheduleInfo);
 			$("#schedule_detail_start_time").val(data[0].ScheduleStart.replace(" ", "T"));
 			$("#schedule_detail_end_time").val(data[0].ScheduleEnd.replace(" ", "T"));
-
 		}, 
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
@@ -158,30 +157,8 @@ $(document).ready(function(){
 	    $('#schedule-detail-dialog-form').dialog("open");
 	});
 	
-	//タスククリック時
-	//$(".task").click(function(){
-	$(document).on('click', '.task',function(){
-	    var task_id=$(this).children().attr("id");
-	    $.ajax({
-		type: "POST",
-		url: "getTask.php",
-		data: {query:"select * from TaskTable where TaskID ="+task_id},
-		success: function(data,dataType) {
-			$("#task_detail_id").val(data[0].TaskID);
-			$("#task_detail_title").val(data[0].TaskName);
-			$("#task_detail_info").val(data[0].TaskInfo);
-			$("#task_detail_deadline").val(data[0].TaskEnd.replace(" ", "T"));
-
-			//追加　→　タスククリック時DBに格納されている優先度をセット (小林)
-			changePrriorityArray(data[0].TaskPriority);
-			
-		}, 
-		error: function(XMLHttpRequest, textStatus, errorThrown) {
-			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
-		}
-	    });
-	    $('#task-detail-dialog-form').dialog("open");
-	});
+	//タスククリック時 -> taskDetail()
+	
 	
 	//ダイアログメソッド
 	$('#task-input-dialog-form').dialog({
@@ -306,6 +283,7 @@ oriEnd=$("#schedule_end_time").val();
 
 
 		 scheduleVal = {query:"update ScheduleTable set ScheduleName='"+ ScheduleName+"', ScheduleInfo='"+ ScheduleInfo+"', ScheduleStart='"+ ScheduleStart+"', ScheduleEnd='"+ ScheduleEnd+"' where ScheduleID="+ ScheduleID};
+
 		$.ajax({  
 			type: "POST",
 			url: "sendphp.php",
@@ -327,7 +305,8 @@ ScheduleStart=$("#schedule_detail_start_time").val();
 			type: "POST",
 			url: "sendphp.php",
 			data: scheduleVal,      
-			success: function(data,dataType) {},		    
+			success: function(data,dataType) {
+},		    
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 				alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
 			}
@@ -354,18 +333,20 @@ ScheduleStart=$("#schedule_detail_start_time").val();
 		    TaskID = $("#task_detail_id").val();
 		    TaskName=$("#task_detail_title").val();
 		    TaskInfo=$("#task_detail_info").val();
-		    TaskEnd=$("#task_deadline").val();
+		    TaskEnd=$("#task_detail_deadline").val();
                     TaskEnd=changeDBdate(TaskEnd);
 		    //追加 →　クリックされた優先度の値(0 ~ 4)が変数prriority_degreeに入っておりそれを変数TaskPriorityに格納 (小林)
 		    TaskPriority=prriority_degree;
 		    ClusterID=2;
 		    //タスク更新時にタスク優先度をDBに再格納するよう修正(小林)
-		    TaskVal = {query:"update TaskTable set TaskName='"+ TaskName+"', TaskInfo='"+ TaskInfo+"', TaskEnd='"+ TaskEnd+"', TaskPriority='"+TaskPriority+"', where TaskID="+ TaskID};
-		
+		    TaskVal = {query:"update TaskTable set TaskName='"+ TaskName+"', TaskInfo='"+ TaskInfo+"', TaskEnd='"+ TaskEnd+"', TaskPriority="+TaskPriority+" where TaskID="+ TaskID};
+	
+alert(TaskVal['query']);
+
 			$.ajax({  
 			type: "POST",
 			url: "sendphp.php",
-			data: TaskVal,      
+			data:TaskVal,      
 			success: function(data,dataType) {},		    
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 				alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
@@ -427,7 +408,7 @@ function taskDetail(task_id){
 			$("#task_detail_title").val(data[0].TaskName);
 			$("#task_detail_info").val(data[0].TaskInfo);
 			$("#task_detail_deadline").val(data[0].TaskEnd.replace(" ", "T"));
-			changeStarNum(data[0].TaskPriority);
+			changeStarNum2(data[0].TaskPriority-1);
 
 		}, 
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -436,6 +417,9 @@ function taskDetail(task_id){
 	    });
 	    $('#task-detail-dialog-form').dialog("open");
 }
+
+
+
 
 function taskFinish(TaskID){
  TaskVal = {query:"DELETE FROM TaskTable WHERE TaskID ="+ TaskID};
@@ -545,12 +529,16 @@ return out;
     //タスクの優先度をいれる変数．1～5．タスクを読み込むたびに書き換えてください．
     var prriority_degree = 1;
 
-    //クリックされた☆の番号（左からいくつ）を引数にとる．☆がクリックされたときに呼び出される．
     function changeStarNum(num){
-	    //追加 →　changeStarNum()が呼ばれたときの数値(0~4)を変数prriority_degreeに格納 (小林)
-	    prriority_degree = num;
+	    prriority_degree = num+1;
 	    changePrriorityArray(num);
 	    drawPrriorityStars();
+    }
+
+function changeStarNum2(num){
+	    prriority_degree = num+1;
+	    changePrriorityArray(num);
+	    drawPrriorityStars2();
     }
 
     //prriority_arrayの中身を書き換えるのみの関数．引数は優先度．
@@ -581,7 +569,7 @@ return out;
     function drawPrriorityStars2(){
 	    var text;
 	    for(var i=0; i<5; i++){
-		    var tmp = "<a href='javascript:void(0)' onclick='changeStarNum(" + i + "); return false;'><font size='+3' color='#FFD700'>" + prriority_array[i] + "</font></a>";
+		    var tmp = "<a href='javascript:void(0)' onclick='changeStarNum2(" + i + "); return false;'><font size='+3' color='#FFD700'>" + prriority_array[i] + "</font></a>";
 		    if(i==0){
 			    text = tmp;
 		    }else{
@@ -869,10 +857,7 @@ return out;
    </form>
 </div>
 
-<!-- 元のダイアログdivの改造：タスク詳細ダイアログ -->
 <div id="task-detail-dialog-form" title="タスク詳細">
-   <!-- <p class="eventInput">タスクを入力してください!</p>  -->
-	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
    <form>
    <fieldset>
       <input type="hidden" name="task_id" id="task_detail_id" />
@@ -889,8 +874,6 @@ return out;
       <label for="priority">タスクの優先度</label>
 	<div id="prriority_stars2">
 	<script>
-	    //DBとのやりとりができるようになったら，drawPrriorityStars()[星を書きだす関数]の前にchangePrriorityArray(hoge)[配列prriority_arrayの中身を書き換える関数]を実行してください。
-	    //引数hogeには，DBから読み取ったそのタスクの優先度を格納してください．入力ダイアログであれば初期値を．
 	    drawPrriorityStars2();
 	</script>
 	</div>
