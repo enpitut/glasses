@@ -37,7 +37,7 @@ $(function () {
                     $button.attr('disabled', false);
                 },
                 success: function (result) {
-                    if (result["error"] !== null) {
+                    if (result !== 'success') {
                         alert(result["error"]);
                     } else {
                         rewriteData(result["target"], result["text"]);
@@ -75,11 +75,80 @@ $(function () {
         </li>\
     ';
 
-    // クラスタ読み込み
+    // クラスタ取得
+    function getCluster(id) {
+        $.ajax({
+            type: "POST",
+            url: "getCluster.php",
+            dataType: "json",
+            data: {id: id},
+            success: function (data, dataType) {
+                if (data === null)
+                    alert('クラスタ情報が見つかりませんでした');
+                // クラスタ情報入力
+                $.each(data, function (key, value) {
+                    if (value.ClusterState === 0) {
+                        $(cluster_bar.replace('クラスタ名', value.ClusterName).replace('説明', value.ClusterInfo).replace('クラスタID', value.ClusterID)).appendTo('#cluster_joined .cluster');
+                        var details = $('#cluster_joined .cluster li:last .cluster_details .cluster_member');
+                        $(value.ClusterMember).each(function () {
+                            $('<li>' + this + '</li>').appendTo(details);
+                        });
+                    } else if (value.ClusterState === 1) {
+                        $(cluster_bar.replace('クラスタ名', value.ClusterName).replace('説明', value.ClusterInfo).replace('クラスタID', value.ClusterID)).appendTo('#cluster_invited .cluster');
+                        var details = $('#cluster_invited .cluster li:last .cluster_details .cluster_member');
+                        $(value.ClusterMember).each(function () {
+                            $('<li>' + this + '</li>').appendTo(details);
+                        });
+                    }
+                });
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
+            }
+        });
+    }
+
+    // クラスタ管理
+    function manageCluster(dialog) {
+        var $form = $(dialog).find('form');
+        var $button = $(dialog).next('.ui-dialog-buttonpane').find('button');
+        var cluster_id = $form.find('input[name="cluster_id"]').val();
+
+        $(document).getUserId().done(function (id) {
+            $.ajax({
+                url: $form.attr('action'),
+                type: $form.attr('method'),
+                data: $form.serialize() + '&id=' + id + '&cluster_id=' + cluster_id,
+                beforSend: function (xhr, settings) {
+                    $button.attr('disabled', true);
+                },
+                complete: function (xhr, textStatus) {
+                    $button.attr('disabled', false);
+                },
+                success: function (result) {
+                    if (result === 'success') {
+                        alert('処理が完了しました');
+                        $('.cluster li').remove();
+                        getCluster(id);
+                    } else {
+                        alert(result);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('読み込み失敗');
+                }
+            });
+        }).fail(function (id) {
+            alert('error');
+        });
+    }
+    ;
+
+    // アカウント・クラスタ情報読み込み
     $(document).ready(function () {
-        //アカウント情報取得
         $(document).getUserId().done(function (result) {
             if (result) {
+                // アカウント情報取得
                 $.ajax({
                     type: "POST",
                     url: "getUserData.php",
@@ -97,26 +166,12 @@ $(function () {
                         alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
                     }
                 });
+
+                // クラスタ情報取得
+                getCluster(result);
             }
         }).fail(function (result) {
             alert('error');
-        });
-
-        $.getJSON("res/cluster.json", function (data) {
-            $.each(data.joined, function (key, value) {
-                $(cluster_bar.replace('クラスタ名', value.name).replace('説明', value.text).replace('クラスタID', key)).appendTo('#cluster_joined .cluster');
-                var details = $('#cluster_joined .cluster li:last .cluster_details .cluster_member');
-                $(value.member).each(function () {
-                    $('<li>' + this + '</li>').appendTo(details);
-                });
-            });
-            $.each(data.invited, function (key, value) {
-                $(cluster_bar.replace('クラスタ名', value.name).replace('説明', value.text).replace('クラスタID', key)).appendTo('#cluster_invited .cluster');
-                var details = $('#cluster_invited .cluster li:last .cluster_details .cluster_member');
-                $(value.member).each(function () {
-                    $('<li>' + this + '</li>').appendTo(details);
-                });
-            });
         });
     });
 
@@ -219,6 +274,8 @@ $(function () {
                 text: 'はい',
                 class: 'btn_positive',
                 click: function () {
+                    manageCluster($(this));
+                    $(this).dialog('close');
                 }
             },
             {
@@ -245,10 +302,10 @@ $(function () {
     $('#dialog_mail').dialog('option', {title: 'メールアドレス変更'});
 
     // クラスタ情報変更用ダイアログを定義
+    $.extend(dialog_option, cluster_button);
     $('#dialog_create_cluster').dialog(dialog_option);
     $('#dialog_create_cluster').dialog('option', {title: '新規クラスタ作成'});
 
-    $.extend(dialog_option, cluster_button);
     $('#dialog_cluster_invite').dialog(dialog_option);
     $('#dialog_cluster_invite').dialog('option', {title: 'ユーザ招待'});
 
@@ -280,22 +337,28 @@ $(function () {
     });
     $(document).on('click', '#cluster_joined .plus_button', function () {
         $('#dialog_cluster_invite').dialog('open');
+        var cluster_id = $(this).parents('.cluster_bar').attr('name');
+        $('#dialog_cluster_invite').find('input[name="cluster_id"]').val(cluster_id);
     });
     $(document).on('click', '#cluster_joined .minus_button', function () {
         $('#dialog_cluster_leave').dialog('open');
+        var cluster_id = $(this).parents('.cluster_bar').attr('name');
+        $('#dialog_cluster_leave').find('input[name="cluster_id"]').val(cluster_id);
     });
     $(document).on('click', '#cluster_invited .plus_button', function () {
         $('#dialog_cluster_join').dialog('open');
+        var cluster_id = $(this).parents('.cluster_bar').attr('name');
+        $('#dialog_cluster_join').find('input[name="cluster_id"]').val(cluster_id);
     });
     $(document).on('click', '#cluster_invited .minus_button', function () {
         $('#dialog_cluster_refuse').dialog('open');
+        var cluster_id = $(this).parents('.cluster_bar').attr('name');
+        $('#dialog_cluster_refuse').find('input[name="cluster_id"]').val(cluster_id);
     });
 
-    // ユーザ情報変更フォームがサブミットされた際の処理
-    $('#form_account').submit(function () {
-    });
-
-    // クラスタ情報変更フォームがサブミットされた際の処理
-    $('#form_cluster').submit(function () {
+    // ダイアログのフォームがサブミットされた際の処理
+    $('.dialog_form').submit(function (evt) {
+        evt.preventDefault();
+        $(this).parents('.ui-dialog').find('.btn_positive').click();
     });
 });
