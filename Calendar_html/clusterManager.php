@@ -35,7 +35,6 @@ if ($command == 'create') {
     $stmt = $dbh->query($sql);
     while ($row = $stmt->fetchObject()) {
         $invite_id = $row->UserID;
-        error_log($invite_id);
     }
     if (!isset($invite_id)) {
         echo 'そのユーザは存在しません';

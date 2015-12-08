@@ -1,12 +1,10 @@
 <?php
 
-/*
+/* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-header("Access-Control-Allow-Origin:*");
 
 try {
     $dbh = new PDO('mysql:host=mysql488.db.sakura.ne.jp;dbname=meganeshibu_db;charset=utf8', 'meganeshibu', 'DBmaster777', array(PDO::ATTR_EMULATE_PREPARES => false));
@@ -14,16 +12,18 @@ try {
     exit('データベース接続失敗。' . $e->getMessage());
 }
 
-$regId = filter_input(INPUT_POST, "regId");
-$userId = filter_input(INPUT_POST, "userId");
+$result = null;
 
-$sql = "update UserTable set NotificationID = '" . $regId . "' where UserId = '" . $userId . "'";
-if($stmt = $dbh->query($sql)){
-echo "success";
-} else {
-    echo "error";
+if(filter_input(INPUT_POST, 'input')) {
+    $input = filter_input(INPUT_POST, 'input');
+    $sql = "select UserName from UserTable where UserName like '" . $input . "%'";
+    $stmt = $dbh->query($sql);
+    while($row = $stmt->fetchObject()) {
+        $result[] = $row->UserName;
+    }
 }
 
 $dbh = null;
 
+echo json_encode($result);
 ?>
