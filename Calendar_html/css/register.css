@@ -8,8 +8,12 @@ and open the template in the editor.
     Author     : 裕斗
 */
 
+article {
+    margin: 0 30px;
+}
+
 form{
-    width: 380px;
+    width: 400px;
     margin: 20px auto;
     padding: 2%;
     font-size: 150%;
@@ -21,7 +25,7 @@ form{
 }
 
 label{
-    width: 170px;
+    width: 200px;
     margin-right: 10px;
     float: left;
 }
