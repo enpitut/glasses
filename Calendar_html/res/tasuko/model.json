@@ -5,6 +5,16 @@
 	"textures": [
 		"tasuko.2048/texture_00.png"
 	],
+    "layout":
+	{
+		"center_x":0,
+		"y":1.2,
+		"width":2.7
+	},
+    "hit_areas":[
+		{"name":"head", "id":"D_REF.HEAD"},
+		{"name":"body", "id":"D_REF.BODY"}
+	],
 	"expressions":[
 		{"name":"f01_Idol","file":"expressions/f01_Idol.json"},
 		{"name":"f02_smile1","file":"expressions/f02_smile1.json"},
@@ -21,7 +31,7 @@
 		"idle":[
 			{"file":"motions/Epsilon_free_idle_01.mtn"}
 		],
-		"other":[
+		"tap_body":[
 			{"file":"motions/Epsilon_free_m_01.mtn"},
 			{"file":"motions/Epsilon_free_m_02.mtn"},
 			{"file":"motions/Epsilon_free_m_03.mtn"},
@@ -36,7 +46,7 @@
 			{"file":"motions/Epsilon_free_m_sp_03.mtn"},
 			{"file":"motions/Epsilon_free_m_sp_04.mtn"},
 			{"file":"motions/Epsilon_free_m_sp_05.mtn"},
-			{"file":"motions/Epsilon_free_shake_01.mtn"}
+            {"file":"motions/Epsilon_free_shake_01.mtn"}
 		]
 	}
 }
