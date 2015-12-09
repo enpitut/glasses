@@ -526,7 +526,7 @@ tmpDay = tmpDate.getDate();
 if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
 tmpHour = tmpDate.getHours();
 if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-tmpMinute = tmpDate.getMinutes();
+tmpMinute = Math.floor((tmpDate.getMinutes())/10)*10;
 if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
 tmpSecond = "00";
 out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
@@ -542,7 +542,7 @@ tmpDay = tmpDate.getDate();
 if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
 tmpHour = tmpDate.getHours();
 if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-tmpMinute = tmpDate.getMinutes();
+tmpMinute = Math.floor((tmpDate.getMinutes())/10)*10;
 if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
 tmpSecond = "00";
 out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
@@ -856,9 +856,9 @@ background-color:#81D4FA;
       <input type="text" name="schedule_info" id="schedule_info"><br>
 
       <label for="schedule_start_time">開始日時: &nbsp; </label>
-	<input type="datetime-local" name="schedule_start_time" id="schedule_start_time" />
+	<input type="datetime-local" name="schedule_start_time" id="schedule_start_time" step="600" />
 	<label for="schedule_end_time">終了日時: &nbsp; </label>	
-	<input type="datetime-local" name="schedule_end_time" id="schedule_end_time" /><br>
+	<input type="datetime-local" name="schedule_end_time" id="schedule_end_time" step="600" /><br>
 
       <label for="schedule_repeat">繰り返し設定</label>
       繰り返し回数：
@@ -913,9 +913,9 @@ background-color:#81D4FA;
       <input type="text" name="scheDialog_info" id="schedule_detail_info"><br>
 
       <label for="schedule_start_time">開始日時: &nbsp; </label>	
-	<input type="datetime-local" name="schedule_start_time" id="schedule_detail_start_time" />
+	<input type="datetime-local" name="schedule_start_time" id="schedule_detail_start_time" step="600" />
 	<label for="schedule_end_time">終了日時: &nbsp; </label>	
-	<input type="datetime-local" name="schedule_end_time" id="schedule_detail_end_time" /><br>
+	<input type="datetime-local" name="schedule_end_time" id="schedule_detail_end_time" step="600" /><br>
  
       <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
 		<select id='task_cluster' name='task_cluster' >
