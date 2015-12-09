@@ -1,0 +1,1 @@
+{"files":[{"id":"fc78f616-a2e0-4ad4-9347-5f4ef0481e83","name":"コード","type":"server_js","source":"function myFunction() {\n  UrlFetchApp.fetch(\"http://meganeshibu.sakura.ne.jp/Extension_Script/sendNotification.php\");\n}\n"}]}

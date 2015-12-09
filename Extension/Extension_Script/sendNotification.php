@@ -23,7 +23,7 @@ function checkNotification($date, $extension) {
 
     $datetime = new DateTime($date);
     $datetime->add(DateInterval::createFromDateString($extension));
-    $interval = DateInterval::createFromDateString('+1 minute');
+    $interval = DateInterval::createFromDateString('+59 second');
     $dateStart = $datetime->format('Y-m-d H:i:s');
     $dateEnd = $datetime->add($interval)->format('Y-m-d H:i:s');
     $sql = <<<"EOT"
@@ -89,6 +89,7 @@ function sendNotification($message, $regId) {
     }
 }
 
+error_log('sendNotification');
 $notificationList = checkNotification('', '+1 hour');
 
 foreach ($notificationList as $notification) {

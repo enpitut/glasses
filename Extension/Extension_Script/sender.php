@@ -67,6 +67,23 @@ EOT;
     return $notificationList;
 }
 
+function sendNotification($message, $regId) {
+    $apikey = "AIzaSyDh3_C0r5OxdGGHN516XleJ1G_-aAMxEC4";
+
+    $rq = new HTTP_Request("https://android.googleapis.com/gcm/send");
+    $rq->setMethod(HTTP_REQUEST_METHOD_POST);
+    $rq->addHeader("Authorization", "key=" . $apikey);
+    $rq->addPostData("registration_id", $regId);
+    $rq->addPostData("collapse_key", "1");
+    $rq->addPostData("data.message", $message);
+
+    if (!PEAR::isError($rq->sendRequest())) {
+        print "\n" . $rq->getResponseBody();
+    } else {
+        print "\nError has occurred";
+    }
+}
+
 if ((filter_input(INPUT_POST, "date") != NULL) && (filter_input(INPUT_POST, "extension") != NULL)) {
     $date = filter_input(INPUT_POST, 'date');
     $extension = filter_input(INPUT_POST, 'extension');
@@ -81,25 +98,13 @@ if ((filter_input(INPUT_POST, "date") != NULL) && (filter_input(INPUT_POST, "ext
 
     foreach ($notificationList as $notification) {
         $regid = $notification['notificationID'];
-        if($notification['type'] == 'スケジュール') {
+        if ($notification['type'] == 'スケジュール') {
             $ref = '開始';
-        } else if($notification['type'] == 'タスク') {
+        } else if ($notification['type'] == 'タスク') {
             $ref = '終了';
         }
         $message = $notification['type'] . '「' . $notification['name'] . '」の' . $ref . $extension . 'です';
-
-        $rq = new HTTP_Request("https://android.googleapis.com/gcm/send");
-        $rq->setMethod(HTTP_REQUEST_METHOD_POST);
-        $rq->addHeader("Authorization", "key=" . $apikey);
-        $rq->addPostData("registration_id", $regid);
-        $rq->addPostData("collapse_key", "1");
-        $rq->addPostData("data.message", $message);
-
-        if (!PEAR::isError($rq->sendRequest())) {
-            print "\n" . $rq->getResponseBody();
-        } else {
-            print "\nError has occurred";
-        }
+        sendNotification($message, $regid);
     }
 }
 ?>
@@ -112,15 +117,15 @@ if ((filter_input(INPUT_POST, "date") != NULL) && (filter_input(INPUT_POST, "ext
             <button type="submit">送信</button>
         </form>
         <div>
-            <?php
-            if (isset($notificationList)) {
-                foreach ($notificationList as $notification) {
-                    echo '<p>';
-                    print_r($notification);
-                    echo'</p>';
-                }
-            }
-            ?>
+<?php
+if (isset($notificationList)) {
+    foreach ($notificationList as $notification) {
+        echo '<p>';
+        print_r($notification);
+        echo'</p>';
+    }
+}
+?>
         </div>
     </body>
 </html>
