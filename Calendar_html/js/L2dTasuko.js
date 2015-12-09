@@ -74,8 +74,6 @@ function init(){
 
     this.viewMatrix.setMaxScale(L2dDefine.VIEW_MAX_SCALE);
     this.viewMatrix.setMinScale(L2dDefine.VIEW_MIN_SCALE);
-    
-    this.viewMatrix.adjustScale(0,0,1);
 
     this.projMatrix = new L2DMatrix44();
     this.projMatrix.multScale(1, (width / height));
@@ -161,10 +159,9 @@ function mouseEvent(e){
     }else if(e.type == "mouseup"){
     // 右クリック以外なら処理を抜ける
         if("button" in e && e.button != 0) return;
-        //lookFront();        
+        lookFront();        
     }else if(e.type == "mouseout"){    
-        lookFront();
-        L2dMgr.expressionIdol();        
+        lookFront();        
     }else if(e.type == "contextmenu"){
     }
 }
@@ -181,7 +178,6 @@ function touchEvent(e){
         followPointer(touch);
     } else if (e.type == "touchend") {
         lookFront();
-//        L2dMgr.expressionIdol();
     }
 }
 
@@ -216,9 +212,8 @@ function followPointer(ev){
         _this.lastMouseX = sx;
         _this.lastMouseY = sy;
         
-        //_this.dragMgr.setPoint(vx, vy);
+        _this.dragMgr.setPoint(vx, vy);
     }
-    _this.dragMgr.setPoint(vx, vy);
 }
 
 function lookFront(){

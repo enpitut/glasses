@@ -17,27 +17,19 @@ L2dManager.prototype.getModel = function(){
 
 // ドラッグした時，その方向を向くよう設定する
 L2dManager.prototype.setDrag = function(x, y){
-    this.model.setDrag(x, y);    
+    this.model.setDrag(x, y);
 }
 
 // タップしたときのイベント
 L2dManager.prototype.tapEvent = function(x, y){
     // 顔
     if(this.model.hitTest(L2dDefine.HIT_AREA_HEAD, x, y)){
-        console.log("face:("+x+","+y+")");
-        //this.model.setExpression("f02_smile1");
-        this.model.setRandomExpression();
+        console.log("顔("+x+","+y+")");
     }
     // 体
     else if(this.model.hitTest(L2dDefine.HIT_AREA_BODY, x, y)){
-        console.log("body:("+x+","+y+")");
-        this.model.startRandomMotion(L2dDefine.MOTION_GROUP_TAP_BODY,
-                                             L2dDefine.PRIORITY_NORMAL);
+        console.log("体("+x+","+y+")");
     }
     
     return true;
-}
-
-L2dManager.prototype.expressionIdol = function(){
-    this.model.setExpression("f01_idol");
 }

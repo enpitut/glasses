@@ -144,8 +144,8 @@ $(function () {
     }
     ;
 
-    $(document).ready(function () {
     // アカウント・クラスタ情報読み込み
+    $(document).ready(function () {
         $(document).getUserId().done(function (result) {
             if (result) {
                 // アカウント情報取得
@@ -172,24 +172,6 @@ $(function () {
             }
         }).fail(function (result) {
             alert('error');
-        });
-        
-        $('#invite_user').autocomplete({
-            source: function(request, response) {
-                $.ajax({
-                    type: "POST",
-                    url: "getUserAutocomplete.php",
-                    cache: false,
-                    dataType: "json",
-                    data: {input: request.term},
-                    success: function (data) {
-                        response(data);
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        response(['']);
-                    }
-                });
-            }
         });
     });
 
