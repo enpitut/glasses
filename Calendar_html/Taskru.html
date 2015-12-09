@@ -35,6 +35,7 @@ $(document).ready(function(){
         if(m<10){m="0"+m;}
         if(d<10){d="0"+d;}
 	scheduleTableUpdate(y + "-" + m + "-" + d);
+        ClickedDay=y + "-" + m + "-" + d;
        taskTableUpdate();
 }); 
 	var NotifiCountert=2;
@@ -82,12 +83,14 @@ $(document).ready(function(){
 	var clickDay = $.fullCalendar.formatDate(date,"d");
 	
 	var days = clickMonth+"月"+clickDay+"日のスケジュール";
+
 	if(clickMonth<10){clickMonth="0"+clickMonth;}
 	if(clickDay<10){clickDay="0"+clickDay;}
 	var sendDate = y+"-"+clickMonth+"-"+clickDay;
+ClickedDay=sendDate;
 	$("#TimeTitle").text(days);
 	
-	scheduleTableUpdate(sendDate);
+	scheduleTableUpdate(ClickedDay);
         
 	},
         columnFormat: {
@@ -256,7 +259,7 @@ oriEnd=$("#schedule_end_time").val();
 						}
 					}); 		
  		  		}
-				scheduleTableUpdate(ScheduleStart);
+				scheduleTableUpdate(ClickedDay);
 				$(this).dialog('close');
 		  	},
 		  	"キャンセル":function() {
@@ -294,7 +297,7 @@ oriEnd=$("#schedule_end_time").val();
 			}
 		}); 		
  		  
-		scheduleTableUpdate(ScheduleStart);
+		scheduleTableUpdate(ClickedDay);
 		$(this).dialog('close');
 		  },
                   "削除":function() {
@@ -312,7 +315,7 @@ ScheduleStart=$("#schedule_detail_start_time").val();
 			}
 		}); 	
 
-		scheduleTableUpdate(ScheduleStart);
+		scheduleTableUpdate(ClickedDay);
 		        $(this).dialog('close');
 		  },
 		  "キャンセル":function() {
@@ -526,8 +529,11 @@ return out;
     //タスク入力・編集ダイアログ用の優先度を表す星5個の入った配列．タスクを読み込むたびに書き換えてください．
     var prriority_array = ["★", "☆", "☆", "☆", "☆"];
 
+
     //タスクの優先度をいれる変数．1～5．タスクを読み込むたびに書き換えてください．
     var prriority_degree = 1;
+
+var ClickedDay;
 
     function changeStarNum(num){
 	    prriority_degree = num+1;
