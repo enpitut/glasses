@@ -34,6 +34,6 @@
     };
 
     $(document).ready(function () {
-        //checkLogin();
+        checkLogin();
     });
 })(jQuery);

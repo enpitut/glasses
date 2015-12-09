@@ -4,6 +4,10 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
 
+article {
+    margin: 0 30px;
+}
+
 section {
     // background: #f0f0f0;
     border-radius: 4px;
