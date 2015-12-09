@@ -21,9 +21,12 @@
 <script src="js/session-util.js"></script>
 <script>
 $(function() {
+    var firstAccessFlag = true;
+    
     var FCdata;
 	var FC;
 	var prevDate;
+    var fc_todayFlag=false;
 	var date = new Date();
 	var y = date.getFullYear();
 	var m = date.getMonth()+1;
@@ -50,19 +53,23 @@ $(function() {
         if(d<10){d="0"+d;}
         scheduleTableUpdate(y + "-" + m + "-" + d);
         ClickedDay=y + "-" + m + "-" + d;
-        taskTableUpdate();        
+        taskTableUpdate();     
+
+        if(firstAccessFlag){
+            introJs()
+            .setOption('nextLabel','次へ')
+            .setOption('prevLabel','戻る')
+            .setOption('doneLabel','終了')
+            .setOption('skipLabel','スキップ')
+            .setOption('tooltipPosition','right')
+            .start();
+        }
     }); 
 	var NotifiCountert=2;
 	$("#TimeTitle").text(days);
 	Notificate("本日("+today+")のスケジュールを自動調整しました。確認してください");
 	 
-	introJs()
-	.setOption('nextLabel','次へ')
-	.setOption('prevLabel','戻る')
-	.setOption('doneLabel','終了')
-	.setOption('skipLabel','スキップ')
-	.setOption('tooltipPosition','right')
-	.start();
+
 
 	$('#calendar').fullCalendar({
 	   header: {  
@@ -72,41 +79,56 @@ $(function() {
 	   },
 	   width:800,
 	   height:350,
-	eventSources:[
+        eventSources:[
 	    
-	],
-           titleFormat: {
+        ],
+       titleFormat: {
               month: 'yyyy年 M月',
               week: '[yyyy年 ]M月 d日{ -[yyyy年 ][ M月] d日}',
               day: 'yyyy年 M月 d日 dddd'
-           },
+       },
 		
         dayClick: function(date, allDay, jsEvent, view) {
-	FCdata=$(this).text();
-	FC=$(this);
-	if(prevDate != null){
-	    prevDate.css('background-color','white');
-	    $(this).css('background-color','skyblue');
-	}else{
-	    $(this).css('background-color','skyblue');
-	}
-	prevDate=$(this);
-	
-	var clickYear = $.fullCalendar.formatDate(date, "Y");
-	var clickMonth = $.fullCalendar.formatDate(date, "M");
-	var clickDay = $.fullCalendar.formatDate(date,"d");
-	
-	var days = clickMonth+"月"+clickDay+"日のスケジュール";
+            FCdata=$(this).text();
+            FC=$(this);
+            
+            var today = new Date();
+                
+            if(prevDate != null){
+                if(fc_todayFlag){
+                    prevDate.css('background-color','#fcf8e3');
+                }else{
+                    prevDate.css('background-color','transparent');
+                }
+               
+                $(this).css('background-color','skyblue');
+                //fcf8e3
+            }else{
+                $(this).css('background-color','skyblue');
+            }
+            prevDate=$(this);
+            if(date.getFullYear() == today.getFullYear() && date.getMonth() == today.getMonth() && date.getDate() == today.getDate()){
+                console.log(today);
+                fc_todayFlag=true;
+            }else{
+                fc_todayFlag=false;
+            }
+            
+            var clickYear = $.fullCalendar.formatDate(date, "Y");
+            var clickMonth = $.fullCalendar.formatDate(date, "M");
+            var clickDay = $.fullCalendar.formatDate(date,"d");
+            
+            var days = clickMonth+"月"+clickDay+"日のスケジュール";
 
-	if(clickMonth<10){clickMonth="0"+clickMonth;}
-	if(clickDay<10){clickDay="0"+clickDay;}
-	var sendDate = y+"-"+clickMonth+"-"+clickDay;
-ClickedDay=sendDate;
-	$("#TimeTitle").text(days);
-	
-	scheduleTableUpdate(ClickedDay);
-        
-	},
+            if(clickMonth<10){clickMonth="0"+clickMonth;}
+            if(clickDay<10){clickDay="0"+clickDay;}
+            var sendDate = y+"-"+clickMonth+"-"+clickDay;
+            ClickedDay=sendDate;
+            $("#TimeTitle").text(days);
+            
+            scheduleTableUpdate(ClickedDay);
+                
+        },
         columnFormat: {
               month: 'ddd',
               week: 'M/d（ddd）',
