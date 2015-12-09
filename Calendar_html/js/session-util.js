@@ -5,13 +5,6 @@
  */
 
 (function ($) {
-    // ユーザIDを取得する
-    // $(document).getUserId().done(function(id) {
-    //  処理内容
-    // }).fail(function(id) {
-    //  エラー処理
-    // });
-    //のように記述する
     $.fn.getUserId = function() {
         return $.ajax({
             url: 'sessionManager.php',
@@ -20,8 +13,6 @@
         });
     };
 
-    // ログインしているかチェックする
-    // ログインしていなければlogin.htmlへ戻す
     var checkLogin = function () {
         $.ajax({
             url: 'sessionManager.php',
@@ -40,24 +31,6 @@
                 window.location.href = 'login.html';
             }
         });
-    };
-    
-    // 初接続か確認する
-    // データベースを参照し初接続ならfalse, そうでなければtrueを返す
-    // var flag = $(document).checkIntroFlag();
-    // と使う
-    $.fn.checkIntroFlag = function() {
-        var result = $.ajax({
-            url: 'sessionManager.php',
-            type: 'post',
-            async: false,
-            data: {'command': 'checkIntro'}
-        }).responseText;
-        if(result === '0') {
-            return true;
-        } else {
-            return false;
-        }
     };
 
     $(document).ready(function () {
