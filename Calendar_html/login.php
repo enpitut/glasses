@@ -13,7 +13,6 @@ try {
 
 $account = filter_input(INPUT_POST, "account");
 $pass = filter_input(INPUT_POST, "password");
-$success = false;
 
 $sql = 'select UserID, UserPass from UserTable where UserName="' . $account . '"';
 $stmt = $dbh->query($sql);
@@ -22,7 +21,7 @@ while ($row = $stmt->fetchObject()) {
     if ($row->UserPass == $pass) {
         session_start();
         $_SESSION["user_id"] = $row->UserID;
-        echo $row->UserID;
+        echo true;
     }
 }
 
