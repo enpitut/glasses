@@ -31,7 +31,7 @@ while ($row = $stmt->fetchObject())
     }
  
 if($account!=NULL && $pass!=NULL && $flag){
-$sql = 'insert into UserTable(UserName, Mail,UserPass, NotificationPass) values("'.$account.'","'.$email.'","'.$pass.'","'.$pass.'")';
+$sql = 'insert into UserTable(UserName, Mail,UserPass) values("'.$account.'","'.$email.'","'.$pass.'")';
 $stmt = $dbh->query($sql);
 $success = true;
 }
