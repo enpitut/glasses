@@ -344,22 +344,23 @@
                     ClickedDay = y + "-" + m + "-" + d;
                     taskTableUpdate();
 
-                    if (firstAccessFlag) {
-                        introJs()
-                                .setOption('nextLabel', '次へ')
-                                .setOption('prevLabel', '戻る')
-                                .setOption('doneLabel', '終了')
-                                .setOption('skipLabel', 'スキップ')
-                                .setOption('tooltipPosition', 'right')
-                                .start();
-                    }
+                   
                 });
 
                 $(window).load(function () {
                     $('#bodyContainer *').fadeTo(0, 0);
                     $('#bodyContainer *').css('visibility', 'visible');
                     $('#bodyContainer *').fadeTo(1000, 1);
-
+                    
+                    if (firstAccessFlag) {
+                        introJs()
+                            .setOption('nextLabel', '次へ')
+                            .setOption('prevLabel', '戻る')
+                            .setOption('doneLabel', '終了')
+                            .setOption('skipLabel', 'スキップ')
+                            .setOption('tooltipPosition', 'right')
+                            .start();
+                    }
                 });
 
                 $("#TimeTitle").text(days);
@@ -1438,10 +1439,10 @@
 
                 <div class="col-xs-6 col-sm-6 col-md-3 UIparts" id="taskContainer" style="padding:0 15px 0 15px; height:90%;">
                     <div id="taskButtonContainer" style="text-align:center;">
-                        <button id="TaskButton" type="button" class="taskButtons" style="margin-top:20px;margin-bottom:20px;width:80%;height:70px;" data-step="3" data-intro="このボタンをクリックしてタスクを作成してください">タスク<br>追加</button>
+                        <button id="TaskButton" type="button" class="taskButtons" style="margin-top:20px;margin-bottom:20px;width:80%;height:70px;" data-step="3" data-intro="このボタンをクリックしてタスクを作成してください" data-position="bottom" >タスク<br>追加</button>
                     </div>
                     <div id="TaskTitle" style="text-align:center;height:30px; margin-top:10px;">タスク一覧</div>
-                    <div id="scroll" style="height:390px;overflow-x:scroll;" data-step="4" data-intro="作成するとここにタスクが追加されます">
+                    <div id="scroll" style="height:390px;overflow-x:scroll;" data-step="4" data-intro="作成するとここにタスクが追加されます" data-position="top">
                         <table id="TaskLine" class="table" border="1" rules="cols">
                             <thead></thead>
                             <tbody>
