@@ -530,14 +530,13 @@
                                     Height + "px;\">" +
                                     "<div id=" + data[i].ScheduleID + ">" + data[i].ScheduleName + "</div> </div>";
                             $("#TimeLine").append(AddSchedule);
-                            console.log($("#TimeLine"));
                         }
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
                     }
                 });
-                scheduleTableUpdate(date);
+                schedulesuggest(date);
             }
             function taskTableUpdate() {
                 $("#TaskLine").find("tr").remove();
