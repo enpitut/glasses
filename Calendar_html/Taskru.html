@@ -236,7 +236,6 @@
                              $(document).getUserId().done(function(result){
                              UserID=result;
                              });
-                             alert(UserID);
                             var ScheduleName = $("#schedule_title").val();
                             var ScheduleInfo = $("#schedule_info").val();
                             var ScheduleStart = $("#schedule_start_time").val();
@@ -464,7 +463,6 @@
                             len = data.length;
                         }
                         for (var i = 0; i < len; i++) {
-alert(data[i].UserID);
                             if(UserID==data[i].UserID){
                                 var tableHeight = $('#TimeLine tr').height();
                                 var Hour = parseInt(data[i].ScheduleStart.substring(11, 13), 10);
