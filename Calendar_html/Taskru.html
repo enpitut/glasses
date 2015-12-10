@@ -319,6 +319,11 @@
                     scheduleTableUpdate(y + "-" + m + "-" + d);
                     ClickedDay = y + "-" + m + "-" + d;
                     taskTableUpdate();
+                    $(document).getNotification().done(function(result) {
+                        $.each(result, function(i, v) {
+                            appendNotificate(v);
+                        });
+                    });
                     if (firstAccessFlag) {
                         introJs()
                                 .setOption('nextLabel', '次へ')
@@ -688,6 +693,11 @@
 
             //通知メッセージ作成
             function Notificate(text) {
+                appendNotificate(text);
+                $(document).setNotification(text);
+            }
+            
+            function appendNotificate(text) {
                 $('#scroll2').animate({
                     scrollTop: $('#TutiLine').height()
                 }, "slow", "swing");

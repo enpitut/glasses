@@ -26,8 +26,8 @@ function L2dTasuko(){
     
     // タスクルに通知を飛ばす
     if(typeof Taskru_this != "undefined"){
-    Taskru_this.Notificate("ここに通知が表示されます．");
-    Taskru_this.Notificate("本日(" + NotifiToday + ")のスケジュールを自動調整しました．確認してください．");
+    //Taskru_this.Notificate("ここに通知が表示されます．");
+    //Taskru_this.Notificate("本日(" + NotifiToday + ")のスケジュールを自動調整しました．確認してください．");
     }
 }
 
