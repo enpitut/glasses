@@ -69,70 +69,377 @@
                     UserID = result;
                 })
 
-               <!-- ===== スケジュール追加ダイアログの時間チェック関数ここから ===== -->
-		function checkScheduleTime (){
-			var start = new Date($("#schedule_start_time").val());
-			var end = new Date($("#schedule_end_time").val());
-			if(start >= end){
-				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", true);
+               <!-- ===== 各種ダイアログの時間チェックやEMPTYをチェックする関数ここから ===== -->
+			function checkScheduleTime (){
+				var start = new Date($("#schedule_start_time").val());
+				var end = new Date($("#schedule_end_time").val());
+				if(start >= end){
+					$("#schedule_input_button").attr("disabled", true);
+				}else{
+					$("#schedule_input_button").attr("disabled", false);
+				
+					var start = new Date($("#schedule_start_time").val());
+					var end = new Date($("#schedule_end_time").val());
+					if(start >= end){
+						console.log(">=");
+						$("#schedule_input_button").attr("disabled", true);
+					}else{
+						console.log("<");
+						$("#schedule_input_button").attr("disabled", false)
+					}
+				}
+			}
+			
+			$("#schedule_start_time").focusout(function(){
+				if( $("#schedule_start_time").val() == "" || $("#schedule_end_time").val() == ""){
+					console.log("NULL");
+					$("#schedule_input_button").attr("disabled", true);
+				}else{
+					console.log("!NULL");
+					$("#schedule_input_button").attr("disabled", false);
+
+					var tmpDate = new Date($("#schedule_start_time").val());
+					tmpDate.setHours(tmpDate.getHours()  - 9);
+					var tmpMinute = tmpDate.getMinutes();
+					if(tmpMinute < 10 && tmpMinute !=0){
+						tmpMinute = 0;
+						tmpDate.setHours(tmpDate.getHours());
+						var tmpYear = tmpDate.getFullYear();
+						var tmpMonth = tmpDate.getMonth() + 1;
+						if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+						var tmpDay = tmpDate.getDate();
+						if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+						var tmpHour = tmpDate.getHours();
+						if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+						if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+						var tmpSecond = "00";
+						var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+						$("#schedule_start_time").val(out);
+					} 
+					$("#schedule_end_time").attr("min", $("#schedule_start_time").val());
+					checkScheduleTime();
+				}
+			});
+			
+		$("#schedule_start_time").keyup(function(){
+			if( $("#schedule_start_time").val() == "" || $("#schedule_end_time").val() == ""){
+				console.log("NULL");
+				$("#schedule_input_button").attr("disabled", true);
 			}else{
-				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", false);
+				console.log("!NULL");
+				$("#schedule_input_button").attr("disabled", false);
+
+				var tmpDate = new Date($("#schedule_start_time").val());
+				tmpDate.setHours(tmpDate.getHours()  - 9);
+				var tmpMinute = tmpDate.getMinutes();
+				if(tmpMinute == 0){
+					checkScheduleTime();
+				}else if(tmpMinute>0 && tmpMinute<10){
+					$("#schedule_input_button").attr("disabled", true);
+				}else if(tmpMinute >=10 && tmpMinute%10 !=0){
+					var tmpMinute = Math.floor(tmpMinute / 10)*10;
+					tmpDate.setHours(tmpDate.getHours());
+					var tmpYear = tmpDate.getFullYear();
+					var tmpMonth = tmpDate.getMonth() + 1;
+					if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+					var tmpDay = tmpDate.getDate();
+					if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+					var tmpHour = tmpDate.getHours();
+					if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+					if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+					var tmpSecond = "00";
+					var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+					$("#schedule_start_time").val(out);
+					$("#schedule_input_button").attr("disabled", false);
+					checkScheduleTime();
+				}else{
+					checkScheduleTime();
+				}
+			$("#schedule_end_time").attr("min", $("#schedule_start_time").val());
+			}
+		});
+		
+		$("#schedule_end_time").focusout(function(){
+			if( $("#schedule_start_time").val() == "" || $("#schedule_end_time").val() == ""){
+				console.log("NULL");
+				$("#schedule_input_button").attr("disabled", true);
+			}else{
+				console.log("!NULL");
+				$("#schedule_input_button").attr("disabled", false);
+		
+				var tmpDate = new Date($("#schedule_end_time").val());
+				tmpDate.setHours(tmpDate.getHours()  - 9);	
+				var tmpMinute = tmpDate.getMinutes();
+				if(tmpMinute < 10 && tmpMinute !=0){
+					tmpMinute = 0;
+					tmpDate.setHours(tmpDate.getHours());
+					var tmpYear = tmpDate.getFullYear();
+					var tmpMonth = tmpDate.getMonth() + 1;
+					if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+					var tmpDay = tmpDate.getDate();
+					if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+					var tmpHour = tmpDate.getHours();
+					if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+					if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+					var tmpSecond = "00";
+					var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+					$("#schedule_end_time").val(out);
+				} 
+				$("#schedule_start_time").attr("max", $("#schedule_end_time").val());
+				checkScheduleTime();
+			}
+		});
+		
+		$("#schedule_end_time").keyup(function(){
+			if( $("#schedule_start_time").val() == "" || $("#schedule_end_time").val() == ""){
+				console.log("NULL");
+				$("#schedule_input_button").attr("disabled", true);
+			}else{
+				console.log("!NULL");
+				$("#schedule_input_button").attr("disabled", false);
+		
+				var tmpDate = new Date($("#schedule_end_time").val());
+				tmpDate.setHours(tmpDate.getHours()  - 9);
+				var tmpMinute = tmpDate.getMinutes();
+				if(tmpMinute == 0){
+					checkScheduleTime();
+				}else if(tmpMinute>0 && tmpMinute<10){
+					$("#schedule_input_button").attr("disabled", true);
+				}else if(tmpMinute >=10 && tmpMinute%10 !=0){
+					tmpMinute = Math.floor(tmpMinute / 10)*10;
+					tmpDate.setHours(tmpDate.getHours());
+					var tmpYear = tmpDate.getFullYear();
+					var tmpMonth = tmpDate.getMonth() + 1;
+					if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+					var tmpDay = tmpDate.getDate();
+					if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+					var tmpHour = tmpDate.getHours();
+					if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+					if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+					var tmpSecond = "00";
+					var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+					$("#schedule_end_time").val(out);
+					$("#schedule_input_button").attr("disabled", false);
+				}else{
+					checkScheduleTime();
+				}
+				$("#schedule_start_time").attr("max", $("#schedule_end_time").val());
+			}
+		});
+		<!-- ===== スケジュール追加ダイアログの時間チェック関数ここまで ===== -->
+		<!-- ===== スケジュール詳細ダイアログの時間チェック関数ここから ===== -->
+		function checkScheduleDetailTime (){
+			if( $("#schedule_detail_start_time").val() == "" || $("#schedule_detail_end_time").val() == ""){
+				console.log("NULL");
+				$("#schedule_detail_button").attr("disabled", true);
+			}else{
+				console.log("!NULL");
+				$("#schedule_detail_button").attr("disabled", false);
+		
+				var start = new Date($("#schedule_detail_start_time").val());
+				var end = new Date($("#schedule_detail_end_time").val());
+				if(start >= end){
+					$("#schedule_detail_button").attr("disabled", true);
+				}else{
+					$("#schedule_detail_button").attr("disabled", false);
+				}
 			}
 		}
-		$("#schedule_start_time").focusout(function(){
-			var tmpDate = new Date($("#schedule_start_time").val());
-			tmpDate.setHours(tmpDate.getHours()  - 9);
-			var tmpMinute = tmpDate.getMinutes();
-			if(tmpMinute < 10 && tmpMinute !=0){
-				tmpMinute = 0;
-				tmpDate.setHours(tmpDate.getHours());
-				var tmpYear = tmpDate.getFullYear();
-				var tmpMonth = tmpDate.getMonth() + 1;
-				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-				var tmpDay = tmpDate.getDate();
-				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-				var tmpHour = tmpDate.getHours();
-				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-				var tmpSecond = "00";
-				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-				$("#schedule_start_time").val(out);
-			} 
-			$("#schedule_end_time").attr("min", $("#schedule_start_time").val());
-			checkScheduleTime();
-		});
-		$("#schedule_start_time").keyup(function(){
-			var tmpDate = new Date($("#schedule_start_time").val());
-			tmpDate.setHours(tmpDate.getHours()  - 9);
-			var tmpMinute = tmpDate.getMinutes();
-			if(tmpMinute == 0){
-				checkScheduleTime();
-			}else if(tmpMinute>0 && tmpMinute<10){
-				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", true);
-			}else if(tmpMinute >=10 && tmpMinute%10 !=0){
-				var tmpMinute = Math.floor(tmpMinute / 10)*10;
-				tmpDate.setHours(tmpDate.getHours());
-				var tmpYear = tmpDate.getFullYear();
-				var tmpMonth = tmpDate.getMonth() + 1;
-				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-				var tmpDay = tmpDate.getDate();
-				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-				var tmpHour = tmpDate.getHours();
-				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-				var tmpSecond = "00";
-				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-				$("#schedule_start_time").val(out);
-				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", false);
-				checkScheduleTime();
+		
+		$("#schedule_detail_start_time").focusout(function(){
+			if( $("#schedule_detail_start_time").val() == "" || $("#schedule_detail_end_time").val() == ""){
+				console.log("NULL");
+				$("#schedule_detail_button").attr("disabled", true);
 			}else{
-				checkScheduleTime();
+				console.log("!NULL");
+				$("#schedule_detail_button").attr("disabled", false);
+		
+				var tmpDate = new Date($("#schedule_detail_start_time").val());
+				tmpDate.setHours(tmpDate.getHours()  - 9);
+				var tmpMinute = tmpDate.getMinutes();
+				if(tmpMinute < 10 && tmpMinute !=0){
+					tmpMinute = 0;
+					tmpDate.setHours(tmpDate.getHours());
+					var tmpYear = tmpDate.getFullYear();
+					var tmpMonth = tmpDate.getMonth() + 1;
+					if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+					var tmpDay = tmpDate.getDate();
+					if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+					var tmpHour = tmpDate.getHours();
+					if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+					if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+					var tmpSecond = "00";
+					var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+					$("#schedule_detail_start_time").val(out);
+				} 
+				$("#schedule_detail_end_time").attr("min", $("#schedule_detail_start_time").val());
+				checkScheduleDetailTime();
 			}
-	
-			$("#schedule_end_time").attr("min", $("#schedule_start_time").val());
 		});
-		$("#schedule_end_time").focusout(function(){
-			var tmpDate = new Date($("#schedule_end_time").val());
+		
+		$("#schedule_detail_start_time").keyup(function(){
+			if( $("#schedule_detail_start_time").val() == "" || $("#schedule_detail_end_time").val() == ""){
+				console.log("NULL");
+				$("#schedule_detail_button").attr("disabled", true);
+			}else{
+				console.log("!NULL");
+				$("#schedule_detail_button").attr("disabled", false);
+		
+				var tmpDate = new Date($("#schedule_detail_start_time").val());
+				tmpDate.setHours(tmpDate.getHours()  - 9);
+				var tmpMinute = tmpDate.getMinutes();
+				if(tmpMinute == 0){
+					checkScheduleDetailTime();
+				}else if(tmpMinute>0 && tmpMinute<10){
+					$("#schedule_detail_button").attr("disabled", true);
+				}else if(tmpMinute >=10 && tmpMinute%10 !=0){
+					var tmpMinute = Math.floor(tmpMinute / 10)*10;
+					tmpDate.setHours(tmpDate.getHours());
+					var tmpYear = tmpDate.getFullYear();
+					var tmpMonth = tmpDate.getMonth() + 1;
+					if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+					var tmpDay = tmpDate.getDate();
+					if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+					var tmpHour = tmpDate.getHours();
+					if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+					if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+					var tmpSecond = "00";
+					var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+					$("#schedule_detail_start_time").val(out);
+					$("#schedule_detail_button").attr("disabled", false);
+					checkScheduleDetailTime();
+				}else{
+					checkScheduleDetailTime();
+				}
+				$("#schedule_detail_end_time").attr("min", $("#schedule_detail_start_time").val());
+			}
+		});
+		
+		$("#schedule_detail_end_time").focusout(function(){
+			if( $("#schedule_detail_start_time").val() == "" || $("#schedule_detail_end_time").val() == ""){
+				console.log("NULL");
+				$("#schedule_detail__button").attr("disabled", true);
+			}else{
+				console.log("!NULL");
+				$("#schedule_detail_button").attr("disabled", false);
+		
+				var tmpDate = new Date($("#schedule_detail_end_time").val());
+				tmpDate.setHours(tmpDate.getHours()  - 9);
+				var tmpMinute = tmpDate.getMinutes();
+				if(tmpMinute < 10 && tmpMinute !=0){
+					tmpMinute = 0;
+					tmpDate.setHours(tmpDate.getHours());
+					var tmpYear = tmpDate.getFullYear();
+					var tmpMonth = tmpDate.getMonth() + 1;
+					if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+					var tmpDay = tmpDate.getDate();
+					if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+					var tmpHour = tmpDate.getHours();
+					if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+					if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+					var tmpSecond = "00";
+					var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+					$("#schedule_detail_end_time").val(out);
+				} 
+				$("#schedule_detail_start_time").attr("max", $("#schedule_detail_end_time").val());
+				checkScheduleDetailTime();
+			}
+		});
+		
+		$("#schedule_detail_end_time").keyup(function(){
+			if( $("#schedule_detail_start_time").val() == "" || $("#schedule_detail_end_time").val() == ""){
+				console.log("NULL");
+				$("#schedule_detail_button").attr("disabled", true);
+			}else{
+				console.log("!NULL");
+				$("#schedule_detail_button").attr("disabled", false);
+			
+				var tmpDate = new Date($("#schedule_detail_end_time").val());
+				tmpDate.setHours(tmpDate.getHours()  - 9);
+				var tmpMinute = tmpDate.getMinutes();
+				if(tmpMinute == 0){
+					checkScheduleDetailTime();
+				}else if(tmpMinute>0 && tmpMinute<10){
+					$("#schedule_detail_button").attr("disabled", true);
+				}else if(tmpMinute >=10 && tmpMinute%10 !=0){
+					tmpMinute = Math.floor(tmpMinute / 10)*10;
+					tmpDate.setHours(tmpDate.getHours());
+					var tmpYear = tmpDate.getFullYear();
+					var tmpMonth = tmpDate.getMonth() + 1;
+					if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+					var tmpDay = tmpDate.getDate();
+					if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+					var tmpHour = tmpDate.getHours();
+					if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+					if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+					var tmpSecond = "00";
+					var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+					$("#schedule_detail_end_time").val(out);
+					$("#schedule_detail_button").attr("disabled", false);
+				}else{
+					checkScheduleDetailTime();
+				}
+				$("#schedule_detail_start_time").attr("max", $("#schedule_detail_end_time").val());
+			}
+		});
+	<!-- ===== スケジュール詳細ダイアログの時間チェック関数ここまで ===== -->
+	
+	<!-- ===== さらに追加，必須項目が埋まっているかチェックする関数ここから ===== -->
+		$("#schedule_title").keyup(function(){
+			var title = $("#schedule_title").val();
+			if(title == ""){
+				console.log("title NULL");
+				$("#schedule_input_button").attr("disabled", true);
+			}else{
+				console.log("title !NULL");
+				$("#schedule_input_button").attr("disabled", false);
+			}
+		});
+
+		$("#schedule_detail_title").keyup(function(){
+			var title = $("#schedule_detail_title").val();
+			if(title == ""){
+				console.log("title NULL");
+				$("#schedule_detail_button").attr("disabled", true);
+			}else{
+				console.log("title !NULL");
+				$("#schedule_detail_button").attr("disabled", false);
+			}
+		});
+
+		$("#task_title").keyup(function(){
+			var title = $("#task_title").val();
+			if(title == ""){
+				console.log("title NULL");
+				$("#task_input_button").attr("disabled", true);
+			}else{
+				console.log("title !NULL");
+				$("#task_input_button").attr("disabled", false);
+			}
+		});
+
+		$("#task_detail_title").keyup(function(){
+			var title = $("#task_detail_title").val();
+			if(title == ""){
+				console.log("title NULL");
+				$("#task_detail_button").attr("disabled", true);
+			}else{
+				console.log("title !NULL");
+				$("#task_detail_button").attr("disabled", false);
+			}
+		});
+
+		$("#task_deadline").focusout(function(){
+			var deadline = $("#task_deadline").val();
+			if(deadline == ""){
+				console.log("deadline NULL");
+				$("#task_input_button").attr("disabled", true);
+			}else{
+				console.log("deadline !NULL");
+				$("#task_input_button").attr("disabled", false);
+			
+
+			var tmpDate = new Date($("#task_deadline").val());
 			tmpDate.setHours(tmpDate.getHours()  - 9);	
 			var tmpMinute = tmpDate.getMinutes();
 			if(tmpMinute < 10 && tmpMinute !=0){
@@ -148,53 +455,58 @@
 				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
 				var tmpSecond = "00";
 				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-				$("#schedule_end_time").val(out);
+				$("#task_deadline").val(out);
 			} 
-			$("#schedule_start_time").attr("max", $("#schedule_end_time").val());
-			checkScheduleTime();
-		});
-		$("#schedule_end_time").keyup(function(){
-			var tmpDate = new Date($("#schedule_end_time").val());
-			tmpDate.setHours(tmpDate.getHours()  - 9);
-			var tmpMinute = tmpDate.getMinutes();
-			if(tmpMinute == 0){
-				checkScheduleTime();
-			}else if(tmpMinute>0 && tmpMinute<10){
-				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", true);
-			}else if(tmpMinute >=10 && tmpMinute%10 !=0){
-				tmpMinute = Math.floor(tmpMinute / 10)*10;
-				tmpDate.setHours(tmpDate.getHours());
-				var tmpYear = tmpDate.getFullYear();
-				var tmpMonth = tmpDate.getMonth() + 1;
-				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-				var tmpDay = tmpDate.getDate();
-				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-				var tmpHour = tmpDate.getHours();
-				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-				var tmpSecond = "00";
-				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-				$("#schedule_end_time").val(out);
-				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", false);
-			}else{
-				checkScheduleTime();
 			}
-			$("#schedule_start_time").attr("max", $("#schedule_end_time").val());
 		});
-		<!-- ===== スケジュール追加ダイアログの時間チェック関数ここまで ===== -->
-		<!-- ===== スケジュール詳細ダイアログの時間チェック関数ここから ===== -->
-		function checkScheduleDetailTime (){
-			var start = new Date($("#schedule_detail_start_time").val());
-			var end = new Date($("#schedule_detail_end_time").val());
-			if(start >= end){
-				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", true);
+
+		$("#task_deadline").keyup(function(){
+			var deadline = $("#task_deadline").val();
+			if(deadline == ""){
+				console.log("deadline NULL");
+				$("#task_input_button").attr("disabled", true);
 			}else{
-				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", false);
+				console.log("deadline !NULL");
+				$("#task_input_button").attr("disabled", false);
+			
+				var tmpDate = new Date($("#task_deadline").val());
+					tmpDate.setHours(tmpDate.getHours()  - 9);	
+					var tmpMinute = tmpDate.getMinutes();
+
+					if(tmpMinute == 0){
+						checkScheduleTime();
+					}else if(tmpMinute>0 && tmpMinute<10){
+						$("#task_input_button").attr("disabled", true);
+					}else if(tmpMinute >=10 && tmpMinute%10 !=0){
+						tmpMinute = Math.floor(tmpMinute / 10)*10;
+						tmpDate.setHours(tmpDate.getHours());
+						var tmpYear = tmpDate.getFullYear();
+						var tmpMonth = tmpDate.getMonth() + 1;
+						if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+						var tmpDay = tmpDate.getDate();
+						if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+						var tmpHour = tmpDate.getHours();
+						if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+						if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+						var tmpSecond = "00";
+						var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+						$("#task_deadline").val(out);
+					} 
 			}
-		}
-		$("#schedule_detail_start_time").focusout(function(){
-			var tmpDate = new Date($("#schedule_detail_start_time").val());
-			tmpDate.setHours(tmpDate.getHours()  - 9);
+		});
+
+		$("#task_detail_deadline").focusout(function(){
+			var deadline = $("#task_detail_deadline").val();
+			if(deadline == ""){
+				console.log("deadline NULL");
+				$("#task_detail_button").attr("disabled", true);
+			}else{
+				console.log("deadline !NULL");
+				$("#task_detail_button").attr("disabled", false);
+			
+
+			var tmpDate = new Date($("#task_detail_deadline").val());
+			tmpDate.setHours(tmpDate.getHours()  - 9);	
 			var tmpMinute = tmpDate.getMinutes();
 			if(tmpMinute < 10 && tmpMinute !=0){
 				tmpMinute = 0;
@@ -209,91 +521,51 @@
 				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
 				var tmpSecond = "00";
 				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-				$("#schedule_detail_start_time").val(out);
+				$("#task_detail_deadline").val(out);
 			} 
-			$("#schedule_detail_end_time").attr("min", $("#schedule_detail_start_time").val());
-			checkScheduleDetailTime();
-		});
-		$("#schedule_detail_start_time").keyup(function(){
-			var tmpDate = new Date($("#schedule_detail_start_time").val());
-			tmpDate.setHours(tmpDate.getHours()  - 9);
-			var tmpMinute = tmpDate.getMinutes();
-			if(tmpMinute == 0){
-				checkScheduleDetailTime();
-			}else if(tmpMinute>0 && tmpMinute<10){
-				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", true);
-			}else if(tmpMinute >=10 && tmpMinute%10 !=0){
-				var tmpMinute = Math.floor(tmpMinute / 10)*10;
-				tmpDate.setHours(tmpDate.getHours());
-				var tmpYear = tmpDate.getFullYear();
-				var tmpMonth = tmpDate.getMonth() + 1;
-				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-				var tmpDay = tmpDate.getDate();
-				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-				var tmpHour = tmpDate.getHours();
-				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-				var tmpSecond = "00";
-				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-				$("#schedule_detail_start_time").val(out);
-				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", false);
-				checkScheduleDetailTime();
-			}else{
-				checkScheduleDetailTime();
 			}
-			$("#schedule_detail_end_time").attr("min", $("#schedule_detail_start_time").val());
 		});
-		$("#schedule_detail_end_time").focusout(function(){
-			var tmpDate = new Date($("#schedule_detail_end_time").val());
-			tmpDate.setHours(tmpDate.getHours()  - 9);
-			var tmpMinute = tmpDate.getMinutes();
-			if(tmpMinute < 10 && tmpMinute !=0){
-				tmpMinute = 0;
-				tmpDate.setHours(tmpDate.getHours());
-				var tmpYear = tmpDate.getFullYear();
-				var tmpMonth = tmpDate.getMonth() + 1;
-				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-				var tmpDay = tmpDate.getDate();
-				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-				var tmpHour = tmpDate.getHours();
-				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-				var tmpSecond = "00";
-				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-				$("#schedule_detail_end_time").val(out);
-			} 
-			$("#schedule_detail_start_time").attr("max", $("#schedule_detail_end_time").val());
-			checkScheduleDetailTime();
-		});
-		$("#schedule_detail_end_time").keyup(function(){
-			var tmpDate = new Date($("#schedule_detail_end_time").val());
-			tmpDate.setHours(tmpDate.getHours()  - 9);
-			var tmpMinute = tmpDate.getMinutes();
-			if(tmpMinute == 0){
-				checkScheduleDetailTime();
-			}else if(tmpMinute>0 && tmpMinute<10){
-				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", true);
-			}else if(tmpMinute >=10 && tmpMinute%10 !=0){
-				tmpMinute = Math.floor(tmpMinute / 10)*10;
-				tmpDate.setHours(tmpDate.getHours());
-				var tmpYear = tmpDate.getFullYear();
-				var tmpMonth = tmpDate.getMonth() + 1;
-				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-				var tmpDay = tmpDate.getDate();
-				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-				var tmpHour = tmpDate.getHours();
-				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-				var tmpSecond = "00";
-				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-				$("#schedule_detail_end_time").val(out);
-				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", false);
+
+
+		$("#task_detail_deadline").keyup(function(){
+			var deadline = $("#task_detail_deadline").val();
+			if(deadline == ""){
+				console.log("deadline NULL");
+				$("#task_detail_button").attr("disabled", true);
 			}else{
-				checkScheduleDetailTime();
-				}
-			$("#schedule_detail_start_time").attr("max", $("#schedule_detail_end_time").val());
+				console.log("deadline !NULL");
+				$("#task_detail_button").attr("disabled", false);
+
+				var tmpDate = new Date($("#task_detail_deadline").val());
+					tmpDate.setHours(tmpDate.getHours()  - 9);
+					var tmpMinute = tmpDate.getMinutes();
+
+					if(tmpMinute == 0){
+						//checkScheduleTime();
+					}else if(tmpMinute>0 && tmpMinute<10){
+						$("#task_detail_button").attr("disabled", true);
+					}else if(tmpMinute >=10 && tmpMinute%10 !=0){
+						tmpMinute = Math.floor(tmpMinute / 10)*10;
+						tmpDate.setHours(tmpDate.getHours());
+						var tmpYear = tmpDate.getFullYear();
+						var tmpMonth = tmpDate.getMonth() + 1;
+						if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+						var tmpDay = tmpDate.getDate();
+						if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+						var tmpHour = tmpDate.getHours();
+						if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+						if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+						var tmpSecond = "00";
+						var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+						$("#task_detail_deadline").val(out);
+						$("#task_detail_button").attr("disabled", false);
+					}else{
+						//checkScheduleTime();
+					}
+			}
 		});
-	<!-- ===== スケジュール詳細ダイアログの時間チェック関数ここまで ===== -->
+
+	<!-- ===== 必須項目が埋まっているかチェックする関数ここまで ===== -->
 
                 $(document).ready(function () {
                     $('#scheduleContainer').outerHeight(
