@@ -23,7 +23,6 @@
         <script>
             $(function () {
                 var firstAccessFlag = $(document).checkIntroFlag();
-
                 var FCdata;
                 var FC;
                 var prevDate;
@@ -34,9 +33,7 @@
                 var d = date.getDate();
                 var days = m + "月" + d + "日のスケジュール";
                 var today = m + "月" + d + "日";
-
                 var NotifiCountert = 0; // 通知欄の通知の数．idを決定するのに用いる
-
                 $(document).ready(function () {
                     $('#scheduleContainer').outerHeight(
                             $('#calendarContainer').height()
@@ -44,15 +41,12 @@
                     $('#scheduleContainer').children('#scroll').height(
                             ($('#scheduleContainer').height() - $('#scheduleButtonContainer').outerHeight() - $('#TimeTitle').outerHeight()) * 0.94
                             );
-
                     $('#taskContainer').outerHeight(
                             $('#calendarContainer').height()
                             );
                     $('#taskContainer').children('#scroll').height(
                             ($('#taskContainer').height() - $('#taskButtonContainer').outerHeight() - $('#taskTitle').outerHeight()) * 0.9
                             );
-
-
                     if (m < 10) {
                         m = "0" + m;
                     }
@@ -62,7 +56,6 @@
                     scheduleTableUpdate(y + "-" + m + "-" + d);
                     ClickedDay = y + "-" + m + "-" + d;
                     taskTableUpdate();
-
                     if (firstAccessFlag) {
                         introJs()
                                 .setOption('nextLabel', '次へ')
@@ -73,17 +66,14 @@
                                 .start();
                     }
                 });
-                
-                $(window).load(function(){
+                    $(window).load(function(){
                     $('#bodyContainer *').fadeTo(0,0); 
                     $('#bodyContainer *').css('visibility' , 'visible'); 
                     $('#bodyContainer *').fadeTo(1000,1);   
                     Notificate("ここに通知が表示されます．");
                     Notificate("本日(" + today + ")のスケジュールを自動調整しました．確認してください．");
                 });
-
                 $("#TimeTitle").text(days);
-
                 $('#calendar').fullCalendar({
                     header: {
                         left: 'prev, today',
@@ -102,16 +92,13 @@
                     dayClick: function (date, allDay, jsEvent, view) {
                         FCdata = $(this).text();
                         FC = $(this);
-
                         var today = new Date();
-
                         if (prevDate != null) {
                             if (fc_todayFlag) {
                                 prevDate.css('background-color', '#fcf8e3');
                             } else {
                                 prevDate.css('background-color', 'transparent');
                             }
-
                             $(this).css('background-color', 'skyblue');
                             //fcf8e3
                         } else {
@@ -124,13 +111,10 @@
                         } else {
                             fc_todayFlag = false;
                         }
-
                         var clickYear = $.fullCalendar.formatDate(date, "Y");
                         var clickMonth = $.fullCalendar.formatDate(date, "M");
                         var clickDay = $.fullCalendar.formatDate(date, "d");
-
                         var days = clickMonth + "月" + clickDay + "日のスケジュール";
-
                         if (clickMonth < 10) {
                             clickMonth = "0" + clickMonth;
                         }
@@ -140,9 +124,7 @@
                         var sendDate = y + "-" + clickMonth + "-" + clickDay;
                         ClickedDay = sendDate;
                         $("#TimeTitle").text(days);
-
                         scheduleTableUpdate(ClickedDay);
-
                     },
                     columnFormat: {
                         month: 'ddd',
@@ -160,19 +142,14 @@
                         day: '日'
                     },
                 });
-
                 //タスク追加ボタンクリック時
                 $("#TaskButton").click(function () {
                     date = getstartInitDate();
                     $("#task_deadline").val(date);
-
                     //追加 →　タスク追加ボタンクリック時優先度を初期値(0)にする (小林)
                     changeStarNum(0);
-
                     $('#task-input-dialog-form').dialog("open");
-
                 });
-
                 //スケジュール追加ボタンクリック時
                 $("#scheduleButton").click(function () {
                     $("#schedule_title").val("");
@@ -187,7 +164,6 @@
                         promptPosition: "bottomLeft"
                     });
                 });
-
                 //スケジュールクリック時
                 //$(".schedule").click(function(){
                 $(document).on('click', '.schedule', function () {
@@ -209,10 +185,7 @@
                     });
                     $('#schedule-detail-dialog-form').dialog("open");
                 });
-
                 //タスククリック時 -> taskDetail()
-
-
                 //ダイアログメソッド
                 $('#task-input-dialog-form').dialog({
                     autoOpen: false,
@@ -222,21 +195,17 @@
                     modal: true,
                     buttons: {
                         "入力": function () {
-                            /*
                              $(document).getUserId().done(function(result){
-                             UserID=result;
+                                 UserID=result;
                              });
-                             */
-                            UserID = 1;
-                            TaskName = $("#task_title").val();
-                            TaskInfo = $("#task_info").val();
-                            TaskEnd = $("#task_deadline").val();
+                            var TaskName = $("#task_title").val();
+                            var TaskInfo = $("#task_info").val();
+                            var TaskEnd = $("#task_deadline").val();
                             TaskEnd = changeDBdate(TaskEnd);
                             //追加 →　クリックされた優先度の値(0 ~ 4)が変数prriority_degreeに入っておりそれを変数TaskPriorityに格納 (小林)
-                            TaskPriority = prriority_degree;
-                            ClusterID = 2;
-                            TaskVal = {query: "insert into TaskTable(UserID, TaskName, TaskInfo, TaskEnd, TaskPriority, ClusterID) values(" + UserID + ",'" + TaskName + "', '" + TaskInfo + "', '" + TaskEnd + "', " + TaskPriority + ", " + ClusterID + ")"};
-
+                            var TaskPriority = prriority_degree;
+                            var ClusterID = 2;
+                            var TaskVal = {query: "insert into TaskTable(UserID, TaskName, TaskInfo, TaskEnd, TaskPriority, ClusterID) values(" + UserID + ",'" + TaskName + "', '" + TaskInfo + "', '" + TaskEnd + "', " + TaskPriority + ", " + ClusterID + ")"};
                             $.ajax({
                                 type: "POST",
                                 url: "sendphp.php",
@@ -263,39 +232,34 @@
                     modal: true,
                     buttons: {
                         "入力": function () {
-                            /*
+                           
                              $(document).getUserId().done(function(result){
                              UserID=result;
                              });
-                             */
-                            UserID = 1;
-                            ScheduleName = $("#schedule_title").val();
-                            ScheduleInfo = $("#schedule_info").val();
-                            ScheduleStart = $("#schedule_start_time").val();
-                            ScheduleEnd = $("#schedule_end_time").val();
-                            ClusterID = 2;
-                            RepeatNum = parseInt($("#schedule_repeat_num").val());
-                            CycleNum = parseInt($("#schedule_cycle_num").val());
-
-                            oriStart = $("#schedule_start_time").val();
-                            oriEnd = $("#schedule_end_time").val();
-                            scheduleVal = {query: "insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values(" + UserID + ",'" + ScheduleName + "','" + ScheduleInfo + "','" + ScheduleStart + "','" + ScheduleEnd + "', " + ClusterID + ")"};
-
+                             alert(UserID);
+                            var ScheduleName = $("#schedule_title").val();
+                            var ScheduleInfo = $("#schedule_info").val();
+                            var ScheduleStart = $("#schedule_start_time").val();
+                            var ScheduleEnd = $("#schedule_end_time").val();
+                            var ClusterID = 2;
+                            var RepeatNum = parseInt($("#schedule_repeat_num").val());
+                            var CycleNum = parseInt($("#schedule_cycle_num").val());
+                            var oriStart = $("#schedule_start_time").val();
+                            var oriEnd = $("#schedule_end_time").val();
+                            var scheduleVal = {query: "insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values(" + UserID + ",'" + ScheduleName + "','" + ScheduleInfo + "','" + ScheduleStart + "','" + ScheduleEnd + "', " + ClusterID + ")"};
                             //RepeatNum回数ぶんajax関数を繰り返す
                             for (i = 0; i < RepeatNum; i++) {
                                 if (i == 0) {
                                     ScheduleStart = changeDBdate(ScheduleStart);
                                     ScheduleEnd = changeDBdate(ScheduleEnd);
-
                                     scheduleVal = {query: "insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values(" + UserID + ",'" + ScheduleName + "','" + ScheduleInfo + "','" + ScheduleStart + "','" + ScheduleEnd + "', " + ClusterID + ")"};
                                 } else {
-                                    tmp_start = new Date(oriStart);
-                                    tmp_end = new Date(oriEnd);
+                                    var tmp_start = new Date(oriStart);
+                                    var tmp_end = new Date(oriEnd);
                                     tmp_start.setDate(tmp_start.getDate() + CycleNum * i);
                                     tmp_end.setDate(tmp_end.getDate() + CycleNum * i);
                                     ScheduleStart = changeDBdate(tmp_start);
                                     ScheduleEnd = changeDBdate(tmp_end);
-
                                     //再度クエリ書き出し
                                     scheduleVal = {query: "insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values(" + UserID + ",'" + ScheduleName + "','" + ScheduleInfo + "','" + ScheduleStart + "','" + ScheduleEnd + "', " + ClusterID + ")"};
                                 }
@@ -327,18 +291,15 @@
                     modal: true,
                     buttons: {
                         "更新": function () {
-                            ScheduleID = $("#schedule_detail_id").val();
-                            ScheduleName = $("#schedule_detail_title").val();
-                            ScheduleInfo = $("#schedule_detail_info").val();
-                            ScheduleStart = $("#schedule_detail_start_time").val();
-                            ScheduleEnd = $("#schedule_detail_end_time").val();
+                            var ScheduleID = $("#schedule_detail_id").val();
+                            var ScheduleName = $("#schedule_detail_title").val();
+                            var ScheduleInfo = $("#schedule_detail_info").val();
+                            var ScheduleStart = $("#schedule_detail_start_time").val();
+                            var ScheduleEnd = $("#schedule_detail_end_time").val();
                     
-                                    ScheduleStart = changeDBdate(ScheduleStart);
+                            ScheduleStart = changeDBdate(ScheduleStart);
                             ScheduleEnd = changeDBdate(ScheduleEnd);
-
-
-                            scheduleVal = {query: "update ScheduleTable set ScheduleName='" + ScheduleName + "', ScheduleInfo='" + ScheduleInfo + "', ScheduleStart='" + ScheduleStart + "', ScheduleEnd='" + ScheduleEnd + "' where ScheduleID=" + ScheduleID};
-
+                            var scheduleVal = {query: "update ScheduleTable set ScheduleName='" + ScheduleName + "', ScheduleInfo='" + ScheduleInfo + "', ScheduleStart='" + ScheduleStart + "', ScheduleEnd='" + ScheduleEnd + "' where ScheduleID=" + ScheduleID};
                             $.ajax({
                                 type: "POST",
                                 url: "sendphp.php",
@@ -349,14 +310,13 @@
                                     alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
                                 }
                             });
-
                             scheduleTableUpdate(ClickedDay);
                             $(this).dialog('close');
                         },
                         "削除": function () {
-                            ScheduleID = $("#schedule_detail_id").val();
-                            ScheduleStart = $("#schedule_detail_start_time").val();
-                            scheduleVal = {query: "DELETE FROM ScheduleTable WHERE ScheduleID =" + ScheduleID};
+                            var ScheduleID = $("#schedule_detail_id").val();
+                            var ScheduleStart = $("#schedule_detail_start_time").val();
+                            var scheduleVal = {query: "DELETE FROM ScheduleTable WHERE ScheduleID =" + ScheduleID};
                             $.ajax({
                                 type: "POST",
                                 url: "sendphp.php",
@@ -367,7 +327,6 @@
                                     alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
                                 }
                             });
-
                             scheduleTableUpdate(ClickedDay);
                             $(this).dialog('close');
                         },
@@ -385,19 +344,17 @@
                     buttons: {
                         "更新": function () {
                             // 更新時の挙動
-                            TaskID = $("#task_detail_id").val();
-                            TaskName = $("#task_detail_title").val();
-                            TaskInfo = $("#task_detail_info").val();
-                            TaskEnd = $("#task_detail_deadline").val();
+                            var TaskID = $("#task_detail_id").val();
+                            var TaskName = $("#task_detail_title").val();
+                            var TaskInfo = $("#task_detail_info").val();
+                            var TaskEnd = $("#task_detail_deadline").val();
                             TaskEnd = changeDBdate(TaskEnd);
                             //追加 →　クリックされた優先度の値(0 ~ 4)が変数prriority_degreeに入っておりそれを変数TaskPriorityに格納 (小林)
-                            TaskPriority = prriority_degree;
-                            ClusterID = 2;
+                            var TaskPriority = prriority_degree;
+                            var ClusterID = 2;
                             //タスク更新時にタスク優先度をDBに再格納するよう修正(小林)
                             TaskVal = {query: "update TaskTable set TaskName='" + TaskName + "', TaskInfo='" + TaskInfo + "', TaskEnd='" + TaskEnd + "', TaskPriority=" + TaskPriority + " where TaskID=" + TaskID};
-
                             alert(TaskVal['query']);
-
                             $.ajax({
                                 type: "POST",
                                 url: "sendphp.php",
@@ -408,7 +365,6 @@
                                     alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
                                 }
                             });
-
                             taskTableUpdate();
                             $(this).dialog('close');
                         },
@@ -422,14 +378,12 @@
                         }
                     },
                 });
-
                 //通知メッセージ作成
                 function Notificate(text) {
                     var Notifi = '<div id="Notifi' + NotifiCountert + '" class="box left">' + text + '</div>';
                     $("#TutiLine").append(Notifi).hide().fadeIn(1000);
                     NotifiCountert++;
                 }
-
             });
             //スケジュールテーブル作成
             function memoEvent2() {
@@ -437,32 +391,29 @@
                     document.write("<tr><th class=\"schedule_table\" \>" + i + ":00</th><td> </td></tr>");
                 }
             }
-
             function changeDBdate(date) {
-                tmpDate = new Date(date);
-                tmpYear = tmpDate.getUTCFullYear();
-                tmpMonth = tmpDate.getUTCMonth() + 1;
+                var tmpDate = new Date(date);
+                var tmpYear = tmpDate.getUTCFullYear();
+                var tmpMonth = tmpDate.getUTCMonth() + 1;
                 if (tmpMonth < 10) {
                     tmpMonth = "0" + tmpMonth;
                 }
-                tmpDay = tmpDate.getUTCDate();
+                var tmpDay = tmpDate.getUTCDate();
                 if (tmpDay < 10) {
                     tmpDay = "0" + tmpDay;
                 }
-                tmpHour = tmpDate.getUTCHours();
+                var tmpHour = tmpDate.getUTCHours();
                 if (tmpHour < 10) {
                     tmpHour = "0" + tmpHour;
                 }
-                tmpMinute = tmpDate.getMinutes();
+                var tmpMinute = tmpDate.getMinutes();
                 if (tmpMinute < 10) {
                     tmpMinute = "0" + tmpMinute;
                 }
-                tmpSecond = "00";
-                out = tmpYear + "-" + tmpMonth + "-" + tmpDay + " " + tmpHour + "-" + tmpMinute + "-" + tmpSecond;
-
+                var tmpSecond = "00";
+                var out = tmpYear + "-" + tmpMonth + "-" + tmpDay + " " + tmpHour + "-" + tmpMinute + "-" + tmpSecond;
                 return out;
             }
-
             function taskDetail(task_id) {
                 $.ajax({
                     type: "POST",
@@ -474,7 +425,6 @@
                         $("#task_detail_info").val(data[0].TaskInfo);
                         $("#task_detail_deadline").val(data[0].TaskEnd.replace(" ", "T"));
                         changeStarNum2(data[0].TaskPriority - 1);
-
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
@@ -482,12 +432,11 @@
                 });
                 $('#task-detail-dialog-form').dialog("open");
             }
-
-
-
-
             function taskFinish(TaskID) {
-                TaskVal = {query: "DELETE FROM TaskTable WHERE TaskID =" + TaskID};
+                var TaskVal = {query: "DELETE FROM TaskTable WHERE TaskID =" + TaskID};
+                $(document).getUserId().done(function(result){
+                UserID=result;
+                });
                 $.ajax({
                     type: "POST",
                     url: "sendphp.php",
@@ -500,35 +449,38 @@
                 });
                 taskTableUpdate();
             }
-
             function scheduleTableUpdate(date) {
                 $("#TimeLine").find("div").remove();
+                $(document).getUserId().done(function(result){
+                    UserID=result;
+                });
                 $.ajax({
                     type: "POST",
                     url: "getSchedule.php",
                     data: {query: "select * from ScheduleTable where (DATE_FORMAT(ScheduleStart, '%Y-%m-%d') = '" + date.substring(0, 10) + "')"},
                     success: function (data, dataType) {
-
                         var len = 0;
                         if (data != null) {
-                            len = data.length
+                            len = data.length;
                         }
                         for (var i = 0; i < len; i++) {
-                            var tableHeight = $('#TimeLine tr').height();
-
-                            var Hour = parseInt(data[i].ScheduleStart.substring(11, 13), 10);
-                            var Minutes = parseInt(data[i].ScheduleStart.substring(14, 16), 10);
-                            var eHour = parseInt(data[i].ScheduleEnd.substring(11, 13), 10);
-                            var eMinutes = parseInt(data[i].ScheduleEnd.substring(14, 16), 10);
-                            var Top = Hour * tableHeight + ((Minutes / 60) * tableHeight);
-                            var Height0 = (((eHour * 60 + eMinutes) - (Hour * 60 + Minutes)) / 60);
-                            var Height = tableHeight * (Height0 - 1) + 40;
-                            var AddSchedule = "<div type=\"button\" class=\"schedule scheduleButtons\" style=\"position:absolute; z-index:8;left:" +
-                                    ($('#TimeLine th.schedule_table').outerWidth(true) + 10) + "px;top:" +
+alert(data[i].UserID);
+                            if(UserID==data[i].UserID){
+                                var tableHeight = $('#TimeLine tr').height();
+                                var Hour = parseInt(data[i].ScheduleStart.substring(11, 13), 10);
+                                var Minutes = parseInt(data[i].ScheduleStart.substring(14, 16), 10);
+                                var eHour = parseInt(data[i].ScheduleEnd.substring(11, 13), 10);
+                                var eMinutes = parseInt(data[i].ScheduleEnd.substring(14, 16), 10);
+                                var Top = Hour * tableHeight + ((Minutes / 60) * tableHeight);
+                                var Height0 = (((eHour * 60 + eMinutes) - (Hour * 60 + Minutes)) / 60);
+                                var Height = tableHeight * (Height0 - 1) + 40;
+                                var AddSchedule = "<div type=\"button\" class=\"schedule scheduleButtons\" style=\"position:absolute; z-index:8;left:" +
+                                    ($('#TimeLine th.schedule_table').outerWidth(true) + 10) + "px;top:" + 
                                     Top + "px; width:185px; height:" +
                                     Height + "px;\">" +
                                     "<div id=" + data[i].ScheduleID + ">" + data[i].ScheduleName + "</div> </div>";
-                            $("#TimeLine").append(AddSchedule);
+                                $("#TimeLine").append(AddSchedule);
+                            }
                         }
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -539,6 +491,9 @@
             }
             function taskTableUpdate() {
                 $("#TaskLine").find("tr").remove();
+                $(document).getUserId().done(function(result){ 
+                    UserID=result;
+                });
                 $.ajax({
                     type: "POST",
                     url: "getTask.php",
@@ -546,16 +501,18 @@
                     success: function (data, dataType) {
                         var len = 0;
                         if (data != null) {
-                            len = data.length
+                            len = data.length;
                         }
                         for (var i = 0; i < len; i++) {
-                            AddTask =
+                            if(UserID==data[i].UserID){
+                                AddTask =
                                     "<tr>" +
                                     "<td style=\"text-align: center; width:20%; \"><input type=\"button\", value=\"完了\", class=\"taskButtons\", style=\"margin:0 auto;\", onclick=\"taskFinish(" + data[i].TaskID + ")\"></td>" +
                                     "<th class=\"task_table taskButtons\" onclick=\"taskDetail(" + data[i].TaskID + ")\">" + data[i].TaskName + "</th>" +
                                     /*"<td style=\"text-align: center;\"><input type=\"button\", value=\"修正\", class=\"taskButtons\", style=\"margin:0 auto;\", onclick=\"taskDetail("+data[i].TaskID+")\"></td>"+ */
                                     "</tr>";
-                            $("#TaskLine").append(AddTask);
+                                $("#TaskLine").append(AddTask);
+                            }
                         }
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -574,74 +531,67 @@
                 }
             }
             function getstartInitDate() {
-                tmpDate = new Date();
-                tmpYear = tmpDate.getFullYear();
-                tmpMonth = tmpDate.getMonth() + 1;
+                var tmpDate = new Date();
+                var tmpYear = tmpDate.getFullYear();
+                var tmpMonth = tmpDate.getMonth() + 1;
                 if (tmpMonth < 10) {
                     tmpMonth = "0" + tmpMonth;
                 }
-                tmpDay = tmpDate.getDate();
+                var tmpDay = tmpDate.getDate();
                 if (tmpDay < 10) {
                     tmpDay = "0" + tmpDay;
                 }
-                tmpHour = tmpDate.getHours();
+                var tmpHour = tmpDate.getHours();
                 if (tmpHour < 10) {
                     tmpHour = "0" + tmpHour;
                 }
-                tmpMinute = Math.floor((tmpDate.getMinutes()) / 10) * 10;
+                var tmpMinute = Math.floor((tmpDate.getMinutes()) / 10) * 10;
                 if (tmpMinute < 10) {
                     tmpMinute = "0" + tmpMinute;
                 }
-                tmpSecond = "00";
-                out = tmpYear + "-" + tmpMonth + "-" + tmpDay + "T" + tmpHour + ":" + tmpMinute + ":" + tmpSecond;
+                var tmpSecond = "00";
+                var out = tmpYear + "-" + tmpMonth + "-" + tmpDay + "T" + tmpHour + ":" + tmpMinute + ":" + tmpSecond;
                 return out;
             }
             function getendInitDate() {
-                tmpDate = new Date();
+                var tmpDate = new Date();
                 tmpDate.setHours(tmpDate.getHours() + 1);
-                tmpYear = tmpDate.getFullYear();
-                tmpMonth = tmpDate.getMonth() + 1;
+                var tmpYear = tmpDate.getFullYear();
+                var tmpMonth = tmpDate.getMonth() + 1;
                 if (tmpMonth < 10) {
                     tmpMonth = "0" + tmpMonth;
                 }
-                tmpDay = tmpDate.getDate();
+                var tmpDay = tmpDate.getDate();
                 if (tmpDay < 10) {
                     tmpDay = "0" + tmpDay;
                 }
-                tmpHour = tmpDate.getHours();
+                var tmpHour = tmpDate.getHours();
                 if (tmpHour < 10) {
                     tmpHour = "0" + tmpHour;
                 }
-                tmpMinute = Math.floor((tmpDate.getMinutes()) / 10) * 10;
+                var tmpMinute = Math.floor((tmpDate.getMinutes()) / 10) * 10;
                 if (tmpMinute < 10) {
                     tmpMinute = "0" + tmpMinute;
                 }
-                tmpSecond = "00";
-                out = tmpYear + "-" + tmpMonth + "-" + tmpDay + "T" + tmpHour + ":" + tmpMinute + ":" + tmpSecond;
+                var tmpSecond = "00";
+                var out = tmpYear + "-" + tmpMonth + "-" + tmpDay + "T" + tmpHour + ":" + tmpMinute + ":" + tmpSecond;
                 return out;
             }
-
             //タスク入力・編集ダイアログ用の優先度を表す星5個の入った配列．タスクを読み込むたびに書き換えてください．
             var prriority_array = ["★", "☆", "☆", "☆", "☆"];
-
-
             //タスクの優先度をいれる変数．1～5．タスクを読み込むたびに書き換えてください．
             var prriority_degree = 1;
-
             var ClickedDay;
-
             function changeStarNum(num) {
                 prriority_degree = num + 1;
                 changePrriorityArray(num);
                 drawPrriorityStars();
             }
-
             function changeStarNum2(num) {
                 prriority_degree = num + 1;
                 changePrriorityArray(num);
                 drawPrriorityStars2();
             }
-
             //prriority_arrayの中身を書き換えるのみの関数．引数は優先度．
             function changePrriorityArray(num) {
                 for (var i = 0; i < 5; i++) {
@@ -652,7 +602,6 @@
                     }
                 }
             }
-
             //prriority_array（優先度の星5個）を書きだす関数．
             function drawPrriorityStars() {
                 var text;
@@ -666,7 +615,6 @@
                 }
                 document.getElementById("prriority_stars").innerHTML = text;
             }
-
             function drawPrriorityStars2() {
                 var text;
                 for (var i = 0; i < 5; i++) {
@@ -679,11 +627,8 @@
                 }
                 document.getElementById("prriority_stars2").innerHTML = text;
             }
-
             //ユーザが所属しているクラスタ一覧がJSの配列に入って渡されることを想定して作った配列です．
             var cluster_array = ["研究室", "CS専攻", "サークル"];
-
-
             //cluster_arrayの中身を読み込んで<select>タグを作る関数．
             //クラスタ一覧が配列culuster_arrayに入っていると仮定して作った．
             function getClusters() {
@@ -735,7 +680,6 @@
                             alert('データが0件でした');
                         //タスクを配列に叩き込むところ
                         for (var i = 0; i < data.length; i++) {
-
                             if (data[i].UserID == 1) {  //現在のユーザのidを取得しいれる
                                 var test = data[i].TaskEnd.split(" ");
                                 var test1 = test[0].split("-");
@@ -786,7 +730,6 @@
                         if (data == null)
                             alert('データが0件でした');
                         var schedulecount = 0;
-
                         for (var i = 0; i < data.length; i++) {
                             if (data[i].UserID == 1) {  //ユーザIDをここに入れよう
                                 var start = data[i].ScheduleStart.split(" ");
@@ -807,7 +750,6 @@
                                         parseInt(end2[0]),
                                         parseInt(end2[1]),
                                         parseInt(end2[2]));
-
                                 schedulelist.push({
                                     scheduleid: data[i].ScheduleID,
                                     userid: data[i].UserID,
@@ -885,7 +827,6 @@
                         var compdate = new Date(nowtime.getFullYear(), nowtime.getMonth(),
                                 nowtime.getDate(), 0, 0, 0);
                         var freesum = 0;
-
                         //クリックが今日から何日目かを判断    
                         console.log(calleddate)
                         console.log(compdate)
@@ -905,7 +846,6 @@
                                 Height + "px;\">" +
                                 "<div id=" + (-1) + ">" + "development" + "</div> </div>";
                         $("#TimeLine").append(AddSchedule);
-
                         if (calleddate >= compdate) {
                             duringday = (calleddate - compdate) / 86400000;
                             console.log(duringday)
@@ -914,7 +854,6 @@
                                 for (var i = 0; i < (duringday - 1); i++) {
                                     freesum += freetimearray[i];
                                 }
-
                                 for (var q = 0; q < 24; q++) {
                                     for (var r = 0; r < 6; r++) {
                                         console.log("called!!!!" + weekschedule[duringday][q][r]);
@@ -954,21 +893,17 @@
                     }
                 });
             }
-
         </script>
     </head>
 
     <!-- スタイルの指定 -->
     <link rel="stylesheet" href="css/template.css">
     <style>
-
-
         .UIparts{
             background-color:#ecf0f1;
             //margin-bottom: 10px;
             border: 2px solid #2c3e50;
         }
-
         .scheduleButtons{
             background-color:#e67e22;
             border: 3px solid #d35400;
@@ -978,7 +913,6 @@
         .scheduleButtons:hover{
             background-color:#FFCCBC;
         }
-
         .taskButtons{
             background-color:#3498db;
             border: 3px solid #2980b9;
@@ -988,27 +922,21 @@
         .taskButtons:hover {
             background-color:#81D4FA;
         }
-
-
         #calendar{
             padding:10px;
         }
-
         #calendar h2{
             font-size:1.5em;
         }
         #calendar.fc-header-title {
-
         }
         #calendar.fc-header {
         }
-
-
         .schedule_table{
             width:15%;
             text-align:center;
             background-color:#3498db;
-            color:#ecf0f1;
+           color:#ecf0f1;
         }
         .task_table{
             text-align:left;
@@ -1030,14 +958,12 @@
             margin: 5px auto;
             padding: 5px;
         }
-
         .box:before,
         .box:after {
             content: '';
             position: absolute;
             display: block;
         }           
-
         .box.left:after {
             top: 25%;
             left: -25px;
@@ -1046,7 +972,6 @@
             border-right: 25px solid #0091ff;
             border-bottom: 10px solid transparent;
         }
-
         /* 操作説明：選択領域 */
         .introjs-helperLayer{
             border: 2px solid red;
@@ -1066,7 +991,6 @@
             color:#000000;
             text-shadow: 2px 2px 4px rgba(192, 192, 192, 0.5);
         }
-
     </style>
     <body onload="L2dTasuko()">
         <header>
@@ -1077,7 +1001,7 @@
             <button id="settingButton" type="button" onclick="location.href = 'setting.html'", class="headerButtons" >設定</button>
 
         </header>
-        <div id="bodyContainer" class="container-fluid" style="visibility:hidden;">
+       <div id="bodyContainer" class="container-fluid" style="visibility:hidden;">
             <div class="row">
                 <!--<div class="span7" id="calendarContainer">-->
                 <div class="col-xs-12 col-sm-12 col-md-6" id="calendarContainer">
