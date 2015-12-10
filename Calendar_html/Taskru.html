@@ -40,6 +40,9 @@
             var Taskru_this = this;
             var NotifiCountert = 0; // 通知欄の通知の数．idを決定するのに用いる
             var NotifiToday = "";
+            
+            var UserID = 1;
+
 
             $(function () {
                 var firstAccessFlag = $(document).checkIntroFlag();
@@ -56,6 +59,10 @@
                 var today = m + "月" + d + "日";
 
                 NotifiToday = today;
+                
+                $(document).getUserId().done(function (result) {
+                    UserID = result;
+                });
 
 
                 $(document).ready(function () {
@@ -557,7 +564,7 @@
                             len = data.length;
                         }
                         for (var i = 0; i < len; i++) {
-                            //if(UserID==data[i].UserID){
+                            if(UserID==data[i].UserID){
                             var tableHeight = $('#TimeLine tr').height();
 
                             var Hour = parseInt(data[i].ScheduleStart.substring(11, 13), 10);
@@ -585,7 +592,7 @@
                                     "<div id=" + data[i].ScheduleID + ">" + data[i].ScheduleName + "</div> </div>";
                             $("#TimeLine").append(AddSchedule);
 
-                            //}
+                            }
                         }
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -782,7 +789,6 @@
                         weekschedule[i][j] = 0;
                     }
                 }
-                var UserID = 1;
                 $(document).getUserId().done(function (result) {
                     UserID = result;
                 });
