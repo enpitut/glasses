@@ -35,8 +35,11 @@ header.fixed{
     font-weight:bold;
     
     float:right;
-    margin: 5px;
+    margin: 5px 10px 5px 0px;
     height:80%;
+}
+.headerButtons:hover{
+    background-color:#FFCCBC;
 }
 
 #logo{

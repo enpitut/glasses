@@ -34,6 +34,8 @@ $(function() {
 	var d = date.getDate();
 	var days = m+"月"+d+"日のスケジュール";
 	var today = m+"月"+d+"日";
+    
+    var NotifiCountert=0; // 通知欄の通知の数．idを決定するのに用いる
 
     $(document).ready(function(){
         $('#scheduleContainer').outerHeight(
@@ -66,11 +68,12 @@ $(function() {
             .start();
         }
     }); 
-	var NotifiCountert=2;
-	$("#TimeTitle").text(days);
-	Notificate("本日("+today+")のスケジュールを自動調整しました。確認してください");
-	 
 
+	$("#TimeTitle").text(days);
+    
+	Notificate("ここに通知が表示されます．")
+	Notificate("本日("+today+")のスケジュールを自動調整しました．確認してください．");	
+    
 
 	$('#calendar').fullCalendar({
 	   header: {  
@@ -410,7 +413,7 @@ alert(TaskVal['query']);
 	//通知メッセージ作成
     function Notificate(text){
 	var Notifi='<div id="Notifi'+NotifiCountert+'" class="box left">'+text+'</div>';
-	$("#TutiLine").append(Notifi);
+	$("#TutiLine").append(Notifi).hide().fadeIn(1000);
 	NotifiCountert++;
     }
 });
@@ -485,20 +488,22 @@ function taskFinish(TaskID){
 len=0;
 if(data!=null){len=data.length}
 			for (var i =0; i<len; i++){
+                var tableHeight = $('#TimeLine tr').height();
+            
 				var Hour = parseInt(data[i].ScheduleStart.substring(11,13),10);
 				var Minutes = parseInt(data[i].ScheduleStart.substring(14,16),10);
 				var eHour = parseInt(data[i].ScheduleEnd.substring(11,13),10);
 				var eMinutes = parseInt(data[i].ScheduleEnd.substring(14,16),10);
-				var Top = Hour*50 + ((Minutes/60) * 50);
+				var Top = Hour*tableHeight + ((Minutes/60) * tableHeight);
 				var Height0 = (((eHour*60 + eMinutes) - (Hour *60 + Minutes)) / 60);
-				var Height = 50 * (Height0-1) +40 ;
+				var Height = tableHeight * (Height0-1) +40 ;
 				AddSchedule = "<div type=\"button\" class=\"schedule scheduleButtons\" style=\"position:absolute; z-index:8;left:"+
-                $('#TimeLine th.schedule_table').outerWidth(true)+"px;top:"+
+                ($('#TimeLine th.schedule_table').outerWidth(true)+10) +"px;top:"+
                 Top+"px; width:185px; height:"+
                 Height+"px;\">"+
                 "<div id="+data[i].ScheduleID+">"+data[i].ScheduleName+"</div> </div>";
 				$("#TimeLine").append(AddSchedule);
-				 
+				
 			}
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -518,9 +523,9 @@ if(data!=null){len=data.length}
 			for (var i = 0; i<len; i++){
                 AddTask=
                 "<tr>"+
-                "<td style=\"text-align: center;\"><input type=\"button\", value=\"完了\", class=\"taskButtons\", style=\"margin:0 auto;\", onclick=\"taskFinish("+data[i].TaskID+")\"></td>"+
-                "<th class=\"task_table\" \>"+data[i].TaskName+"</th>"+
-                "<td style=\"text-align: center;\"><input type=\"button\", value=\"修正\", class=\"taskButtons\", style=\"margin:0 auto;\", onclick=\"taskDetail("+data[i].TaskID+")\"></td>"+                
+                "<td style=\"text-align: center; width:20%; \"><input type=\"button\", value=\"完了\", class=\"taskButtons\", style=\"margin:0 auto;\", onclick=\"taskFinish("+data[i].TaskID+")\"></td>"+
+                "<th class=\"task_table taskButtons\" onclick=\"taskDetail("+data[i].TaskID+")\">"+data[i].TaskName+"</th>"+
+                /*"<td style=\"text-align: center;\"><input type=\"button\", value=\"修正\", class=\"taskButtons\", style=\"margin:0 auto;\", onclick=\"taskDetail("+data[i].TaskID+")\"></td>"+ */               
                 "</tr>";
 				$("#TaskLine").append(AddTask);
 			}
@@ -661,7 +666,7 @@ function changeStarNum2(num){
 .UIparts{
     background-color:#ecf0f1;
     //margin-bottom: 10px;
-    border: 5px solid #000000
+    border: 2px solid #2c3e50;
 }
 
 .scheduleButtons{
@@ -700,15 +705,12 @@ background-color:#81D4FA;
 
 
 .schedule_table{
-    width:9px;
-    height: 33px;
-    text-align:right;
+    width:15%;
+    text-align:center;
     background-color:#3498db;
 }
 .task_table{
-    width:200px;
-    height: 33px;
-    text-align:right;
+    text-align:left;
     background-color:#3498db;
 }
 .star{
@@ -717,11 +719,11 @@ background-color:#81D4FA;
 }
 .box {
     position: relative;
-    background-color:#FFECB3;
+    background-color:#E0E0E0;
     border: 2px solid #2980b9;
     border-radius:5px;
     height: auto;
-    width: 300px;
+    width: 90%;
     margin-bottom: 20px;
     left:10px;
     margin: 5px auto;
@@ -736,7 +738,7 @@ background-color:#81D4FA;
         }           
  
         .box.left:after {
-            top: 25px;
+            top: 25%;
             left: -25px;
             border-left-width:0;
             border-top: 10px solid transparent;
@@ -780,16 +782,16 @@ background-color:#81D4FA;
         <div class="row">
             <!--<img src="./img/taskru_nologo.png" class="span10" style="margin-left:50px;width:240px;">-->
             <div class="UIparts col-xs-12" style="margin-left:auto;">
-                <div class="col-xs-5">
+                <div class="col-xs-4">
                     <canvas id="mycanvas" width="240px" height="360px"  style="border.dashed 1px #CCC"></canvas>
                 </div>
-                <div class="col-xs-7">
+                <div class="col-xs-8">
                     <div id="Notification" style="text-align:center;height:30px"><!--通知一覧--></div>
-                    <div id="scroll2" style="height:220px;overflow-x:scroll;" data-step="5" data-intro="ここに通知が表示されます">
+                    <div id="scroll2" style="height:300px;overflow-x:scroll;" data-step="5" data-intro="ここに通知が表示されます">
                         <table id="TutiLine" class="table table-striped">
                         <thead></thead>
                         <tbody>
-                            <div id="Notifi1" class="box left">クラスタ「研究室」より、3月9日のスケジュール「ゼミ」を自動生成しました。</div>	
+                            
                         </tbody>
                         </table>  
                     </div>  
