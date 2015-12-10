@@ -16,6 +16,7 @@ $stmt = $dbh->query($sql);
 while ($row = $stmt->fetchObject())
     {
         $result[] = array(
+            'ClusterID'=> $row->ClusterID,      
             'ClusterName'=> $row->ClusterName            
 );
     }
