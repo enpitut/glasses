@@ -55,6 +55,25 @@
         }
     };
 
+    $.fn.getNotification = function() {
+        return $.ajax({
+            url: 'getNotification.php',
+            type: 'post',
+            dataType: 'json',
+        });
+    }
+
+    $.fn.setNotification = function(message) {
+        $.ajax({
+            url: 'setNotification.php',
+            type: 'post',
+            data: {
+                message: message
+            }
+        });
+        return this;
+    }
+
     checkLogin();
 
 })(jQuery);
