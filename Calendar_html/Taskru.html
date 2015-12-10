@@ -37,9 +37,7 @@
 
                 var NotifiCountert = 0; // 通知欄の通知の数．idを決定するのに用いる
 
-
                 $(document).ready(function () {
-
                     $('#scheduleContainer').outerHeight(
                             $('#calendarContainer').height()
                             );
@@ -64,9 +62,6 @@
                     scheduleTableUpdate(y + "-" + m + "-" + d);
                     ClickedDay = y + "-" + m + "-" + d;
                     taskTableUpdate();
-                    //$('#bodyContainer *').css('visibility' , 'visible');  
-                    //$('#bodyContainer *').css('visibility' , 'visible');
-                    //console.log($('#bodyContainer *'));
 
                     if (firstAccessFlag) {
                         introJs()
@@ -78,12 +73,16 @@
                                 .start();
                     }
                 });
+                
+                $(window).load(function(){
+                    $('#bodyContainer *').fadeTo(0,0); 
+                    $('#bodyContainer *').css('visibility' , 'visible'); 
+                    $('#bodyContainer *').fadeTo(1000,1);   
+                    Notificate("ここに通知が表示されます．");
+                    Notificate("本日(" + today + ")のスケジュールを自動調整しました．確認してください．");
+                });
 
                 $("#TimeTitle").text(days);
-
-                Notificate("ここに通知が表示されます．")
-                Notificate("本日(" + today + ")のスケジュールを自動調整しました．確認してください．");
-
 
                 $('#calendar').fullCalendar({
                     header: {
@@ -1009,6 +1008,7 @@
             width:15%;
             text-align:center;
             background-color:#3498db;
+            color:#ecf0f1;
         }
         .task_table{
             text-align:left;
@@ -1077,7 +1077,7 @@
             <button id="settingButton" type="button" onclick="location.href = 'setting.html'", class="headerButtons" >設定</button>
 
         </header>
-        <div id="bodyContainer" class="container-fluid">
+        <div id="bodyContainer" class="container-fluid" style="visibility:hidden;">
             <div class="row">
                 <!--<div class="span7" id="calendarContainer">-->
                 <div class="col-xs-12 col-sm-12 col-md-6" id="calendarContainer">
@@ -1194,7 +1194,7 @@
                             <input type="text" name="schedule_info" id="schedule_info"><br>
 
                             <label for="schedule_start_time">開始日時: &nbsp; </label>
-                            <input type="datetime-local" name="schedule_start_time" id="schedule_start_time" step="600" />
+                            <input type="datetime-local" name="schedule_start_time" id="schedule_start_time" step="600" /><br>
                             <label for="schedule_end_time">終了日時: &nbsp; </label>	
                             <input type="datetime-local" name="schedule_end_time" id="schedule_end_time" step="600" /><br>
 
@@ -1251,7 +1251,7 @@
                             <input type="text" name="scheDialog_info" id="schedule_detail_info"><br>
 
                             <label for="schedule_start_time">開始日時: &nbsp; </label>	
-                            <input type="datetime-local" name="schedule_start_time" id="schedule_detail_start_time" step="600" />
+                            <input type="datetime-local" name="schedule_start_time" id="schedule_detail_start_time" step="600" /><br>
                             <label for="schedule_end_time">終了日時: &nbsp; </label>	
                             <input type="datetime-local" name="schedule_end_time" id="schedule_detail_end_time" step="600" /><br>
 
