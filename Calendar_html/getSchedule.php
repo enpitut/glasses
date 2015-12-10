@@ -17,7 +17,7 @@ while ($row = $stmt->fetchObject())
     {
         $result[] = array(
             'ScheduleID' => $row->ScheduleID,
-            'userID'=> $row->userID,
+            'UserID'=> $row->UserID,
             'ScheduleName' => $row->ScheduleName,
 	    'ScheduleInfo' => $row->ScheduleInfo,
 	    'ScheduleStart' => $row->ScheduleStart,
