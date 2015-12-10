@@ -19,6 +19,7 @@
 <script src="validationEngine/jquery.validationEngine.js"></script>
 <script src="validationEngine/jquery.validationEngine-ja.js"></script>
 <script src="js/session-util.js"></script>
+<script src="js/headerAutoScroll.js"></script>
 <script>
 $(function() {
     var firstAccessFlag = $(document).checkIntroFlag();
@@ -35,18 +36,18 @@ $(function() {
 	var today = m+"月"+d+"日";
 
     $(document).ready(function(){
-        $('#scheduleContainer').height(
+        $('#scheduleContainer').outerHeight(
             $('#calendarContainer').height()
         );
         $('#scheduleContainer').children('#scroll').height(
             ($('#scheduleContainer').height()-$('#scheduleButtonContainer').outerHeight()-$('#TimeTitle').outerHeight())*0.94
         );
         
-        $('#taskContainer').height(
+        $('#taskContainer').outerHeight(
             $('#calendarContainer').height()
         );
         $('#taskContainer').children('#scroll').height(
-            ($('#taskContainer').height()-$('#taskButtonContainer').outerHeight()-$('#taskTitle').outerHeight())*0.94
+            ($('#taskContainer').height()-$('#taskButtonContainer').outerHeight()-$('#taskTitle').outerHeight())*0.9
         );
     
         if(m<10){m="0"+m;}
@@ -648,6 +649,7 @@ function changeStarNum2(num){
 	    }	
     }
     
+
 </script>
 </head>
 
@@ -658,8 +660,8 @@ function changeStarNum2(num){
 
 .UIparts{
     background-color:#ecf0f1;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    //margin-bottom: 10px;
+    border: 5px solid #000000
 }
 
 .scheduleButtons{
@@ -682,16 +684,20 @@ function changeStarNum2(num){
 background-color:#81D4FA;
 }
 
-.fc-header-title {
-}
-.fc-header {
-    margin-bottom: -18px;
+
+#calendar{
+    padding:10px;
 }
 
 #calendar h2{
     font-size:1.5em;
-
 }
+#calendar.fc-header-title {
+ 
+}
+#calendar.fc-header {
+}
+
 
 .schedule_table{
     width:9px;
@@ -763,19 +769,21 @@ background-color:#81D4FA;
     <a href="Taskru.html" onclick="">
 	<img src="./img/logo.png" id="logo">
     </a>
-    <button id="logoutButton" type="button" onclick="location.href='logout.php'", class="scheduleButtons" style="float:right; margin-right:5px; margin-top:0px; height:50px" >ログアウト</button>
-    <button id="settingButton" type="button" onclick="location.href='setting.html'", class="scheduleButtons" style="float:right; margin-right:5px; margin-top:0px; height:50px" >設定</button>
+    <button id="logoutButton" type="button" onclick="location.href='logout.php'", class="headerButtons" >ログアウト</button>
+    <button id="settingButton" type="button" onclick="location.href='setting.html'", class="headerButtons" >設定</button>
 
  </header>
 <div class="container-fluid">
 <div class="row">
     <!--<div class="span7" id="calendarContainer">-->
-    <div class="col-sm-6" id="calendarContainer">
+    <div class="col-xs-12 col-sm-12 col-md-6" id="calendarContainer">
         <div class="row">
             <!--<img src="./img/taskru_nologo.png" class="span10" style="margin-left:50px;width:240px;">-->
             <div class="UIparts col-xs-12" style="margin-left:auto;">
-                <canvas id="mycanvas" width="240px" height="360px" class="col-xs-6" style="border.dashed 1px #CCC"></canvas>
-                <div class="col-xs-6">
+                <div class="col-xs-5">
+                    <canvas id="mycanvas" width="240px" height="360px"  style="border.dashed 1px #CCC"></canvas>
+                </div>
+                <div class="col-xs-7">
                     <div id="Notification" style="text-align:center;height:30px"><!--通知一覧--></div>
                     <div id="scroll2" style="height:220px;overflow-x:scroll;" data-step="5" data-intro="ここに通知が表示されます">
                         <table id="TutiLine" class="table table-striped">
@@ -793,7 +801,7 @@ background-color:#81D4FA;
 
 	<!-- <div class="col-md-6"> -->
         <!-- <div class="row"> -->
-            <div class="col-xs-6 col-sm-3 UIparts" id="scheduleContainer" style="padding:0 15px 0 15px;">
+            <div class="col-xs-6 col-sm-6 col-md-3 UIparts" id="scheduleContainer" style="padding:0 15px 0 15px;">
                 <div id="scheduleButtonContainer" style="text-align:center;">
                   <button id="scheduleButton" type="button" class="scheduleButtons" style="margin-top:20px;margin-bottom:20px;width:80%;height:70px;" data-step="1" data-intro="このボタンをクリックしてスケジュールを作成してください">スケジュール<br>追加</button>
                </div>
@@ -813,7 +821,7 @@ background-color:#81D4FA;
             </div>
 
           
-          <div class="col-xs-6 col-sm-3 UIparts" id="taskContainer" style="padding:0 15px 0 15px; height:90%;">
+          <div class="col-xs-6 col-sm-6 col-md-3 UIparts" id="taskContainer" style="padding:0 15px 0 15px; height:90%;">
               <div id="taskButtonContainer" style="text-align:center;">
                     <button id="TaskButton" type="button" class="taskButtons" style="margin-top:20px;margin-bottom:20px;width:80%;height:70px;" data-step="3" data-intro="このボタンをクリックしてタスクを作成してください">タスク<br>追加</button>
                 </div>
