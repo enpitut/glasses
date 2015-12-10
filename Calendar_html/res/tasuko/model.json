@@ -36,17 +36,20 @@
 			{"file":"motions/Epsilon_free_m_02.mtn"},
 			{"file":"motions/Epsilon_free_m_03.mtn"},
 			{"file":"motions/Epsilon_free_m_04.mtn"},
-			{"file":"motions/Epsilon_free_m_05.mtn"},
 			{"file":"motions/Epsilon_free_m_06.mtn"},
 			{"file":"motions/Epsilon_free_m_07.mtn"},
 			{"file":"motions/Epsilon_free_m_08.mtn"},
 			{"file":"motions/Epsilon_free_m_09.mtn"},
-			{"file":"motions/Epsilon_free_m_sp_01.mtn"},
 			{"file":"motions/Epsilon_free_m_sp_02.mtn"},
 			{"file":"motions/Epsilon_free_m_sp_03.mtn"},
-			{"file":"motions/Epsilon_free_m_sp_04.mtn"},
 			{"file":"motions/Epsilon_free_m_sp_05.mtn"},
             {"file":"motions/Epsilon_free_shake_01.mtn"}
-		]
+		],
+        "notification":[
+            {"file":"motions/Epsilon_free_m_01.mtn"},
+            {"file":"motions/Epsilon_free_m_04.mtn"},
+            {"file":"motions/Epsilon_free_m_09.mtn"},
+            {"file":"motions/Epsilon_free_shake_01.mtn"}
+        ]
 	}
 }

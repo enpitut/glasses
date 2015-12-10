@@ -31,6 +31,7 @@
     MOTION_GROUP_PINCH_IN : "pinch_in", // 拡大した時
     MOTION_GROUP_PINCH_OUT : "pinch_out", // 縮小した時
     MOTION_GROUP_SHAKE : "shake", // シェイク
+    MOTION_GROUP_NOTIFICATE : "notification",
 
     // 外部定義ファイル(json)と合わせる
     HIT_AREA_HEAD : "head",

@@ -322,6 +322,8 @@ L2dModel.prototype.startRandomMotion = function(name, priority)
 {
     var max = this.modelSetting.getMotionNum(name);
     var no = parseInt(Math.random() * max);
+    
+    this.setExpression("f01_idol");
     this.startMotion(name, no, priority);
 }
 

@@ -41,3 +41,8 @@ L2dManager.prototype.tapEvent = function(x, y){
 L2dManager.prototype.expressionIdol = function(){
     this.model.setExpression("f01_idol");
 }
+
+L2dManager.prototype.getNotification = function(){
+   this.model.startRandomMotion(L2dDefine.MOTION_GROUP_NOTIFICATE,
+                                             L2dDefine.PRIORITY_NORMAL);
+}

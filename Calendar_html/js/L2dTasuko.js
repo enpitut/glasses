@@ -1,4 +1,4 @@
-﻿var _this = this;
+﻿var L2dTasuko_this = this;
 
 function L2dTasuko(){
     this.platform = window.navigator.platform.toLowerCase();
@@ -23,6 +23,12 @@ function L2dTasuko(){
     initL2dCanvas("mycanvas");
     // モデル用マトリクスの初期化と描画の開始
     init();
+    
+    // タスクルに通知を飛ばす
+    if(typeof Taskru_this != "undefined"){
+    Taskru_this.Notificate("ここに通知が表示されます．");
+    Taskru_this.Notificate("本日(" + NotifiToday + ")のスケジュールを自動調整しました．確認してください．");
+    }
 }
 
 function initL2dCanvas(cvsId){
@@ -181,13 +187,13 @@ function touchEvent(e){
         followPointer(touch);
     } else if (e.type == "touchend") {
         lookFront();
-//        L2dMgr.expressionIdol();
+        L2dMgr.expressionIdol();
     }
 }
 
 // クリックした方を向く
 function modelTurnHead(ev){
-    _this.drag = true;
+    L2dTasuko_this.drag = true;
     
     var rect = ev.target.getBoundingClientRect();   
     var sx = transformScreenX(ev.clientX - rect.left);
@@ -195,13 +201,13 @@ function modelTurnHead(ev){
     var vx = transformViewX(ev.clientX - rect.left);
     var vy = transformViewY(ev.clientY - rect.top);
     
-    _this.lastMouseX = sx;
-    _this.lastMouseY = sy;
+    L2dTasuko_this.lastMouseX = sx;
+    L2dTasuko_this.lastMouseY = sy;
     
     // クリックした方を向く
-    _this.dragMgr.setPoint(vx, vy);    
+    L2dTasuko_this.dragMgr.setPoint(vx, vy);    
     // タップした場所に応じてモーション再生
-    _this.L2dMgr.tapEvent(vx, vy);
+    L2dTasuko_this.L2dMgr.tapEvent(vx, vy);
 }
 
 // ポインタを目線で追いかける
@@ -212,20 +218,20 @@ function followPointer(ev){
     var vx = transformViewX(ev.clientX - rect.left);
     var vy = transformViewY(ev.clientY - rect.top);
     
-    if(_this.drag){
-        _this.lastMouseX = sx;
-        _this.lastMouseY = sy;
+    if(L2dTasuko_this.drag){
+        L2dTasuko_this.lastMouseX = sx;
+        L2dTasuko_this.lastMouseY = sy;
         
-        //_this.dragMgr.setPoint(vx, vy);
+        //L2dTasuko_this.dragMgr.setPoint(vx, vy);
     }
-    _this.dragMgr.setPoint(vx, vy);
+    L2dTasuko_this.dragMgr.setPoint(vx, vy);
 }
 
 function lookFront(){
-    if(_this.drag){
-        _this.drag = false;
+    if(L2dTasuko_this.drag){
+        L2dTasuko_this.drag = false;
     }
-    _this.dragMgr.setPoint(0,0);
+    L2dTasuko_this.dragMgr.setPoint(0,0);
 }
 
 /* ********** マトリックス操作 ********** */
@@ -245,6 +251,11 @@ function transformScreenX(deviceX){
 
 function transformScreenY(deviceY){
     return this.deviceToScreen.transformY(deviceY);
+}
+
+function L2dTest(){
+    console.log("tesutohohgeoihioae");
+    this.L2dMgr.getNotification();
 }
 
 
