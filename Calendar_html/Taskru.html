@@ -518,6 +518,7 @@ function scheduleTableUpdate(date){
 			alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
 		}
 	});
+    scheduleTableUpdate(date);
 } 
 function taskTableUpdate(){
 	$("#TaskLine").find("tr").remove();
@@ -661,7 +662,254 @@ function changeStarNum2(num){
 		    }
 	    }	
     }
-    
+     function schedulesuggest(date){
+     //ここから自動提示追加分
+        var taskhash = [];
+        var taskschedule = [];
+        var schedulelist = [];         
+        var hash3 = [];
+        var weekschedule = [];
+        var taskcount = 0;
+        var week = 7;
+        var tasksum = 0;
+        for (var i = 0 ; i< week; i++){
+            weekschedule[i] = new Array();
+            for (var j = 0 ; j< 24; j++){
+                weekschedule[i][j] = new Array();
+            }
+        }
+        //空き時間配列の初期化
+        for(var i = 0 ; i < 7 ; i++){
+            for(var j = 0 ; j < 24 ; j++){
+                for(var k = 0 ; k < 6 ; k++){
+                    weekschedule[i][j][k] = 0;
+                }
+            }
+        }
+        var UserID = 1;
+        $(document).getUserId().done(function(result){
+            UserID=result;
+        });
+        $.ajax({
+            type: "POST",
+            url: "getTask.php",
+            dataType: "json",      
+            data: {query:"select * from TaskTable"},
+            success: function(data,dataType) {  
+                if(data == null) alert('データが0件でした'); 
+                //タスクを配列に叩き込むところ
+                for (var i =0; i<data.length; i++){
+                    
+                    if(data[i].UserID == 1){  //現在のユーザのidを取得しいれる
+                        var test = data[i].TaskEnd.split(" ");
+                        var test1 = test[0].split("-");
+                        var test2 = test[1].split(":");                     
+                        var time = new Date(parseInt(test1[0]) ,
+                                            (parseInt(test1[1]) - 1),
+                                            parseInt(test1[2]),
+                                            parseInt(test2[0]),
+                                            parseInt(test2[1]),
+                                            parseInt(test2[2]));
+                        console.log(time);
+                        taskhash.push({taskid:data[i].TaskID,
+                                   userid:data[i].UserID,
+                                   taskname:data[i].TaskName,
+                                   taskinfo:data[i].TaskInfo, 
+                                   taskend:time,
+                                   taskpriority:data[i].TaskPriority});
+                        taskcount += 1;
+                        tasksum += data[i].TaskPriority;
+                        console.log("tasksum="+tasksum);
+                    }
+                }
+            }, 
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert('Error : '+ XMLHttpRequest +  textStatus + errorThrown);
+            }
+        });
+        //タスクを終了時刻順にソートするところ
+        console.log(weekschedule);
+        taskhash.sort(function(a,b){
+            if(a.taskend<b.taskend) return -1;
+            if(a.taskend>b.taskend) return 1;
+            if(a.taskend<b.taskend) return -1;
+            return 0;
+        });
+        console.log(taskhash);
+        console.log(schedulelist);
+        //空きスケジュールを取得
+        $.ajax({
+            type: "POST",
+            url: "getSchedule.php", 
+            dataType: "json",      
+            data: {query:"select * from ScheduleTable"},
+            success: function(data,dataType) {
+                if(data == null) alert('データが0件でした'); 
+                var schedulecount = 0;
+                
+                for (var i =0; i<data.length; i++){
+                    if(data[i].UserID == 1){  //ユーザIDをここに入れよう
+                        var start = data[i].ScheduleStart.split(" ");
+                        var start1 = start[0].split("-");
+                        var start2 = start[1].split(":");
+                        var end = data[i].ScheduleEnd.split(" ");
+                        var end1 = end[0].split("-"); 
+                        var end2 = end[1].split(":");
+                        var startdate = new Date(parseInt(start1[0]) ,
+                                            parseInt(start1[1] - 1),
+                                            parseInt(start1[2]),
+                                            parseInt(start2[0]),
+                                            parseInt(start2[1]),
+                                            parseInt(start2[2]));
+                        var enddate = new Date(parseInt(end1[0]) ,
+                                            parseInt(end1[1] - 1),
+                                            parseInt(end1[2]),
+                                            parseInt(end2[0]),
+                                            parseInt(end2[1]),
+                                            parseInt(end2[2]));
+                        
+                        schedulelist.push({
+                            scheduleid:data[i].ScheduleID,
+                            userid:data[i].UserID,
+                            schedulename:data[i].ScheduleName,
+                            scheduleinfo:data[i].ScheduleInfo,
+                            start:startdate,
+                            end:enddate,
+                            clusterID:data[i].ClusterID});
+                        schedulecount += 1; 
+                    }   
+                }
+                var nowstart =new Date();
+                var nowend  =new Date();
+                var nowtime =new Date();
+                var minutetest;
+                for(var range = 0;range < week;range++){ //一日ごとに7日間
+                    nowstart = new Date(nowtime.getFullYear(),
+                                            nowtime.getMonth(),
+                                            nowtime.getDate() + range,
+                                            0,0,0);  
+                    console.log(nowstart);
+                    for(var t = 0;t < schedulelist.length;t++){ //各タスクごと
+                        if((datecomp(schedulelist[t].start, nowstart)) 
+                           && (datecomp(schedulelist[t].end,nowstart))){ //判定する
+                            console.log("start");
+                            console.log(schedulelist[t].start.getHours());
+                            console.log("end");
+                            console.log(schedulelist[t].end.getHours());
+                            console.log(schedulelist[t]);
+                            for (var p = schedulelist[t].start.getHours();
+                                 p<schedulelist[t].end.getHours();p++ ){
+                                if(schedulelist[t].end.getMinutes() == 0){
+                                    minutetest = 6;
+                                }else{
+                                    minutetest = parseInt(schedulelist[t].end.getMinutes()/10);
+                                }
+                                for (var q = parseInt(schedulelist[t].start.getMinutes()/10);
+                                     q< minutetest;q++){
+                                    weekschedule[range][p][q] = 1;
+                                    console.log(range,p,q);
+                                }
+                            }
+                        }
+                    }
+                };
+                var freetime = 0;
+                var taskindex = 0;
+                var p = 0;
+                //空き時間配列を確保
+                var freetimearray = new Array();
+                for(var i = 0;i < week;i++){freetimearray[i] = 0;}
+                for (var p = 0; p < week;p++ ){
+                    for (var q = 0; q<24;q++ ){
+                        for (var r = 0; r<6;r++ ){
+                            if(weekschedule[p][q][r] == 0){
+                                freetime += 1;
+                                if((q == (24 -1)) && (r == (6-1))){
+                                    freetimearray[p] += freetime; 
+                                    freetime = 0;
+                                }
+                            }else{
+                                if(freetime > 3){
+                                    freetimearray[p] += freetime; 
+                                    freetime = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+                var calleddatestr = date.substring(0,10).split("-");
+                var calleddate = new Date(calleddatestr[0],calleddatestr[1] - 1,calleddatestr[2],0,0,0 );
+                var compdate = new Date(nowtime.getFullYear(),nowtime.getMonth(),
+                                        nowtime.getDate(),0,0,0);  
+                var freesum = 0;
+                
+                //クリックが今日から何日目かを判断    
+                console.log(calleddate)
+                console.log(compdate)
+                //テスト用
+                var tableHeight = $('#TimeLine tr').height();
+                var duringday = 0;
+                var Hour = 0;
+                var Minutes = 0;
+                var eHour = 2;
+                var eMinutes = 0;
+                var Top = Hour*tableHeight + ((Minutes/60) * tableHeight);
+                var Height0 = (((eHour*60 + eMinutes) - (Hour *60 + Minutes)) / 60);
+                var Height = tableHeight * (Height0-1) +40 ;
+                AddSchedule = "<div type=\"ext-align\" class=\"taskButtons\" style=\"position:absolute; z-index:8;left:"+
+                    $('#TimeLine th.schedule_table').outerWidth(true)+"px;top:"+
+                    Top+"px; width:185px; height:"+
+                    Height+"px;\">"+
+                    "<div id="+(-1)+">"+"development"+"</div> </div>";
+                $("#TimeLine").append(AddSchedule);
+                
+                if(calleddate >= compdate ){
+                    duringday = (calleddate - compdate) / 86400000;
+                    console.log(duringday)
+                    if(duringday < week){
+                        console.log("clicked!!!!");
+                        for(var i = 0;i<(duringday-1);i++){
+                            freesum += freetimearray[i];
+                        }
+                        
+                        for (var q = 0; q<24;q++ ){
+                            for (var r = 0; r<6;r++ ){
+                                console.log("called!!!!" + weekschedule[duringday][q][r]);
+                                if(weekschedule[duringday][q][r] == 0){
+                                    freetime += 1;
+                                    if((q == (24 -1)) && (r == (6-1))){
+                                        //freetime = 0;
+                                    }
+                                }else{
+                                    console.log("free!!!!" + freetime);
+                                    if(freetime > 3){
+                                        var tableHeight = $('#TimeLine tr').height();
+                                        var index = 0;
+                                        var Hour = 0;
+                                        var Minutes = parseInt(r*10);
+                                        var eHour = 2;
+                                        var eMinutes = parseInt(r * 10);
+                                        var Top = Hour*tableHeight + ((Minutes/60) * tableHeight);
+                                        var Height0 = (((eHour*60 + eMinutes) - (Hour *60 + Minutes)) / 60);
+                                        var Height = tableHeight * (Height0-1) +40 ;
+                                        AddSchedule = "<div type=\"ext-align\" class=\"taskButtons\" style=\"position:absolute; z-index:8;left:"+
+                                            $('#TimeLine th.schedule_table').outerWidth(true)+"px;top:"+
+                                            Top+"px; width:185px; height:"+
+                                            Height+"px;\">"+
+                                            "<div id="+taskhash[index].taskid+">"+"development"+"</div> </div>";
+                                        $("#TimeLine").append(AddSchedule);
+                                        freetime = 0;
+                                        index +=1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+                 console.log(weekschedule)
+            }
+        });   
+    }
 
 </script>
 </head>
