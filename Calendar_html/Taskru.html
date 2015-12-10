@@ -701,6 +701,7 @@
                 $("#TaskButton").click(function () {
                     date = getstartInitDate();
                     $("#task_deadline").val(date);
+                    $("#task_title").val("タスク名");
 
                     //追加 →　タスク追加ボタンクリック時優先度を初期値(0)にする (小林)
                     changeStarNum(0);
@@ -711,7 +712,7 @@
 
                 //スケジュール追加ボタンクリック時
                 $("#scheduleButton").click(function () {
-                    $("#schedule_title").val("");
+                    $("#schedule_title").val("スケジュール名");
                     $("#schedule_info").val("");
                     date = getstartInitDate();
                     $("#schedule_start_time").val(date);
@@ -756,43 +757,47 @@
                     show: 'blind',
                     hide: 'blind',
                     modal: true,
-                    buttons: {
-                        "入力": function () {
+                    buttons: [
+					{
+						text: '入力',
+						id: 'task_input_button',
+						click: function (){
+							$(document).getUserId().done(function (result) {
+                        		UserID = result;
+                            });
 
-//                            $(document).getUserId().done(function (result) {
-//                                UserID = result;
-//                            });
-
-                            //UserID = 1;
-                            var TaskName = $("#task_title").val();
-                            var TaskInfo = $("#task_info").val();
-                            var TaskEnd = $("#task_deadline").val();
-                            TaskEnd = changeDBdate(TaskEnd);
+	                        //UserID = 1;
+                	        var TaskName = $("#task_title").val();
+                	        var TaskInfo = $("#task_info").val();
+                	        var TaskEnd = $("#task_deadline").val();
+                	        TaskEnd = changeDBdate(TaskEnd);
                             //追加 →　クリックされた優先度の値(0 ~ 4)が変数prriority_degreeに入っておりそれを変数TaskPriorityに格納 (小林)
                             var TaskPriority = prriority_degree;
-                            var ClusterID = $("#task_cluster").val();;
+                            var ClusterID = 2;
                             var TaskVal = {query: "insert into TaskTable(UserID, TaskName, TaskInfo, TaskEnd, TaskPriority, ClusterID) values(" + UserID + ",'" + TaskName + "', '" + TaskInfo + "', '" + TaskEnd + "', " + TaskPriority + ", " + ClusterID + ")"};
 
-                            $.ajax({
-                                type: "POST",
-                                url: "sendphp.php",
-                                data: TaskVal,
-                                success: function (data, dataType) {
-                                },
-                                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                    alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
-                                }
-                            });
-                            taskTableUpdate();
-                            scheduleTableUpdate(ClickedDay)
-                            window.location.reload()
-                            Notificate("タスク「" + TaskName + "」を追加したよ．");
-                            $(this).dialog('close');
-                        },
-                        "キャンセル": function () {
-                            $(this).dialog('close');
-                        }
-                    },
+							$.ajax({
+								type: "POST",
+								url: "sendphp.php",
+								data: TaskVal,
+								success: function (data, dataType) {
+								},
+								error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            		 alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
+								}
+							});
+							taskTableUpdate();
+							Notificate("タスク「" + TaskName + "」を追加したよ．");
+							$(this).dialog('close');
+						}
+					},
+					{
+						text: 'キャンセル',
+						click: function (){
+						$(this).dialog('close');
+					}
+				}
+				]
                 });
                 $('#schedule-input-dialog-form').dialog({
                     autoOpen: false,
@@ -800,43 +805,45 @@
                     show: 'blind',
                     hide: 'blind',
                     modal: true,
-                    buttons: {
-                        "入力": function () {
+                    buttons: [
+	         		{
+						text: '入力',
+						id: 'schedule_input_button',
+						click: function (){
+						$(document).getUserId().done(function (result) {
+                        	 UserID = result;
+                        });
+                        	//UserID = 1;
+                        	var ScheduleName = $("#schedule_title").val();
+                        	var ScheduleInfo = $("#schedule_info").val();
+                        	var ScheduleStart = $("#schedule_start_time").val();
+                        	var ScheduleEnd = $("#schedule_end_time").val();
+                        	var ClusterID = 2;
+                        	var RepeatNum = parseInt($("#schedule_repeat_num").val());
+                        	var CycleNum = parseInt($("#schedule_cycle_num").val());
 
-                            $(document).getUserId().done(function (result) {
-                                UserID = result;
-                            });
-                            //UserID = 1;
-                            var ScheduleName = $("#schedule_title").val();
-                            var ScheduleInfo = $("#schedule_info").val();
-                            var ScheduleStart = $("#schedule_start_time").val();
-                            var ScheduleEnd = $("#schedule_end_time").val();
-                            var ClusterID = $("#schedule_cluster").val();
-                            var RepeatNum = parseInt($("#schedule_repeat_num").val());
-                            var CycleNum = parseInt($("#schedule_cycle_num").val());
+							var oriStart = $("#schedule_start_time").val();
+							var oriEnd = $("#schedule_end_time").val();
+							var scheduleVal = {query: "insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values(" + UserID + ",'" + ScheduleName + "','" + ScheduleInfo + "','" + ScheduleStart + "','" + ScheduleEnd + "', " + ClusterID + ")"};
 
-                            var oriStart = $("#schedule_start_time").val();
-                            var oriEnd = $("#schedule_end_time").val();
-                            var scheduleVal = {query: "insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values(" + UserID + ",'" + ScheduleName + "','" + ScheduleInfo + "','" + ScheduleStart + "','" + ScheduleEnd + "', " + ClusterID + ")"};
+							//RepeatNum回数ぶんajax関数を繰り返す
+							for (i = 0; i < RepeatNum; i++) {
+								if (i == 0) {
+									ScheduleStart = changeDBdate(ScheduleStart);
+									 ScheduleEnd = changeDBdate(ScheduleEnd);
 
-                            //RepeatNum回数ぶんajax関数を繰り返す
-                            for (i = 0; i < RepeatNum; i++) {
-                                if (i == 0) {
-                                    ScheduleStart = changeDBdate(ScheduleStart);
-                                    ScheduleEnd = changeDBdate(ScheduleEnd);
+									 scheduleVal = {query: "insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values(" + UserID + ",'" + ScheduleName + "','" + ScheduleInfo + "','" + ScheduleStart + "','" + ScheduleEnd + "', " + ClusterID + ")"};
+								} else {
+									var tmp_start = new Date(oriStart);
+									var tmp_end = new Date(oriEnd);
+									tmp_start.setDate(tmp_start.getDate() + CycleNum * i);
+									tmp_end.setDate(tmp_end.getDate() + CycleNum * i);
+									ScheduleStart = changeDBdate(tmp_start);
+									ScheduleEnd = changeDBdate(tmp_end);
 
-                                    scheduleVal = {query: "insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values(" + UserID + ",'" + ScheduleName + "','" + ScheduleInfo + "','" + ScheduleStart + "','" + ScheduleEnd + "', " + ClusterID + ")"};
-                                } else {
-                                    var tmp_start = new Date(oriStart);
-                                    var tmp_end = new Date(oriEnd);
-                                    tmp_start.setDate(tmp_start.getDate() + CycleNum * i);
-                                    tmp_end.setDate(tmp_end.getDate() + CycleNum * i);
-                                    ScheduleStart = changeDBdate(tmp_start);
-                                    ScheduleEnd = changeDBdate(tmp_end);
-
-                                    //再度クエリ書き出し
-                                    scheduleVal = {query: "insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values(" + UserID + ",'" + ScheduleName + "','" + ScheduleInfo + "','" + ScheduleStart + "','" + ScheduleEnd + "', " + ClusterID + ")"};
-                                }
+									//再度クエリ書き出し
+									scheduleVal = {query: "insert into ScheduleTable(UserID, ScheduleName, ScheduleInfo, ScheduleStart, ScheduleEnd, ClusterID) values(" + UserID + ",'" + ScheduleName + "','" + ScheduleInfo + "','" + ScheduleStart + "','" + ScheduleEnd + "', " + ClusterID + ")"};
+								}
                                 //alert("クエリ = "+ scheduleVal['query']);
                                 $.ajax({
                                     type: "POST",
@@ -850,15 +857,19 @@
                                 });
                             }
                             scheduleTableUpdate(ClickedDay);
-                            window.location.reload()
                             Notificate("スケジュール「" + ScheduleName + "」を追加したよ．");
                             $(this).dialog('close');
-                        },
-                        "キャンセル": function () {
-                            $(this).dialog('close');
-                        }
-                    },
-                });
+
+						}
+	         		},
+	         		{
+						text: 'キャンセル',
+						click: function(){
+							$(this).dialog('close');
+						} 
+	    	    	 }
+	       		  ]
+        		});
                 $('#schedule-detail-dialog-form').dialog({
                     autoOpen: false,
                     width: 500,
@@ -925,19 +936,21 @@
                     show: 'blind',
                     hide: 'blind',
                     modal: true,
-                    buttons: {
-                        "更新": function () {
-                            // 更新時の挙動
-                            var TaskID = $("#task_detail_id").val();
-                            var TaskName = $("#task_detail_title").val();
-                            var TaskInfo = $("#task_detail_info").val();
-                            var TaskEnd = $("#task_detail_deadline").val();
-                            TaskEnd = changeDBdate(TaskEnd);
-                            //追加 →　クリックされた優先度の値(0 ~ 4)が変数prriority_degreeに入っておりそれを変数TaskPriorityに格納 (小林)
-                            var TaskPriority = prriority_degree;
-                            var ClusterID = $("#task_detail_cluster").val();
+                    buttons: [
+					{
+			text: '更新',
+			id: 'task_detail_button',
+			click: function (){
+				var TaskID = $("#task_detail_id").val();
+                           			 var TaskName = $("#task_detail_title").val();
+                           			 var TaskInfo = $("#task_detail_info").val();
+                           			 var TaskEnd = $("#task_detail_deadline").val();
+                           			 TaskEnd = changeDBdate(TaskEnd);
+                           			 //追加 →　クリックされた優先度の値(0 ~ 4)が変数prriority_degreeに入っておりそれを変数TaskPriorityに格納 (小林)
+                      			      var TaskPriority = prriority_degree;
+                      			      var ClusterID = 2;
                             //タスク更新時にタスク優先度をDBに再格納するよう修正(小林)
-                            TaskVal = {query: "update TaskTable set TaskName='" + TaskName + "', TaskInfo='" + TaskInfo + "', TaskEnd='" + TaskEnd + "', TaskPriority=" + TaskPriority + ", ClusterID ="+ClusterID +"  where TaskID=" + TaskID};
+                            TaskVal = {query: "update TaskTable set TaskName='" + TaskName + "', TaskInfo='" + TaskInfo + "', TaskEnd='" + TaskEnd + "', TaskPriority=" + TaskPriority + " where TaskID=" + TaskID};
 
                             //alert(TaskVal['query']);
 
@@ -953,23 +966,29 @@
                             });
 
                             taskTableUpdate();
-                            scheduleTableUpdate(ClickedDay)
                             Notificate("タスク「" + TaskName + "」を更新したよ．");
                             $(this).dialog('close');
-                        },
-                        "削除": function () {
-                            TaskID = $("#task_detail_id").val();
-                            TaskName = $("#task_detail_title").val();
-                            taskFinish(TaskID, TaskName);
 
-                            $(this).dialog('close');
-                        },
-                        "キャンセル": function () {
-                            $(this).dialog('close');
-                        }
-                    },
-                });
+			}
+		},
+		{
+			text: '削除',
+			click: function (){
+				TaskID = $("#task_detail_id").val();
+                            			TaskName = $("#task_detail_title").val();
+                            			taskFinish(TaskID, TaskName);
 
+                            			$(this).dialog('close');
+			}
+		},
+		{
+			text: 'キャンセル',
+			click: function (){
+				$(this).dialog('close');
+			}
+		}
+						
+				]
             });
 
             function Notificate(text) {
