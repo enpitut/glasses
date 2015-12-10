@@ -12,7 +12,7 @@
     //  エラー処理
     // });
     //のように記述する
-    $.fn.getUserId = function() {
+    $.fn.getUserId = function () {
         return $.ajax({
             url: 'sessionManager.php',
             type: 'post',
@@ -23,44 +23,38 @@
     // ログインしているかチェックする
     // ログインしていなければlogin.htmlへ戻す
     var checkLogin = function () {
-        $.ajax({
+        var result = $.ajax({
             url: 'sessionManager.php',
             type: 'post',
-            data: {'command': 'checkLogin'},
-            success: function (result) {
-                if (result) {
-                    console.log('You are logined');
-                } else {
-                    alert('ログインしていません');
-                    window.location.href = 'login.html';
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('通信失敗');
-                window.location.href = 'login.html';
-            }
-        });
+            async: false,
+            data: {'command': 'checkLogin'}
+        }).responseText;
+        if (result) {
+            console.log('You are logined');
+        } else {
+            alert('ログインしていません');
+            window.location.href = 'login.html';
+        }
     };
-    
+
     // 初接続か確認する
     // データベースを参照し初接続ならfalse, そうでなければtrueを返す
     // var flag = $(document).checkIntroFlag();
     // と使う
-    $.fn.checkIntroFlag = function() {
+    $.fn.checkIntroFlag = function () {
         var result = $.ajax({
             url: 'sessionManager.php',
             type: 'post',
             async: false,
             data: {'command': 'checkIntro'}
         }).responseText;
-        if(result === '0') {
+        if (result === '0') {
             return true;
         } else {
             return false;
         }
     };
 
-    $(document).ready(function () {
-        checkLogin();
-    });
+    checkLogin();
+
 })(jQuery);
