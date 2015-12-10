@@ -32,13 +32,13 @@ function checkNotification($date, $extension) {
     ScheduleTable.ScheduleID as ID,
     ScheduleTable.ScheduleName as Name,
     ScheduleTable.ScheduleInfo as Info,
+    UserTable.UserID,
     UserTable.NotificationID
 from
     ScheduleTable,
     UserTable
 where
     UserTable.UserID = ScheduleTable.UserID
-    and not (UserTable.NotificationID = '')
     and (ScheduleTable.ScheduleStart between '$dateStart' and '$dateEnd')
 )
 union
@@ -47,13 +47,13 @@ union
     TaskTable.TaskID as ID,
     TaskTable.TaskName as Name,
     TaskTable.TaskInfo as Info,
+    UserTable.UserID,
     UserTable.NotificationID
 from
     TaskTable,
     UserTable
 where
     UserTable.UserID = TaskTable.UserID
-    and not (UserTable.NotificationID = '')
     and (TaskTable.TaskEnd between '$dateStart' and '$dateEnd')
 )
 EOT;
@@ -64,10 +64,12 @@ EOT;
             'id' => $row->ID,
             'name' => $row->Name,
             'info' => $row->Info,
+            'user_id' => $row->UserID,
             'notificationID' => $row->NotificationID
         );
     }
 
+    $dbh = null;
     return $notificationList;
 }
 
@@ -89,7 +91,19 @@ function sendNotification($message, $regId) {
     }
 }
 
-error_log('sendNotification');
+function setNotification($message, $user_id) {
+    try {
+        $dbh = new PDO('mysql:host=mysql488.db.sakura.ne.jp;dbname=meganeshibu_db;charset=utf8', 'meganeshibu', 'DBmaster777', array(PDO::ATTR_EMULATE_PREPARES => false));
+    } catch (PDOException $e) {
+        exit('データベース接続失敗。' . $e->getMessage());
+    }
+    $registTime = new DateTime();
+    $sql = "insert into NotificationTable(UserID, NotificationInfo, RegistTime) values('" . $user_id . "',' " . $message . "',' " . $registTime->format('Y-m-d H:i:s') . "')";
+    $stmt = $dbh->query($sql);
+
+    $dbh = null;
+}
+
 $notificationList = checkNotification('', '+1 hour');
 
 foreach ($notificationList as $notification) {
@@ -100,7 +114,10 @@ foreach ($notificationList as $notification) {
         $ref = '終了';
     }
     $message = $notification['type'] . '「' . $notification['name'] . '」の' . $ref . '1時間前です';
-    
-    sendNotification($message, $regId);
+
+    if ($regId) {
+        sendNotification($message, $regId);
+    }
+    setNotification($message, $notification['user_id']);
 }
 ?>
