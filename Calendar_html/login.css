@@ -1,0 +1,65 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2015/11/26, 16:50:19
+    Author     : 裕斗
+*/
+
+#login{
+  width:400px;
+  margin:0 auto;
+  margin-top:8px;
+  margin-bottom:2%;
+  transition:opacity 1s;
+  -webkit-transition:opacity 1s;
+}
+
+#login h1{
+  background:#75849A;
+  margin:0;
+  padding:20px 0;
+  font-size:140%;
+  font-weight:bolder;
+  text-align:center;
+  color:#fff;
+}
+
+form{
+  background:#f0f0f0;
+  padding:6% 4%;
+}
+
+input[type="text"],input[type="password"]{
+  width:92%;
+  background:#fff;
+  margin-bottom:4%;
+  border:1px solid #ccc;
+  padding:4%;
+  font-size:95%;
+  color:#555;
+}
+
+input[type="submit"]{
+    width:100%;
+    background:#3399cc;
+    border:0;
+    margin-bottom: 5%;
+    padding:4%;
+    font-size:100%;
+    font-weight:500;
+    color:#fff;
+    cursor:pointer;
+    transition:background .3s;
+    -webkit-transition:background .3s;
+}
+
+input[type="submit"]:hover{
+    background:#2288bb;
+}
+
+form a{
+    margin: 20px auto;
+}

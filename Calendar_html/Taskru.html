@@ -7,14 +7,14 @@
     
 <link href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" rel="stylesheet" />
 <link href="fullcalendar.css" rel="stylesheet" />
-<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet">
 <link href="Intro/introjs.min.css" rel="stylesheet">
 <link href="validationEngine/validationEngine.jquery.css" rel="stylesheet"/>
 
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 <script src='fullcalendar.min.js'></script>
-<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="bootstrap-3.3.6/js/bootstrap.min.js"></script>
 <script src="Intro/intro.min.js"></script>
 <script src="validationEngine/jquery.validationEngine.js"></script>
 <script src="validationEngine/jquery.validationEngine-ja.js"></script>
@@ -494,7 +494,7 @@ if(data!=null){len=data.length}
 				AddSchedule = "<div type=\"button\" class=\"schedule scheduleButtons\" style=\"position:absolute; z-index:8;left:"+
                 $('#TimeLine th.schedule_table').outerWidth(true)+"px;top:"+
                 Top+"px; width:185px; height:"+
-                Height+"px; font-size:14px;\">"+
+                Height+"px;\">"+
                 "<div id="+data[i].ScheduleID+">"+data[i].ScheduleName+"</div> </div>";
 				$("#TimeLine").append(AddSchedule);
 				 
@@ -667,7 +667,6 @@ function changeStarNum2(num){
     border: 3px solid #d35400;
     color:#ecf0f1;
     font-weight:bold;
-    font-size:18px;
 }
 .scheduleButtons:hover{
     background-color:#FFCCBC;
@@ -678,7 +677,6 @@ function changeStarNum2(num){
     border: 3px solid #2980b9;
     color:#ecf0f1;
     font-weight:bold;
-    font-size:18px;
 }
 .taskButtons:hover {
 background-color:#81D4FA;
@@ -689,15 +687,19 @@ background-color:#81D4FA;
 .fc-header {
     margin-bottom: -18px;
 }
+
+#calendar h2{
+    font-size:1.5em;
+
+}
+
 .schedule_table{
-    font-size: 15px;
     width:9px;
     height: 33px;
     text-align:right;
     background-color:#3498db;
 }
 .task_table{
-    font-size: 18px;
     width:200px;
     height: 33px;
     text-align:right;
@@ -716,7 +718,6 @@ background-color:#81D4FA;
     width: 300px;
     margin-bottom: 20px;
     left:10px;
-    font-size:20px;
     margin: 5px auto;
     padding: 5px;
 }
@@ -766,15 +767,17 @@ background-color:#81D4FA;
     <button id="settingButton" type="button" onclick="location.href='setting.html'", class="scheduleButtons" style="float:right; margin-right:5px; margin-top:0px; height:50px" >設定</button>
 
  </header>
+<div class="container-fluid">
 <div class="row">
-    <div class="span9" id="calendarContainer">
-
-            <div class="row UIparts">
+    <!--<div class="span7" id="calendarContainer">-->
+    <div class="col-sm-6" id="calendarContainer">
+        <div class="row">
             <!--<img src="./img/taskru_nologo.png" class="span10" style="margin-left:50px;width:240px;">-->
-                <canvas id="mycanvas" width="240px" height="360px" class="span4" style="border.dashed 1px #CCC"></canvas>
-                <div class="span5">
-                    <div id="Notification" style="text-align:center;font-size:large;height:30px"><!--通知一覧--></div>
-                    <div id="scroll2" style="font-size:12px;height:220px;overflow-x:scroll;" data-step="5" data-intro="ここに通知が表示されます">
+            <div class="UIparts col-xs-12" style="margin-left:auto;">
+                <canvas id="mycanvas" width="240px" height="360px" class="col-xs-6" style="border.dashed 1px #CCC"></canvas>
+                <div class="col-xs-6">
+                    <div id="Notification" style="text-align:center;height:30px"><!--通知一覧--></div>
+                    <div id="scroll2" style="height:220px;overflow-x:scroll;" data-step="5" data-intro="ここに通知が表示されます">
                         <table id="TutiLine" class="table table-striped">
                         <thead></thead>
                         <tbody>
@@ -783,203 +786,204 @@ background-color:#81D4FA;
                         </table>  
                     </div>  
                 </div>
-            </div>   
-        
-
-        <div class="UIparts span9" id='calendar' style='font-size:18px;margin-left:0px'></div> 
+            </div>
+            <div class="col-xs-12 UIparts" id='calendar' style='margin-left:0px'></div> 
+        </div>  
    </div>
 
-	  
-    <div class="span4 UIparts" id="scheduleContainer" style="font-size:14px; padding:0 15px 0 15px;">
-        <div id="scheduleButtonContainer" style="text-align:center;font-size:large;">
-          <button id="scheduleButton" type="button" class="scheduleButtons" style="margin-top:20px;margin-bottom:20px;width:80%;height:70px;" data-step="1" data-intro="このボタンをクリックしてスケジュールを作成してください">スケジュール<br>追加</button>
-       </div>
-       <div id="TimeTitle" style="text-align:center;font-size:large;height:30px;margin-top:10px;"></div>
-       <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;position:relative;" data-step="2" data-intro="作成するとここにスケジュールが追加されます">
-        <table id="TimeLine" class="table" border="1" rules="cols">
-	     <thead></thead>
-	     <tbody>
-		<script>
-		memoEvent2();    
-		</script>
-	    </tbody>
-	  </table>
-       </div>
+	<!-- <div class="col-md-6"> -->
+        <!-- <div class="row"> -->
+            <div class="col-xs-6 col-sm-3 UIparts" id="scheduleContainer" style="padding:0 15px 0 15px;">
+                <div id="scheduleButtonContainer" style="text-align:center;">
+                  <button id="scheduleButton" type="button" class="scheduleButtons" style="margin-top:20px;margin-bottom:20px;width:80%;height:70px;" data-step="1" data-intro="このボタンをクリックしてスケジュールを作成してください">スケジュール<br>追加</button>
+               </div>
+               <div id="TimeTitle" style="text-align:center;height:30px;margin-top:10px;"></div>
+               <div id="scroll" style="height:390px;overflow-x:scroll;position:relative;" data-step="2" data-intro="作成するとここにスケジュールが追加されます">
+                <table id="TimeLine" class="table" border="1" rules="cols">
+                 <thead></thead>
+                 <tbody>
+                <script>
+                memoEvent2();    
+                </script>
+                </tbody>
+              </table>
+               </div>
 
-       
+               
+            </div>
+
+          
+          <div class="col-xs-6 col-sm-3 UIparts" id="taskContainer" style="padding:0 15px 0 15px; height:90%;">
+              <div id="taskButtonContainer" style="text-align:center;">
+                    <button id="TaskButton" type="button" class="taskButtons" style="margin-top:20px;margin-bottom:20px;width:80%;height:70px;" data-step="3" data-intro="このボタンをクリックしてタスクを作成してください">タスク<br>追加</button>
+                </div>
+                <div id="TaskTitle" style="text-align:center;height:30px; margin-top:10px;">タスク一覧</div>
+                <div id="scroll" style="height:390px;overflow-x:scroll;" data-step="4" data-intro="作成するとここにタスクが追加されます">
+                    <table id="TaskLine" class="table" border="1" rules="cols">
+                        <thead></thead>
+                        <tbody>
+                        <script>
+                       // memoEvent3();
+                        </script>
+                        </tbody>
+                    </table>  
+                </div>
+            </div>
+        <!-- </div> -->
+    <!-- </div> -->
+
+    <!-- 元のダイアログdivの改造：タスク入力ダイアログ -->
+    <div id="task-input-dialog-form" title="タスク入力">
+       <p class="eventInput">タスクを入力してください!</p>
+        <!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
+       <form id="task_form">
+       <fieldset>
+          <label for="task_title">タスク名:</label>
+          <input type="text" name="task_title" id="task_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
+
+          <label for="task_info">タスクの説明：</label>
+          <input type="text" name="task_info" id="task_info"><br>
+
+          <label for="task_deadline">タスクの締切日時: &nbsp; </label>
+        
+        <input type="datetime-local" name="task_deadline" id="task_deadline" /><br>
+
+          <label for="priority">タスクの優先度</label>
+        <div id='prriority_stars'>
+        <script>
+            //DBとのやりとりができるようになったら，drawPrriorityStars()[星を書きだす関数]の前にchangePrriorityArray(hoge)[配列prriority_arrayの中身を書き換える関数]を実行してください。
+            //引数hogeには，DBから読み取ったそのタスクの優先度を格納してください．入力ダイアログであれば初期値を．
+            drawPrriorityStars();
+        </script>
+        </div>
+          <br>
+
+          <label for="cluster">タスクの帰属するクラスタ</label>
+          <select id='task_cluster' name='task_cluster' >
+            <script type="text/JavaScript">
+                getClusters();
+            </script>
+            </select >
+        <br>	
+       </fieldset>
+       </form>
     </div>
 
-  
-  <div class="span4 UIparts" id="taskContainer" style="font-size:14px; padding:0 15px 0 15px; height:90%;">
-      <div id="taskButtonContainer" style="text-align:center;font-size:large;">
-       <button id="TaskButton" type="button" class="taskButtons" style="margin-top:20px;margin-bottom:20px;width:80%;height:70px;" data-step="3" data-intro="このボタンをクリックしてタスクを作成してください">タスク<br>追加</button>
+    <!-- 元のダイアログdivの改造：スケジュール入力ダイアログ -->
+    <div id="schedule-input-dialog-form" title="スケジュール入力">
+       <p class="eventInput">スケジュールを入力してください!</p>
+        <!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
+       <form id="schedule_form">
+       <fieldset>
+          <label for="schedule_title">スケジュール名:</label>
+          <input type="text" name="schedule_title" id="schedule_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
+
+          <label for="schedule_info">スケジュールの説明：</label>
+          <input type="text" name="schedule_info" id="schedule_info"><br>
+
+          <label for="schedule_start_time">開始日時: &nbsp; </label>
+        <input type="datetime-local" name="schedule_start_time" id="schedule_start_time" step="600" />
+        <label for="schedule_end_time">終了日時: &nbsp; </label>	
+        <input type="datetime-local" name="schedule_end_time" id="schedule_end_time" step="600" /><br>
+
+          <label for="schedule_repeat">繰り返し設定</label>
+          繰り返し回数：
+            <select name="schedule_repeat_num" id="schedule_repeat_num">
+                <option selected="selected">1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+            </select>回
+          <br>
+          繰り返し周期：
+            <select name="schedule_cycle_num" id="schedule_cycle_num">
+                <option selected="selected">1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+            </select>日
+          <br>
+          <br>
+
+          
+          <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
+            <select id='schedule_cluster' name='schedule_cluster' >
+                <script type="text/JavaScript">
+                    getClusters();
+                </script>
+            </select>
+       </fieldset>
+       </form>
     </div>
-    <div id="TaskTitle" style="text-align:center;font-size:large;height:30px; margin-top:10px;">タスク一覧</div>
-    <div id="scroll" style="font-size:12px;height:390px;overflow-x:scroll;" data-step="4" data-intro="作成するとここにタスクが追加されます">
-	<table id="TaskLine" class="table" border="1" rules="cols">
-	    <thead></thead>
-	    <tbody>
-	    <script>
-	   // memoEvent3();
-	    </script>
-	    </tbody>
-	</table>  
+
+    <!-- 元のダイアログdivの改造：スケジュール詳細ダイアログ -->
+    <div id="schedule-detail-dialog-form" title="スケジュールの詳細">
+        <!-- <p class="eventInput">スケジュールを入力してください!</p> -->
+        <!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
+       <form>
+       <fieldset>
+     <input type="hidden" name="schedule_id" id="schedule_detail_id" />
+          <label for="schedule_title">スケジュール名:</label>
+          <input type="text" name="schedule_title" id="schedule_detail_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
+
+          <label for="schedule_info">スケジュールの説明：</label>
+          <input type="text" name="scheDialog_info" id="schedule_detail_info"><br>
+
+          <label for="schedule_start_time">開始日時: &nbsp; </label>	
+        <input type="datetime-local" name="schedule_start_time" id="schedule_detail_start_time" step="600" />
+        <label for="schedule_end_time">終了日時: &nbsp; </label>	
+        <input type="datetime-local" name="schedule_end_time" id="schedule_detail_end_time" step="600" /><br>
+     
+          <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
+            <select id='task_cluster' name='task_cluster' >
+            <script type="text/JavaScript">
+                getClusters();
+            </script>
+            </select >
+        </fieldset>
+       </form>
+</div>
+
+    <div id="task-detail-dialog-form" title="タスク詳細">
+       <form>
+       <fieldset>
+          <input type="hidden" name="task_id" id="task_detail_id" />
+          <label for="title">タスク名:</label>
+          <input type="text" name="task_title" id="task_detail_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
+
+          <label for="task_info">タスクの説明：</label>
+          <input type="text" name="task_info" id="task_detail_info"><br>
+
+          <label for="task_deadline">タスクの締切日時: &nbsp; </label>
+        
+        <input type="datetime-local" name="task_deadline" id="task_detail_deadline" /><br>
+
+          <label for="priority">タスクの優先度</label>
+        <div id="prriority_stars2">
+        <script>
+            drawPrriorityStars2();
+        </script>
+        </div>
+          <br>
+
+          <label for="cluster">タスクの帰属するクラスタ</label>
+            <select id='task_cluster' name='task_cluster' >
+            <script type="text/JavaScript">
+                getClusters();
+            </script>
+            </select > 
+       </fieldset>
+       </form>
     </div>
-
-  </div>
-
-<!-- 元のダイアログdivの改造：タスク入力ダイアログ -->
-<div id="task-input-dialog-form" title="タスク入力">
-   <p class="eventInput">タスクを入力してください!</p>
-	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
-   <form id="task_form">
-   <fieldset>
-      <label for="task_title">タスク名:</label>
-      <input type="text" name="task_title" id="task_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
-
-      <label for="task_info">タスクの説明：</label>
-      <input type="text" name="task_info" id="task_info"><br>
-
-      <label for="task_deadline">タスクの締切日時: &nbsp; </label>
-	
-	<input type="datetime-local" name="task_deadline" id="task_deadline" /><br>
-
-      <label for="priority">タスクの優先度</label>
-	<div id='prriority_stars'>
-	<script>
-	    //DBとのやりとりができるようになったら，drawPrriorityStars()[星を書きだす関数]の前にchangePrriorityArray(hoge)[配列prriority_arrayの中身を書き換える関数]を実行してください。
-	    //引数hogeには，DBから読み取ったそのタスクの優先度を格納してください．入力ダイアログであれば初期値を．
-	    drawPrriorityStars();
-	</script>
-	</div>
-      <br>
-
-      <label for="cluster">タスクの帰属するクラスタ</label>
-      <select id='task_cluster' name='task_cluster' >
-		<script type="text/JavaScript">
-			getClusters();
-		</script>
-		</select >
-	<br>	
-   </fieldset>
-   </form>
-</div>
-
-<!-- 元のダイアログdivの改造：スケジュール入力ダイアログ -->
-<div id="schedule-input-dialog-form" title="スケジュール入力">
-   <p class="eventInput">スケジュールを入力してください!</p>
-	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
-   <form id="schedule_form">
-   <fieldset>
-      <label for="schedule_title">スケジュール名:</label>
-      <input type="text" name="schedule_title" id="schedule_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
-
-      <label for="schedule_info">スケジュールの説明：</label>
-      <input type="text" name="schedule_info" id="schedule_info"><br>
-
-      <label for="schedule_start_time">開始日時: &nbsp; </label>
-	<input type="datetime-local" name="schedule_start_time" id="schedule_start_time" step="600" />
-	<label for="schedule_end_time">終了日時: &nbsp; </label>	
-	<input type="datetime-local" name="schedule_end_time" id="schedule_end_time" step="600" /><br>
-
-      <label for="schedule_repeat">繰り返し設定</label>
-      繰り返し回数：
-      	<select name="schedule_repeat_num" id="schedule_repeat_num">
-      		<option selected="selected">1</option>
-      		<option>2</option>
-      		<option>3</option>
-      		<option>4</option>
-      		<option>5</option>
-      		<option>6</option>
-      		<option>7</option>
-      		<option>8</option>
-      		<option>9</option>
-      		<option>10</option>
-      	</select>回
-      <br>
-      繰り返し周期：
-      	<select name="schedule_cycle_num" id="schedule_cycle_num">
-      		<option selected="selected">1</option>
-      		<option>2</option>
-      		<option>3</option>
-      		<option>4</option>
-      		<option>5</option>
-      		<option>6</option>
-      		<option>7</option>
-      	</select>日
-      <br>
-      <br>
-
-      
-      <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
-		<select id='schedule_cluster' name='schedule_cluster' >
-			<script type="text/JavaScript">
-				getClusters();
-			</script>
-   	  	</select>
-   </fieldset>
-   </form>
-</div>
-
-<!-- 元のダイアログdivの改造：スケジュール詳細ダイアログ -->
-<div id="schedule-detail-dialog-form" title="スケジュールの詳細">
-    <!-- <p class="eventInput">スケジュールを入力してください!</p> -->
-	<!-- 上の行の「eventInput」の機能をまだ理解していないのでとりあえずそのまま -->
-   <form>
-   <fieldset>
- <input type="hidden" name="schedule_id" id="schedule_detail_id" />
-      <label for="schedule_title">スケジュール名:</label>
-      <input type="text" name="schedule_title" id="schedule_detail_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
-
-      <label for="schedule_info">スケジュールの説明：</label>
-      <input type="text" name="scheDialog_info" id="schedule_detail_info"><br>
-
-      <label for="schedule_start_time">開始日時: &nbsp; </label>	
-	<input type="datetime-local" name="schedule_start_time" id="schedule_detail_start_time" step="600" />
-	<label for="schedule_end_time">終了日時: &nbsp; </label>	
-	<input type="datetime-local" name="schedule_end_time" id="schedule_detail_end_time" step="600" /><br>
- 
-      <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
-		<select id='task_cluster' name='task_cluster' >
-		<script type="text/JavaScript">
-			getClusters();
-		</script>
-		</select >
-	</fieldset>
-   </form>
-</div>
-
-<div id="task-detail-dialog-form" title="タスク詳細">
-   <form>
-   <fieldset>
-      <input type="hidden" name="task_id" id="task_detail_id" />
-      <label for="title">タスク名:</label>
-      <input type="text" name="task_title" id="task_detail_title" class="text ui-widget-content ui-corner-all" value="" /> <br>
-
-      <label for="task_info">タスクの説明：</label>
-      <input type="text" name="task_info" id="task_detail_info"><br>
-
-      <label for="task_deadline">タスクの締切日時: &nbsp; </label>
-	
-	<input type="datetime-local" name="task_deadline" id="task_detail_deadline" /><br>
-
-      <label for="priority">タスクの優先度</label>
-	<div id="prriority_stars2">
-	<script>
-	    drawPrriorityStars2();
-	</script>
-	</div>
-      <br>
-
-      <label for="cluster">タスクの帰属するクラスタ</label>
-		<select id='task_cluster' name='task_cluster' >
-		<script type="text/JavaScript">
-			getClusters();
-		</script>
-		</select > 
-   </fieldset>
-   </form>
-</div>
 
     <!-- Live2D Sets -->
     <!-- Live2D Library -->
@@ -995,6 +999,7 @@ background-color:#81D4FA;
     <script src="js/L2dManager.js"></script>
     <script src="js/L2dTasuko.js"></script>
     <!-- -->
-    
+    </div>
+</div>
 </body>
 </html>
