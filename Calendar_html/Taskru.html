@@ -36,12 +36,14 @@
         <script src="js/L2dTasuko.js"></script>
         <!-- -->
 
-        <script>
+        <script> 
             var Taskru_this = this;
             var NotifiCountert = 0; // 通知欄の通知の数．idを決定するのに用いる
             var NotifiToday = "";
             
-            var UserID = 1;
+            var UserID=1;
+
+
 
 
             $(function () {
@@ -62,261 +64,233 @@
                 
                 $(document).getUserId().done(function (result) {
                     UserID = result;
-                });
+                })
 
-				<!-- ===== スケジュール追加ダイアログの時間チェック関数ここから ===== -->
-				function checkScheduleTime (){
-					var start = new Date($("#schedule_start_time").val());
-					var end = new Date($("#schedule_end_time").val());
-					if(start >= end){
-						$(".ui-dialog-buttonset button:eq(2)").attr("disabled", true);
-					}else{
-						$(".ui-dialog-buttonset button:eq(2)").attr("disabled", false);
-					}
-				}
-
-				$("#schedule_start_time").focusout(function(){
-					var tmpDate = new Date($("#schedule_start_time").val());
-					tmpDate.setHours(tmpDate.getHours()  - 9);
-
-					var tmpMinute = tmpDate.getMinutes();
-
-					if(tmpMinute < 10 && tmpMinute !=0){
-						tmpMinute = 0;
-						tmpDate.setHours(tmpDate.getHours());
-						var tmpYear = tmpDate.getFullYear();
-						var tmpMonth = tmpDate.getMonth() + 1;
-						if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-						var tmpDay = tmpDate.getDate();
-						if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-						var tmpHour = tmpDate.getHours();
-						if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-						if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-						var tmpSecond = "00";
-						var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-						$("#schedule_start_time").val(out);
-					} 
-					$("#schedule_end_time").attr("min", $("#schedule_start_time").val());
-					checkScheduleTime();
-				});
-
-				$("#schedule_start_time").keyup(function(){
-					var tmpDate = new Date($("#schedule_start_time").val());
-					tmpDate.setHours(tmpDate.getHours()  - 9);
-					var tmpMinute = tmpDate.getMinutes();
-
-					if(tmpMinute == 0){
-						checkScheduleTime();
-					}else if(tmpMinute>0 && tmpMinute<10){
-						$(".ui-dialog-buttonset button:eq(2)").attr("disabled", true);
-					}else if(tmpMinute >=10 && tmpMinute%10 !=0){
-						var tmpMinute = Math.floor(tmpMinute / 10)*10;
-
-						tmpDate.setHours(tmpDate.getHours());
-						var tmpYear = tmpDate.getFullYear();
-						var tmpMonth = tmpDate.getMonth() + 1;
-						if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-						var tmpDay = tmpDate.getDate();
-						if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-						var tmpHour = tmpDate.getHours();
-						if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-						if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-						var tmpSecond = "00";
-						var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-						$("#schedule_start_time").val(out);
-						$(".ui-dialog-buttonset button:eq(2)").attr("disabled", false);
-						checkScheduleTime();
-					}else{
-						checkScheduleTime();
-					}
-		
-					$("#schedule_end_time").attr("min", $("#schedule_start_time").val());
-				});
-
-				$("#schedule_end_time").focusout(function(){
-					var tmpDate = new Date($("#schedule_end_time").val());
-					tmpDate.setHours(tmpDate.getHours()  - 9);	
-					var tmpMinute = tmpDate.getMinutes();
-
-					if(tmpMinute < 10 && tmpMinute !=0){
-						tmpMinute = 0;
-
-						tmpDate.setHours(tmpDate.getHours());
-						var tmpYear = tmpDate.getFullYear();
-						var tmpMonth = tmpDate.getMonth() + 1;
-						if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-						var tmpDay = tmpDate.getDate();
-						if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-						var tmpHour = tmpDate.getHours();
-						if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-						if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-						var tmpSecond = "00";
-						var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-						$("#schedule_end_time").val(out);
-					} 
-					$("#schedule_start_time").attr("max", $("#schedule_end_time").val());
-					checkScheduleTime();
-				});
-
-				$("#schedule_end_time").keyup(function(){
-					var tmpDate = new Date($("#schedule_end_time").val());
-					tmpDate.setHours(tmpDate.getHours()  - 9);
-					var tmpMinute = tmpDate.getMinutes();
-
-					if(tmpMinute == 0){
-						checkScheduleTime();
-					}else if(tmpMinute>0 && tmpMinute<10){
-						$(".ui-dialog-buttonset button:eq(2)").attr("disabled", true);
-					}else if(tmpMinute >=10 && tmpMinute%10 !=0){
-						tmpMinute = Math.floor(tmpMinute / 10)*10;
-
-						tmpDate.setHours(tmpDate.getHours());
-						var tmpYear = tmpDate.getFullYear();
-						var tmpMonth = tmpDate.getMonth() + 1;
-						if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-						var tmpDay = tmpDate.getDate();
-						if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-						var tmpHour = tmpDate.getHours();
-						if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-						if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-						var tmpSecond = "00";
-						var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-						$("#schedule_end_time").val(out);
-						$(".ui-dialog-buttonset button:eq(2)").attr("disabled", false);
-					}else{
-						checkScheduleTime();
-					}
-					$("#schedule_start_time").attr("max", $("#schedule_end_time").val());
-				});
-				<!-- ===== スケジュール追加ダイアログの時間チェック関数ここまで ===== -->
-
-				<!-- ===== スケジュール詳細ダイアログの時間チェック関数ここから ===== -->
-				function checkScheduleDetailTime (){
-					var start = new Date($("#schedule_detail_start_time").val());
-					var end = new Date($("#schedule_detail_end_time").val());
-					if(start >= end){
-						$(".ui-dialog-buttonset button:eq(4)").attr("disabled", true);
-					}else{
-						$(".ui-dialog-buttonset button:eq(4)").attr("disabled", false);
-					}
-				}
-
-				$("#schedule_detail_start_time").focusout(function(){
-					var tmpDate = new Date($("#schedule_detail_start_time").val());
-					tmpDate.setHours(tmpDate.getHours()  - 9);
-					var tmpMinute = tmpDate.getMinutes();
-
-					if(tmpMinute < 10 && tmpMinute !=0){
-						tmpMinute = 0;
-
-						tmpDate.setHours(tmpDate.getHours());
-						var tmpYear = tmpDate.getFullYear();
-						var tmpMonth = tmpDate.getMonth() + 1;
-						if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-						var tmpDay = tmpDate.getDate();
-						if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-						var tmpHour = tmpDate.getHours();
-						if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-						if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-						var tmpSecond = "00";
-						var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-						$("#schedule_detail_start_time").val(out);
-					} 
-					$("#schedule_detail_end_time").attr("min", $("#schedule_detail_start_time").val());
-					checkScheduleDetailTime();
-				});
-
-				$("#schedule_detail_start_time").keyup(function(){
-					var tmpDate = new Date($("#schedule_detail_start_time").val());
-					tmpDate.setHours(tmpDate.getHours()  - 9);
-					var tmpMinute = tmpDate.getMinutes();
-
-					if(tmpMinute == 0){
-						checkScheduleDetailTime();
-					}else if(tmpMinute>0 && tmpMinute<10){
-						$(".ui-dialog-buttonset button:eq(4)").attr("disabled", true);
-					}else if(tmpMinute >=10 && tmpMinute%10 !=0){
-						var tmpMinute = Math.floor(tmpMinute / 10)*10;
-
-						tmpDate.setHours(tmpDate.getHours());
-						var tmpYear = tmpDate.getFullYear();
-						var tmpMonth = tmpDate.getMonth() + 1;
-						if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-						var tmpDay = tmpDate.getDate();
-						if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-						var tmpHour = tmpDate.getHours();
-						if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-						if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-						var tmpSecond = "00";
-						var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-						$("#schedule_detail_start_time").val(out);
-
-						$(".ui-dialog-buttonset button:eq(4)").attr("disabled", false);
-						checkScheduleDetailTime();
-					}else{
-						checkScheduleDetailTime();
-					}
-					$("#schedule_detail_end_time").attr("min", $("#schedule_detail_start_time").val());
-				});
-
-				$("#schedule_detail_end_time").focusout(function(){
-					var tmpDate = new Date($("#schedule_detail_end_time").val());
-					tmpDate.setHours(tmpDate.getHours()  - 9);
-					var tmpMinute = tmpDate.getMinutes();
-
-					if(tmpMinute < 10 && tmpMinute !=0){
-						tmpMinute = 0;
-
-						tmpDate.setHours(tmpDate.getHours());
-						var tmpYear = tmpDate.getFullYear();
-						var tmpMonth = tmpDate.getMonth() + 1;
-						if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-						var tmpDay = tmpDate.getDate();
-						if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-						var tmpHour = tmpDate.getHours();
-						if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-						if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-						var tmpSecond = "00";
-						var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-						$("#schedule_detail_end_time").val(out);
-					} 
-					$("#schedule_detail_start_time").attr("max", $("#schedule_detail_end_time").val());
-					checkScheduleDetailTime();
-				});
-
-				$("#schedule_detail_end_time").keyup(function(){
-					var tmpDate = new Date($("#schedule_detail_end_time").val());
-					tmpDate.setHours(tmpDate.getHours()  - 9);
-					var tmpMinute = tmpDate.getMinutes();
-
-					if(tmpMinute == 0){
-						checkScheduleDetailTime();
-					}else if(tmpMinute>0 && tmpMinute<10){
-						$(".ui-dialog-buttonset button:eq(4)").attr("disabled", true);
-					}else if(tmpMinute >=10 && tmpMinute%10 !=0){
-						tmpMinute = Math.floor(tmpMinute / 10)*10;
-
-						tmpDate.setHours(tmpDate.getHours());
-						var tmpYear = tmpDate.getFullYear();
-						var tmpMonth = tmpDate.getMonth() + 1;
-						if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
-						var tmpDay = tmpDate.getDate();
-						if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
-						var tmpHour = tmpDate.getHours();
-						if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
-						if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
-						var tmpSecond = "00";
-						var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
-						$("#schedule_detail_end_time").val(out);
-						$(".ui-dialog-buttonset button:eq(4)").attr("disabled", false);
-					}else{
-						checkScheduleDetailTime();
-					}
-					$("#schedule_detail_start_time").attr("max", $("#schedule_detail_end_time").val());
-				});
+               <!-- ===== スケジュール追加ダイアログの時間チェック関数ここから ===== -->
+		function checkScheduleTime (){
+			var start = new Date($("#schedule_start_time").val());
+			var end = new Date($("#schedule_end_time").val());
+			if(start >= end){
+				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", true);
+			}else{
+				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", false);
+			}
+		}
+		$("#schedule_start_time").focusout(function(){
+			var tmpDate = new Date($("#schedule_start_time").val());
+			tmpDate.setHours(tmpDate.getHours()  - 9);
+			var tmpMinute = tmpDate.getMinutes();
+			if(tmpMinute < 10 && tmpMinute !=0){
+				tmpMinute = 0;
+				tmpDate.setHours(tmpDate.getHours());
+				var tmpYear = tmpDate.getFullYear();
+				var tmpMonth = tmpDate.getMonth() + 1;
+				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+				var tmpDay = tmpDate.getDate();
+				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+				var tmpHour = tmpDate.getHours();
+				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+				var tmpSecond = "00";
+				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+				$("#schedule_start_time").val(out);
+			} 
+			$("#schedule_end_time").attr("min", $("#schedule_start_time").val());
+			checkScheduleTime();
+		});
+		$("#schedule_start_time").keyup(function(){
+			var tmpDate = new Date($("#schedule_start_time").val());
+			tmpDate.setHours(tmpDate.getHours()  - 9);
+			var tmpMinute = tmpDate.getMinutes();
+			if(tmpMinute == 0){
+				checkScheduleTime();
+			}else if(tmpMinute>0 && tmpMinute<10){
+				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", true);
+			}else if(tmpMinute >=10 && tmpMinute%10 !=0){
+				var tmpMinute = Math.floor(tmpMinute / 10)*10;
+				tmpDate.setHours(tmpDate.getHours());
+				var tmpYear = tmpDate.getFullYear();
+				var tmpMonth = tmpDate.getMonth() + 1;
+				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+				var tmpDay = tmpDate.getDate();
+				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+				var tmpHour = tmpDate.getHours();
+				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+				var tmpSecond = "00";
+				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+				$("#schedule_start_time").val(out);
+				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", false);
+				checkScheduleTime();
+			}else{
+				checkScheduleTime();
+			}
 	
+			$("#schedule_end_time").attr("min", $("#schedule_start_time").val());
+		});
+		$("#schedule_end_time").focusout(function(){
+			var tmpDate = new Date($("#schedule_end_time").val());
+			tmpDate.setHours(tmpDate.getHours()  - 9);	
+			var tmpMinute = tmpDate.getMinutes();
+			if(tmpMinute < 10 && tmpMinute !=0){
+				tmpMinute = 0;
+				tmpDate.setHours(tmpDate.getHours());
+				var tmpYear = tmpDate.getFullYear();
+				var tmpMonth = tmpDate.getMonth() + 1;
+				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+				var tmpDay = tmpDate.getDate();
+				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+				var tmpHour = tmpDate.getHours();
+				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+				var tmpSecond = "00";
+				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+				$("#schedule_end_time").val(out);
+			} 
+			$("#schedule_start_time").attr("max", $("#schedule_end_time").val());
+			checkScheduleTime();
+		});
+		$("#schedule_end_time").keyup(function(){
+			var tmpDate = new Date($("#schedule_end_time").val());
+			tmpDate.setHours(tmpDate.getHours()  - 9);
+			var tmpMinute = tmpDate.getMinutes();
+			if(tmpMinute == 0){
+				checkScheduleTime();
+			}else if(tmpMinute>0 && tmpMinute<10){
+				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", true);
+			}else if(tmpMinute >=10 && tmpMinute%10 !=0){
+				tmpMinute = Math.floor(tmpMinute / 10)*10;
+				tmpDate.setHours(tmpDate.getHours());
+				var tmpYear = tmpDate.getFullYear();
+				var tmpMonth = tmpDate.getMonth() + 1;
+				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+				var tmpDay = tmpDate.getDate();
+				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+				var tmpHour = tmpDate.getHours();
+				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+				var tmpSecond = "00";
+				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+				$("#schedule_end_time").val(out);
+				$(".ui-dialog-buttonset button:eq(2)").attr("disabled", false);
+			}else{
+				checkScheduleTime();
+			}
+			$("#schedule_start_time").attr("max", $("#schedule_end_time").val());
+		});
+		<!-- ===== スケジュール追加ダイアログの時間チェック関数ここまで ===== -->
+		<!-- ===== スケジュール詳細ダイアログの時間チェック関数ここから ===== -->
+		function checkScheduleDetailTime (){
+			var start = new Date($("#schedule_detail_start_time").val());
+			var end = new Date($("#schedule_detail_end_time").val());
+			if(start >= end){
+				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", true);
+			}else{
+				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", false);
+			}
+		}
+		$("#schedule_detail_start_time").focusout(function(){
+			var tmpDate = new Date($("#schedule_detail_start_time").val());
+			tmpDate.setHours(tmpDate.getHours()  - 9);
+			var tmpMinute = tmpDate.getMinutes();
+			if(tmpMinute < 10 && tmpMinute !=0){
+				tmpMinute = 0;
+				tmpDate.setHours(tmpDate.getHours());
+				var tmpYear = tmpDate.getFullYear();
+				var tmpMonth = tmpDate.getMonth() + 1;
+				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+				var tmpDay = tmpDate.getDate();
+				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+				var tmpHour = tmpDate.getHours();
+				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+				var tmpSecond = "00";
+				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+				$("#schedule_detail_start_time").val(out);
+			} 
+			$("#schedule_detail_end_time").attr("min", $("#schedule_detail_start_time").val());
+			checkScheduleDetailTime();
+		});
+		$("#schedule_detail_start_time").keyup(function(){
+			var tmpDate = new Date($("#schedule_detail_start_time").val());
+			tmpDate.setHours(tmpDate.getHours()  - 9);
+			var tmpMinute = tmpDate.getMinutes();
+			if(tmpMinute == 0){
+				checkScheduleDetailTime();
+			}else if(tmpMinute>0 && tmpMinute<10){
+				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", true);
+			}else if(tmpMinute >=10 && tmpMinute%10 !=0){
+				var tmpMinute = Math.floor(tmpMinute / 10)*10;
+				tmpDate.setHours(tmpDate.getHours());
+				var tmpYear = tmpDate.getFullYear();
+				var tmpMonth = tmpDate.getMonth() + 1;
+				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+				var tmpDay = tmpDate.getDate();
+				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+				var tmpHour = tmpDate.getHours();
+				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+				var tmpSecond = "00";
+				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+				$("#schedule_detail_start_time").val(out);
+				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", false);
+				checkScheduleDetailTime();
+			}else{
+				checkScheduleDetailTime();
+			}
+			$("#schedule_detail_end_time").attr("min", $("#schedule_detail_start_time").val());
+		});
+		$("#schedule_detail_end_time").focusout(function(){
+			var tmpDate = new Date($("#schedule_detail_end_time").val());
+			tmpDate.setHours(tmpDate.getHours()  - 9);
+			var tmpMinute = tmpDate.getMinutes();
+			if(tmpMinute < 10 && tmpMinute !=0){
+				tmpMinute = 0;
+				tmpDate.setHours(tmpDate.getHours());
+				var tmpYear = tmpDate.getFullYear();
+				var tmpMonth = tmpDate.getMonth() + 1;
+				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+				var tmpDay = tmpDate.getDate();
+				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+				var tmpHour = tmpDate.getHours();
+				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+				var tmpSecond = "00";
+				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+				$("#schedule_detail_end_time").val(out);
+			} 
+			$("#schedule_detail_start_time").attr("max", $("#schedule_detail_end_time").val());
+			checkScheduleDetailTime();
+		});
+		$("#schedule_detail_end_time").keyup(function(){
+			var tmpDate = new Date($("#schedule_detail_end_time").val());
+			tmpDate.setHours(tmpDate.getHours()  - 9);
+			var tmpMinute = tmpDate.getMinutes();
+			if(tmpMinute == 0){
+				checkScheduleDetailTime();
+			}else if(tmpMinute>0 && tmpMinute<10){
+				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", true);
+			}else if(tmpMinute >=10 && tmpMinute%10 !=0){
+				tmpMinute = Math.floor(tmpMinute / 10)*10;
+				tmpDate.setHours(tmpDate.getHours());
+				var tmpYear = tmpDate.getFullYear();
+				var tmpMonth = tmpDate.getMonth() + 1;
+				if (tmpMonth < 10) { tmpMonth = "0" + tmpMonth; }
+				var tmpDay = tmpDate.getDate();
+				if (tmpDay < 10) { tmpDay = "0" + tmpDay; }
+				var tmpHour = tmpDate.getHours();
+				if (tmpHour < 10) { tmpHour = "0" + tmpHour; }
+				if (tmpMinute < 10) { tmpMinute = "0" + tmpMinute; }
+				var tmpSecond = "00";
+				var out = tmpYear+"-"+tmpMonth+"-"+tmpDay+"T"+tmpHour+":"+tmpMinute+":"+tmpSecond; 
+				$("#schedule_detail_end_time").val(out);
+				$(".ui-dialog-buttonset button:eq(4)").attr("disabled", false);
+			}else{
+				checkScheduleDetailTime();
+				}
+			$("#schedule_detail_start_time").attr("max", $("#schedule_detail_end_time").val());
+		});
 	<!-- ===== スケジュール詳細ダイアログの時間チェック関数ここまで ===== -->
-
 
                 $(document).ready(function () {
                     $('#scheduleContainer').outerHeight(
@@ -340,10 +314,11 @@
                     if (d < 10) {
                         d = "0" + d;
                     }
+                    
+                    setCluster();
                     scheduleTableUpdate(y + "-" + m + "-" + d);
                     ClickedDay = y + "-" + m + "-" + d;
                     taskTableUpdate();
-
                     if (firstAccessFlag) {
                         introJs()
                                 .setOption('nextLabel', '次へ')
@@ -730,6 +705,9 @@
                 }
             }
 
+
+
+          
             function changeDBdate(date) {
                 var tmpDate = new Date(date);
                 var tmpYear = tmpDate.getUTCFullYear();
@@ -942,6 +920,45 @@
                 var out = tmpYear + "-" + tmpMonth + "-" + tmpDay + "T" + tmpHour + ":" + tmpMinute + ":" + tmpSecond;
                 return out;
             }
+             function setCluster(){
+                 $(document).getUserId().done(function (result) {
+                     var tID = result;
+                     var st= "";
+                     $.ajax({
+                         type: "POST",
+                         url: "getClusterID.php",
+                         data: {query: "select ClusterID from ClusterTable where UserID =" + tID},
+                         success: function (data, dataType) {
+                             var len = 0;
+                             if (data != null) {
+                                len = data.length;
+                             }
+                             for(var i = 0; i < len ;i++){
+                                 var ClusterID = data[i].ClusterID;
+                                 $.ajax({
+                                     type: "POST",
+                                     url: "getClusterName.php",
+                                     data: {query: "select ClusterName from ClusterInfoTable where ClusterID =" + ClusterID},
+                                     success: function (data, dataType) {
+                                         $("#task_cluster").append($("<option>").val(ClusterID).text(data[0].ClusterName));
+                                         $("#schedule_cluster").append($("<option>").val(ClusterID).text(data[0].ClusterName));
+                                         $("#schedule_detail_cluster").append($("<option>").val(ClusterID).text(data[0].ClusterName));
+                                         $("#task_detail_cluster").append($("<option>").val(ClusterID).text(data[0].ClusterName));
+                                     },
+                                     error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                         alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
+                                     } 
+                               });
+                       
+                            }  
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
+                        }
+                    });
+               });              
+            }
+
 
             //タスク入力・編集ダイアログ用の優先度を表す星5個の入った配列．タスクを読み込むたびに書き換えてください．
             var prriority_array = ["★", "☆", "☆", "☆", "☆"];
@@ -1003,13 +1020,15 @@
             }
 
             //ユーザが所属しているクラスタ一覧がJSの配列に入って渡されることを想定して作った配列です．
-            var cluster_array = ["研究室", "CS専攻", "サークル"];
-
+            var cluster_array = [];
+          
 
             //cluster_arrayの中身を読み込んで<select>タグを作る関数．
             //クラスタ一覧が配列culuster_arrayに入っていると仮定して作った．
             function getClusters() {
+  
                 var num = cluster_array.length;
+
                 if (num == 0) {
                     document.write("所属しているクラスタがありません。");
                 } else {
@@ -1471,7 +1490,7 @@
 
                             <input type="datetime-local" name="task_deadline" id="task_deadline" /><br>
 
-                            <label for="priority">タスクの重さ</label>
+                            <label for="priority">タスクの優先度</label>
                             <div id='prriority_stars'>
                                 <script>
                                     //DBとのやりとりができるようになったら，drawPrriorityStars()[星を書きだす関数]の前にchangePrriorityArray(hoge)[配列prriority_arrayの中身を書き換える関数]を実行してください。
@@ -1484,7 +1503,7 @@
                             <label for="cluster">タスクの帰属するクラスタ</label>
                             <select id='task_cluster' name='task_cluster' >
                                 <script type="text/JavaScript">
-                                    getClusters();
+                                   getClusters();
                                 </script>
                             </select >
                             <br>	
@@ -1541,7 +1560,8 @@
                             <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
                             <select id='schedule_cluster' name='schedule_cluster' >
                                 <script type="text/JavaScript">
-                                    getClusters();
+            
+                        getClusters();
                                 </script>
                             </select>
                         </fieldset>
@@ -1567,9 +1587,9 @@
                             <input type="datetime-local" name="schedule_end_time" id="schedule_detail_end_time" step="600" /><br>
 
                             <label for="schedule_cluster">スケジュールの帰属するクラスタ</label>
-                            <select id='task_cluster' name='task_cluster' >
+                            <select id='schedule_detail_cluster' name='task_cluster' >
                                 <script type="text/JavaScript">
-                                    getClusters();
+                                   getClusters();
                                 </script>
                             </select >
                         </fieldset>
@@ -1590,7 +1610,7 @@
 
                             <input type="datetime-local" name="task_deadline" id="task_detail_deadline" /><br>
 
-                            <label for="priority">タスクの重さ</label>
+                            <label for="priority">タスクの優先度</label>
                             <div id="prriority_stars2">
                                 <script>
                                     drawPrriorityStars2();
@@ -1599,9 +1619,9 @@
                             <br>
 
                             <label for="cluster">タスクの帰属するクラスタ</label>
-                            <select id='task_cluster' name='task_cluster' >
+                            <select id='task_detail_cluster' name='task_cluster' >
                                 <script type="text/JavaScript">
-                                    getClusters();
+                                     getClusters();
                                 </script>
                             </select > 
                         </fieldset>
