@@ -203,9 +203,9 @@
 				var tmpMinute = tmpDate.getMinutes();
 				if(tmpMinute == 0){
 					checkScheduleTime();
-				}else if(tmpMinute>0 && tmpMinute<10){
+				}else if((tmpMinute>0) && (tmpMinute<10)){
 					$("#schedule_input_button").attr("disabled", true);
-				}else if(tmpMinute >=10 && tmpMinute%10 !=0){
+				}else if((tmpMinute >=10) && (tmpMinute%10 !=0)){
 					tmpMinute = Math.floor(tmpMinute / 10)*10;
 					tmpDate.setHours(tmpDate.getHours());
 					var tmpYear = tmpDate.getFullYear();
