@@ -876,59 +876,68 @@
                     show: 'blind',
                     hide: 'blind',
                     modal: true,
-                    buttons: {
-                        "更新": function () {
-                            var ScheduleID = $("#schedule_detail_id").val();
-                            var ScheduleName = $("#schedule_detail_title").val();
-                            var ScheduleInfo = $("#schedule_detail_info").val();
-                            var ScheduleStart = $("#schedule_detail_start_time").val();
-                            var ScheduleEnd = $("#schedule_detail_end_time").val();
-                            var ClusterID = $("#schedule_detail_cluster").val();
-                            ScheduleStart = changeDBdate(ScheduleStart);
-                            ScheduleEnd = changeDBdate(ScheduleEnd);
-                            var scheduleVal = {query: "update ScheduleTable set ScheduleName='" + ScheduleName + "', ScheduleInfo='" + ScheduleInfo + "', ScheduleStart='" + ScheduleStart + "', ScheduleEnd='" + ScheduleEnd + "' ,ClusterID="+ClusterID+" where ScheduleID=" + ScheduleID};
+                    buttons: [
+                    {
+						text: '更新',
+						id: 'schedule_detail_button',
+						click: function(){
+							var ScheduleID = $("#schedule_detail_id").val();
+                        	var ScheduleName = $("#schedule_detail_title").val();
+                        	var ScheduleInfo = $("#schedule_detail_info").val();
+                        	var ScheduleStart = $("#schedule_detail_start_time").val();
+                        	var ScheduleEnd = $("#schedule_detail_end_time").val();
 
-                            $.ajax({
+                        	ScheduleStart = changeDBdate(ScheduleStart);
+                        	ScheduleEnd = changeDBdate(ScheduleEnd);
+                        	var scheduleVal = {query: "update ScheduleTable set ScheduleName='" + ScheduleName + "', ScheduleInfo='" + ScheduleInfo + "', ScheduleStart='" + ScheduleStart + "', ScheduleEnd='" + ScheduleEnd + "' where ScheduleID=" + ScheduleID};
+
+	                        $.ajax({
+                             	type: "POST",
+                             	url: "sendphp.php",
+                             	data: scheduleVal,
+                             	success: function (data, dataType) {
+                             	},
+                             	error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                	 alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
+                             	}
+                        	});
+
+                        	scheduleTableUpdate(ClickedDay);
+                        	Notificate("スケジュール「" + ScheduleName + "」を更新したよ．");
+                        	$(this).dialog('close');
+						}
+					},
+					{
+						text: '削除',
+						click:  function(){
+							ScheduleID = $("#schedule_detail_id").val();
+                        	ScheduleName = $("#schedule_detail_title").val();
+                        	ScheduleStart = $("#schedule_detail_start_time").val();
+                        	scheduleVal = {query: "DELETE FROM ScheduleTable WHERE ScheduleID =" + ScheduleID};
+                        	$.ajax({
                                 type: "POST",
                                 url: "sendphp.php",
                                 data: scheduleVal,
                                 success: function (data, dataType) {
                                 },
-                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                	error: function (XMLHttpRequest, textStatus, errorThrown) {
                                     alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
                                 }
-                            });
+                        	});
 
-                            scheduleTableUpdate(ClickedDay);
-                            window.location.reload()
-                            Notificate("スケジュール「" + ScheduleName + "」を更新したよ．");
-                            $(this).dialog('close');
-                        },
-                        "削除": function () {
-                            ScheduleID = $("#schedule_detail_id").val();
-                            ScheduleName = $("#schedule_detail_title").val();
-                            ScheduleStart = $("#schedule_detail_start_time").val();
-                            scheduleVal = {query: "DELETE FROM ScheduleTable WHERE ScheduleID =" + ScheduleID};
-                            $.ajax({
-                                type: "POST",
-                                url: "sendphp.php",
-                                data: scheduleVal,
-                                success: function (data, dataType) {
-                                },
-                                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                    alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
-                                }
-                            });
+	                        scheduleTableUpdate(ClickedDay);
+	                        Notificate("スケジュール「" + ScheduleName + "」を削除したよ．");
+	                        $(this).dialog('close');
 
-                            scheduleTableUpdate(ClickedDay);
-                            window.location.reload()
-                            Notificate("スケジュール「" + ScheduleName + "」を削除したよ．");
-                            $(this).dialog('close');
-                        },
-                        "キャンセル": function () {
-                            $(this).dialog('close');
-                        },
-                    },
+						}
+					},
+					{
+						text: 'キャンセル',
+						click: function(){
+							$(this).dialog('close');
+						}
+					}
+                    ]
                 });
                 $('#task-detail-dialog-form').dialog({
                     autoOpen: false,
@@ -938,58 +947,56 @@
                     modal: true,
                     buttons: [
 					{
-			text: '更新',
-			id: 'task_detail_button',
-			click: function (){
-				var TaskID = $("#task_detail_id").val();
-                           			 var TaskName = $("#task_detail_title").val();
-                           			 var TaskInfo = $("#task_detail_info").val();
-                           			 var TaskEnd = $("#task_detail_deadline").val();
-                           			 TaskEnd = changeDBdate(TaskEnd);
-                           			 //追加 →　クリックされた優先度の値(0 ~ 4)が変数prriority_degreeに入っておりそれを変数TaskPriorityに格納 (小林)
-                      			      var TaskPriority = prriority_degree;
-                      			      var ClusterID = 2;
-                            //タスク更新時にタスク優先度をDBに再格納するよう修正(小林)
-                            TaskVal = {query: "update TaskTable set TaskName='" + TaskName + "', TaskInfo='" + TaskInfo + "', TaskEnd='" + TaskEnd + "', TaskPriority=" + TaskPriority + " where TaskID=" + TaskID};
+						text: '更新',
+						id: 'task_detail_button',
+						click: function (){
+							var TaskID = $("#task_detail_id").val();
+                        	var TaskName = $("#task_detail_title").val();
+                        	var TaskInfo = $("#task_detail_info").val();
+                        	var TaskEnd = $("#task_detail_deadline").val();
+                        	TaskEnd = changeDBdate(TaskEnd);
+                        	 //追加 →　クリックされた優先度の値(0 ~ 4)が変数prriority_degreeに入っておりそれを変数TaskPriorityに格納 (小林)
+                      		var TaskPriority = prriority_degree;
+                      		var ClusterID = 2;
+                        	//タスク更新時にタスク優先度をDBに再格納するよう修正(小林)
+                        	TaskVal = {query: "update TaskTable set TaskName='" + TaskName + "', TaskInfo='" + TaskInfo + "', TaskEnd='" + TaskEnd + "', TaskPriority=" + TaskPriority + " where TaskID=" + TaskID};
 
-                            //alert(TaskVal['query']);
+                        	//alert(TaskVal['query']);
 
-                            $.ajax({
-                                type: "POST",
-                                url: "sendphp.php",
-                                data: TaskVal,
-                                success: function (data, dataType) {
-                                },
-                                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                    alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
-                                }
-                            });
+                        	$.ajax({
+								type: "POST",
+								url: "sendphp.php",
+								data: TaskVal,
+								success: function (data, dataType) {
+								},
+								error: function (XMLHttpRequest, textStatus, errorThrown) {
+									alert('Error : ' + XMLHttpRequest + textStatus + errorThrown);
+								}
+							});
 
-                            taskTableUpdate();
-                            Notificate("タスク「" + TaskName + "」を更新したよ．");
-                            $(this).dialog('close');
-
-			}
-		},
-		{
-			text: '削除',
-			click: function (){
-				TaskID = $("#task_detail_id").val();
-                            			TaskName = $("#task_detail_title").val();
-                            			taskFinish(TaskID, TaskName);
-
-                            			$(this).dialog('close');
-			}
-		},
-		{
-			text: 'キャンセル',
-			click: function (){
-				$(this).dialog('close');
-			}
-		}
+							taskTableUpdate();
+							Notificate("タスク「" + TaskName + "」を更新したよ．");
+							$(this).dialog('close');
+						}
+					},
+					{
+						text: '削除',
+						click: function (){
+							TaskID = $("#task_detail_id").val();
+                    		TaskName = $("#task_detail_title").val();
+                    		taskFinish(TaskID, TaskName);
+	           				$(this).dialog('close');
+						}
+					},
+					{
+						text: 'キャンセル',
+						click: function (){
+							$(this).dialog('close');
+						}
+					}
 						
-				]
-            });
+					]
+            	});
         });
 
             function Notificate(text) {
